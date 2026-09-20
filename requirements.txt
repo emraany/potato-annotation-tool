@@ -1,0 +1,7 @@
+# The study server. Pinned: this is the version every line of DEPLOY.md and
+# RUNNING.md was checked against (potato-annotation 2.9.3).
+potato-annotation==2.9.3
+
+# scripts/mirror_to_postgres.py only. Not imported by the study server, so a
+# broken mirror cannot stop annotation.
+psycopg[binary]==3.2.3

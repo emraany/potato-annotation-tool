@@ -1,0 +1,11 @@
+.venv/
+annotation_output/
+user_config.json
+admin_api_key.txt
+project.sqlite*
+server.log
+console.log
+*.tmp
+__pycache__/
+*.pyc
+.DS_Store

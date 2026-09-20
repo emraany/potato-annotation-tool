@@ -1,0 +1,238 @@
+/* VLMD Subtask 1 — annotation interface
+ *
+ * One job: make the argument's structure -- claim versus children, and each
+ * child's type -- readable at a glance, so the annotator is not parsing prose
+ * to work out what they are being asked to judge. The argument is the entire
+ * item; the meme image is not shown.
+ */
+
+/* One display field, full width. The meme image is not part of this task, so
+   there is nothing to sit beside the argument and nothing to weight. */
+
+/* --- The argument ---------------------------------------------------------- */
+.arg { font-size: 0.95rem; line-height: 1.55; max-width: 78ch; }
+
+/* The argument's number in args_0911.json -- the number people say out loud
+   when they hand work over. First thing on the item, and deliberately quiet:
+   it is a reference, not something to read every time. */
+.arg-number {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: #6a6a80;
+  margin-bottom: 8px;
+}
+
+.arg-relation {
+  font-size: 0.78rem;
+  padding: 4px 9px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  display: inline-block;
+}
+.arg-relation-support { background: #e8f1ea; color: #23503a; }
+.arg-relation-attack  { background: #fbeaea; color: #6d2020; }
+
+.arg-claim {
+  border: 1px solid #c9c9d4;
+  border-left: 4px solid #4a4a68;
+  border-radius: 4px;
+  padding: 10px 12px;
+  background: #fafafc;
+}
+.arg-head { margin-bottom: 6px; }
+.arg-role {
+  font-size: 0.7rem;
+  letter-spacing: 0.09em;
+  color: #6a6a80;
+  margin-left: 8px;
+}
+.arg-nid {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  color: #83839a;
+  margin-left: 7px;
+}
+.arg-claim .arg-text { font-weight: 600; }
+
+.arg-children-head {
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #6a6a80;
+  margin: 14px 0 4px;
+}
+.arg-children ul { list-style: none; padding-left: 0; margin: 0; }
+.arg-children li {
+  padding: 7px 0 7px 10px;
+  border-left: 2px solid #dcdce4;
+  margin-bottom: 4px;
+}
+.arg-children .arg-text { display: block; margin-top: 3px; }
+
+/* Type badges. The four types are the annotator's cue for what kind of thing
+   is being used, so they need to be distinguishable without reading them. */
+.badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 2px 7px;
+  border-radius: 3px;
+  vertical-align: 2px;
+}
+.badge-element    { background: #e4ecfa; color: #1f3f77; }
+.badge-background { background: #f1e9fa; color: #4a2472; }
+.badge-premise    { background: #fdf0e0; color: #7a4508; }
+.badge-claim      { background: #e6eeec; color: #234b3f; }
+
+/* --- The instructions banner ------------------------------------------------
+ * The banner IS the guidelines -- the whole of guidelines.md, on every
+ * argument. Two things follow from that.
+ *
+ * It scrolls inside itself. Left to grow, it is several screens tall and the
+ * argument is below all of it, so every item would start with a scroll back
+ * down to the work. 60vh keeps the top of the argument on screen with the
+ * guidelines open.
+ *
+ * It starts shut. Potato's template hardcodes `open` on the banner, so the
+ * shutting is done in scripts/serve.py's footer script, which also remembers
+ * the choice per browser. Somebody who wants it open all shift gets that. */
+.annotation-instructions-content {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 10px;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+.annotation-instructions-content h1 { font-size: 1.05rem; margin: 0 0 0.6rem; }
+.annotation-instructions-content h2 {
+  font-size: 0.95rem;
+  margin: 1.2rem 0 0.4rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid #ededf3;
+}
+.annotation-instructions-content h2:first-of-type { border-top: 0; padding-top: 0; }
+/* The six mechanism entries. They are what the annotator scrolls here to find,
+   so each one is a block with a rule down its left edge rather than a run of
+   headed paragraphs. */
+.annotation-instructions-content h4 {
+  font-size: 0.9rem;
+  font-weight: 650;
+  margin: 0.9rem 0 0.25rem;
+  padding-left: 9px;
+  border-left: 3px solid #4a4a68;
+}
+.annotation-instructions-content p { margin: 0.35rem 0; }
+.annotation-instructions-content em { color: #4a4a60; }
+.annotation-instructions-content ul,
+.annotation-instructions-content ol { margin: 0.4rem 0 0.5rem 1.1rem; padding-left: 0.4rem; }
+.annotation-instructions-content li { margin-bottom: 0.3rem; }
+
+/* --- pure_display schemes --------------------------------------------------
+ * A pure_display scheme's prose lands in a <legend>, which the theme sets to
+ * weight 600 -- so the three step headings render entirely bold without this.
+ * The rules below cover the three step headings only; the guidelines are
+ * styled as the instructions banner above. */
+form.pure-display legend { font-weight: 400; line-height: 1.55; }
+form.pure-display legend h3 { font-weight: 650; margin-top: 1.1rem; }
+form.pure-display legend h4 { font-weight: 650; margin-top: 0.9rem; font-size: 1rem; }
+form.pure-display legend b,
+form.pure-display legend strong { font-weight: 650; }
+form.pure-display legend li { margin-bottom: 0.35rem; }
+
+/* --- Section headings ------------------------------------------------------
+ * `layout.groups` cannot be used here (it breaks display_logic -- see the note
+ * at the top of config.yaml), so the three steps are `pure_display` schemes.
+ * Step 2 carries the same gate as the questions under it, so the heading
+ * appears and disappears with them. */
+.step-head {
+  font-size: 0.95rem;
+  font-weight: 650;
+  margin: 0.2rem 0 0.15rem;
+}
+.step-sub {
+  font-size: 0.85rem;
+  color: #5c5c78;
+  margin: 0;
+}
+form.pure-display legend .step-head { margin-top: 0.4rem; }
+
+/* --- Collapsing a shut gate completely ------------------------------------
+ * Potato hides a conditional scheme with max-height:0 + visibility:hidden so
+ * it can animate. The wrappers keep their margins, so with the mechanism block
+ * shut the page carried ~200px of blank space between Step 1 and Step 3 that
+ * read as a rendering fault. `display: none` is what Potato's own
+ * prefers-reduced-motion rule already does, so this only drops the animation. */
+.display-logic-container.display-logic-hidden {
+  display: none !important;
+  margin: 0 !important;
+}
+
+/* --- Save draft, and an unanswered question -------------------------------
+ * Two buttons where Potato has one. Save draft is deliberately the quieter of
+ * the two: leaving an argument unfinished is the exception, and the button
+ * that ends the argument should be the one the eye lands on.
+ *
+ * `.vlmd-unfinished` is put on a question by static/study.js when Submit is
+ * pressed and that question has no answer, and taken off again the moment it
+ * gets one. It is not an error -- Save draft is right there -- so it is an
+ * amber edge and not a red one. */
+#draft-btn { margin-right: 0.5rem; }
+#draft-btn i { opacity: 0.7; }
+
+.annotation-form.vlmd-unfinished {
+  border-radius: 6px;
+  box-shadow: 0 0 0 2px #e8a33d;
+}
+.annotation-form.vlmd-unfinished legend::after {
+  content: "needs an answer";
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 7px;
+  border-radius: 3px;
+  background: #fdf0e0;
+  color: #7a4508;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  vertical-align: 2px;
+}
+
+/* --- The navbar ------------------------------------------------------------
+ * The "Go to" box is how somebody picks up at the number they were given, so
+ * it has to be on screen rather than behind a horizontal scroll. Potato's
+ * navbar lays the row out at the theme's heading size, and this task's name is
+ * long enough that at 1280px the centre section ran out of room and the Go
+ * button was cut off at the right edge. The name gives way instead: it is the
+ * one thing in that row nobody needs to read twice. */
+.potato-navbar .navbar-brand .task-name { font-size: 0.95rem; }
+.potato-navbar .navbar-brand { max-width: 22rem; }
+.potato-navbar .navbar-center { gap: 0.55rem; }
+.potato-navbar .goto-section { flex-shrink: 0; }
+
+/* "Progress 3/500" counts the whole corpus against what this annotator has
+ * finished, and nobody is annotating the whole corpus -- each person works the
+ * stretch of numbers they were given, so the fraction reads as though they
+ * were 497 arguments behind. It comes out, and the argument number they are
+ * standing on takes the slot, without the word "Instance" in front of it: the
+ * "#" already says what the number is, and the Go to box beside it says what
+ * the last one is. `#progress-counter` stays in the page (hidden) because
+ * Potato's own annotation.js writes to it after every save. */
+.potato-navbar .progress-section { display: none; }
+.potato-navbar .progress-section + .navbar-divider { display: none; }
+.potato-navbar .instance-number-section .instance-number-label { display: none; }
+
+/* The two arrows step to the argument before and the argument after, so at
+ * argument 1 and at the last argument one of them has nowhere to go. Potato
+ * styles `.nav-control-btn` with no disabled state at all -- it never disables
+ * them -- and an arrow that looks live and does nothing reads as a broken page.
+ * static/study.js is what sets `disabled`. */
+.potato-navbar .nav-control-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.potato-navbar .nav-control-btn:disabled:hover {
+  background: rgba(255, 255, 255, 0.1);
+}

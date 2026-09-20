@@ -1,0 +1,415 @@
+# yaml-language-server: $schema=https://potatoannotator.readthedocs.io/en/latest/schemas/potato-config.schema.json
+#
+# VLMD Subtask 1 — Cognitive Mechanism Classification
+#
+# Unit of annotation: ONE ARGUMENT — a claim plus only its immediate children.
+# Data is built by scripts/build_instances.py; see DESIGN.md for every decision
+# and every assumption, and QUESTIONS.md for what is still open.
+#
+# Scheme names are frozen. Renaming one after annotation starts splits the data
+# across the admin view, the agreement report and the export, with no error.
+
+annotation_task_name: VLMD Subtask 1 — Cognitive Mechanism Classification
+task_dir: .
+output_annotation_dir: annotation_output/
+
+data_files: [data/instances.json]
+item_properties:
+  id_key: id
+  text_key: claim_content          # never displayed; instance_display drives the page
+
+# ---------------------------------------------------------------------------
+# What the annotator sees
+# ---------------------------------------------------------------------------
+# The meme image is deliberately NOT shown. The argument is the whole item, and
+# the `Visual element` children are the only account of the image the annotator
+# gets -- which is why build_instances.py renders them first and badges them.
+#
+instance_display:
+  fields:
+    - key: argument_html
+      type: html                   # built by build_instances.py, escaped there
+      label: The argument
+  layout:
+    direction: vertical
+    gap: 16px
+  resizable: false                 # no second field to trade width with
+
+base_css: static/study.css
+# THE INSTRUCTIONS ARE THE GUIDELINES. Not a link to them, not a summary of
+# them -- the whole of `guidelines.md`, rendered as markdown into the banner
+# Potato puts above every argument. There is one copy of the definitions and
+# the annotator is never more than a click from it.
+#
+# `annotation_instructions` is NOT set here. scripts/serve.py reads
+# guidelines.md at boot and sets it, which is why that script is how the study
+# is started: `potato start config.yaml` directly leaves the banner empty.
+# Keeping the text here as well would be a second copy of the definitions, and
+# two copies of a definition is one copy that is wrong.
+#
+# Markdown, not HTML: Potato renders `annotation_instructions` as markdown only
+# when it contains no block-level HTML tag, and its markdown renderer has no
+# table support -- which is why the mechanism table in guidelines.md is written
+# as headed entries rather than as a table.
+# ---------------------------------------------------------------------------
+# The questions
+# ---------------------------------------------------------------------------
+# NOTE ON `layout`: there is no `layout:` block in this config, and there must
+# not be one. Measured on 2.9.3: with ANY `layout` block -- grid alone or grid
+# plus groups -- each conditional question is rendered TWICE. The <form> is
+# hoisted into the grid and the `display-logic-container` beside it is left
+# empty, so the gate toggles an empty div and every gated question is on screen
+# permanently, whatever the checks say. `validate --strict` passes, `preview`
+# passes, the boot log says nothing, and the page looks deliberate. Without a
+# `layout` block the form nests inside its container and the gate works: the
+# page measured 1776px with the checks all No and 2518px with one Yes.
+# The section headings below are `pure_display` schemes carrying the same gate,
+# which is how the three steps survive losing `layout.groups`.
+annotation_schemes:
+
+  - annotation_type: pure_display
+    name: section_sensible_test
+    allow_html: true
+    description: >-
+      <h4 class="step-head">Step 1 &mdash; Sensible Test</h4>
+      <p class="step-sub">Answer all three. If every answer is No, the argument
+      passes and you are done.</p>
+    label_requirement: {required: false}
+
+  # --- 1. The Sensible Test. Three yes/no checks, asked first, all required. --
+  # There is deliberately no overall Pass/Fail question. Pass is derived:
+  # all three "No" = Pass, any "Yes" = Fail. scripts/export_annotations.py
+  # computes it so it cannot be recorded inconsistently.
+
+  - annotation_type: radio
+    name: manipulation_check
+    # The three descriptions below are the three check sentences from
+    # guidelines.md, word for word. scripts/serve.py compares them at boot and
+    # prints a warning if they have drifted apart.
+    description: >-
+      1. Manipulation Check — Is the creator using emotional hijacking, mockery,
+      side-by-side tricks, out-of-context cropping, or coded dog-whistles to
+      force this connection in lieu of evidence?
+    labels:
+      - {name: 'Yes', key_value: 'q'}
+      - {name: 'No', key_value: 'a'}
+    humanize_labels: false
+    label_requirement: {required: true}
+    horizontal: true
+
+  - annotation_type: radio
+    name: deception_check
+    description: >-
+      2. Deception Check — Does a reader have to accept an unproven assumption,
+      a warped timeline, or a structural lie for the child(ren) to successfully
+      connect to the claim?
+    labels:
+      - {name: 'Yes', key_value: 'w'}
+      - {name: 'No', key_value: 's'}
+    humanize_labels: false
+    label_requirement: {required: true}
+    horizontal: true
+
+  - annotation_type: radio
+    name: rhetorical_wrapper_check
+    description: >-
+      3. Rhetorical Wrapper Check — Is the visual format being used as a
+      psychological trap to lower the reader's critical thinking, rather than as
+      a helpful tool to illustrate data or literal facts?
+    labels:
+      - {name: 'Yes', key_value: 'e'}
+      - {name: 'No', key_value: 'd'}
+    humanize_labels: false
+    label_requirement: {required: true}
+    horizontal: true
+
+  # --- 2. Mechanism. Shown only when at least one check is "Yes". -------------
+  # `logic: any` is the OR. Without it `show_when` is ANDed and the block would
+  # only appear when all three checks failed.
+
+  - annotation_type: pure_display
+    name: section_mechanism
+    allow_html: true
+    description: >-
+      <h4 class="step-head">Step 2 &mdash; Mechanism</h4>
+      <p class="step-sub">At least one check came back Yes, so a mechanism is
+      present. Pick the one that does the most work.</p>
+    label_requirement: {required: false}
+    display_logic:
+      logic: any
+      show_when:
+        - {schema: manipulation_check, operator: equals, value: 'Yes'}
+        - {schema: deception_check, operator: equals, value: 'Yes'}
+        - {schema: rhetorical_wrapper_check, operator: equals, value: 'Yes'}
+
+  - annotation_type: radio
+    name: primary_mechanism
+    description: >-
+      Primary mechanism — which one does most of the work in getting a reader
+      from these children to this claim?
+    labels:
+      - {name: 'Affective Hijacking', key_value: '1'}
+      - {name: 'Episodic Overgeneralization', key_value: '2'}
+      - {name: 'Spurious Causal Correlation', key_value: '3'}
+      - {name: 'Satirical Trivialization', key_value: '4'}
+      - {name: 'Esoteric Code Activation', key_value: '5'}
+      - {name: 'Spurious Legitimacy Signaling', key_value: '6'}
+    humanize_labels: false
+    label_requirement: {required: true}
+    display_logic:
+      logic: any
+      show_when:
+        - {schema: manipulation_check, operator: equals, value: 'Yes'}
+        - {schema: deception_check, operator: equals, value: 'Yes'}
+        - {schema: rhetorical_wrapper_check, operator: equals, value: 'Yes'}
+
+  - annotation_type: text
+    name: primary_justification
+    description: >-
+      Why that one? Name what in the children is being used and what move it
+      makes toward the claim. Do not restate the label.
+    multiline: true
+    rows: 3
+    min_chars: 25
+    # Kept short: the box is one column of a three-column grid, and a long
+    # placeholder is clipped mid-sentence there.
+    placeholder: 'What is used, and what move does it make?' 
+    label_requirement: {required: true}
+    display_logic:
+      logic: any
+      show_when:
+        - {schema: manipulation_check, operator: equals, value: 'Yes'}
+        - {schema: deception_check, operator: equals, value: 'Yes'}
+        - {schema: rhetorical_wrapper_check, operator: equals, value: 'Yes'}
+
+  - annotation_type: multiselect
+    name: secondary_mechanisms
+    description: >-
+      Secondary mechanisms — any others also at work in this argument. Optional.
+      Do not repeat the primary.
+    label_requirement: {required: false}   # explicit; see the note near require_fully_annotated below
+    labels:
+      - {name: 'Affective Hijacking', key_value: 'z'}
+      - {name: 'Episodic Overgeneralization', key_value: 'x'}
+      - {name: 'Spurious Causal Correlation', key_value: 'c'}
+      - {name: 'Satirical Trivialization', key_value: 'v'}
+      - {name: 'Esoteric Code Activation', key_value: 'b'}
+      - {name: 'Spurious Legitimacy Signaling', key_value: 'n'}
+    humanize_labels: false
+    display_logic:
+      logic: any
+      show_when:
+        - {schema: manipulation_check, operator: equals, value: 'Yes'}
+        - {schema: deception_check, operator: equals, value: 'Yes'}
+        - {schema: rhetorical_wrapper_check, operator: equals, value: 'Yes'}
+
+  # One justification per secondary mechanism, gated on that mechanism being
+  # ticked. `contains` tests membership of the multiselect's stored list.
+
+  - annotation_type: text
+    name: secondary_justification_affective_hijacking
+    description: 'Secondary — Affective Hijacking: what is being used, and what move does it make?'
+    multiline: true
+    rows: 2
+    min_chars: 25
+    label_requirement: {required: true}
+    display_logic:
+      show_when:
+        - {schema: secondary_mechanisms, operator: contains, value: 'Affective Hijacking'}
+
+  - annotation_type: text
+    name: secondary_justification_episodic_overgeneralization
+    description: 'Secondary — Episodic Overgeneralization: what is being used, and what move does it make?'
+    multiline: true
+    rows: 2
+    min_chars: 25
+    label_requirement: {required: true}
+    display_logic:
+      show_when:
+        - {schema: secondary_mechanisms, operator: contains, value: 'Episodic Overgeneralization'}
+
+  - annotation_type: text
+    name: secondary_justification_spurious_causal_correlation
+    description: 'Secondary — Spurious Causal Correlation: what is being used, and what move does it make?'
+    multiline: true
+    rows: 2
+    min_chars: 25
+    label_requirement: {required: true}
+    display_logic:
+      show_when:
+        - {schema: secondary_mechanisms, operator: contains, value: 'Spurious Causal Correlation'}
+
+  - annotation_type: text
+    name: secondary_justification_satirical_trivialization
+    description: 'Secondary — Satirical Trivialization: what is being used, and what move does it make?'
+    multiline: true
+    rows: 2
+    min_chars: 25
+    label_requirement: {required: true}
+    display_logic:
+      show_when:
+        - {schema: secondary_mechanisms, operator: contains, value: 'Satirical Trivialization'}
+
+  - annotation_type: text
+    name: secondary_justification_esoteric_code_activation
+    description: 'Secondary — Esoteric Code Activation: what is being used, and what move does it make?'
+    multiline: true
+    rows: 2
+    min_chars: 25
+    label_requirement: {required: true}
+    display_logic:
+      show_when:
+        - {schema: secondary_mechanisms, operator: contains, value: 'Esoteric Code Activation'}
+
+  - annotation_type: text
+    name: secondary_justification_spurious_legitimacy_signaling
+    description: 'Secondary — Spurious Legitimacy Signaling: what is being used, and what move does it make?'
+    multiline: true
+    rows: 2
+    min_chars: 25
+    label_requirement: {required: true}
+    display_logic:
+      show_when:
+        - {schema: secondary_mechanisms, operator: contains, value: 'Spurious Legitimacy Signaling'}
+
+  # --- 3. Always shown -------------------------------------------------------
+
+  - annotation_type: pure_display
+    name: section_record
+    allow_html: true
+    description: '<h4 class="step-head">Step 3 &mdash; Anything else</h4>'
+    label_requirement: {required: false}
+
+  - annotation_type: text
+    name: notes
+    description: >-
+      Notes — anything worth recording that the questions above have no room for.
+      Optional.
+    multiline: true
+    rows: 2
+    label_requirement: {required: false}   # explicit; see the note near require_fully_annotated below
+
+  - annotation_type: multiselect
+    name: flag_for_discussion
+    description: Flag this argument for discussion.
+    labels:
+      - {name: 'Flag for discussion', key_value: 'f'}
+    humanize_labels: false
+    label_requirement: {required: false}   # explicit; see the note near require_fully_annotated below
+
+# ---------------------------------------------------------------------------
+# Assignment
+# ---------------------------------------------------------------------------
+# Every annotator is handed the WHOLE corpus, in one order -- memes in the order
+# of args_0911.json, each meme's arguments bottom up so its root claim C0 is
+# read after the arguments that hold it up -- and who does which stretch of it
+# is settled between people rather than by the software: "you start at 500".
+# That is one decision with several consequences, so they are all written down
+# here.
+#
+# * `max_annotations_per_user` is NOT set. Unset means the per-user quota is the
+#   item count, and under `fixed_order` Potato hands out the whole remaining
+#   quota in one go -- so each annotator's ordering is all 1621 arguments, in
+#   reading order, from their first page. That is what makes the navbar's "Go
+#   to" box reach any argument, and it is why the number printed on the
+#   argument and the navbar's "Instance #" are the same number for everybody
+#   (the line in args_0911.json is `source_index`; the manifest maps the two). Setting a positive cap here would hand out a contiguous block
+#   instead and break that correspondence; setting -1 hands out ONE item at a
+#   time and "Go to 500" then has nothing to go to.
+#
+# * `num_annotators_per_item.default` has to be at least the roster size for
+#   that to work. An item counts an annotator who merely holds it, so with the
+#   old default of 1 the first annotator to arrive saturated all 1621 and every
+#   later annotator was served nothing. 10 is a roster size nobody will reach;
+#   it is a ceiling, not a target. Nothing assigns two people the same argument
+#   -- you do, by giving them overlapping stretches, which is also now the way
+#   to collect agreement data.
+#
+# * No `instance_reclaim`. It existed to take back items held by somebody who
+#   walked away, which mattered only while a hold could starve another
+#   annotator. Holds no longer block anybody, so there is nothing to reclaim.
+num_annotators_per_item:
+  default: 10
+
+# The order is the order of data/instances.json: memes in args_0911.json order,
+# each meme bottom up. `random` here would shuffle it and there would be no
+# number to tell anybody.
+assignment_strategy: fixed_order
+
+# NOT SET: `require_fully_annotated: true`.
+#
+# It stamps `label_requirement: {required: true}` onto every scheme that does
+# not declare one, and it reaches schemes that cannot be answered. Measured:
+# with it on, the three `pure_display` section headings became required; the
+# CLIENT renders no input for them so Next stayed enabled, and the SERVER
+# refused every save with `Required annotation(s) not completed:
+# section_sensible_test, section_record` in a corner toast naming internal
+# scheme names. The annotator is stuck on item one with no visible question to
+# answer. It also silently made Notes and the discussion flag mandatory.
+#
+# So every scheme above declares `label_requirement` explicitly instead.
+# ADDING A SCHEME? Give it a `label_requirement`. Without one it is optional,
+# and nothing will warn you.
+#
+# DRAFTS. `required: true` above means "needed before this argument counts as
+# done", not "needed before you may move on". scripts/serve.py relaxes the
+# navigation check at boot so an annotator can leave an argument half-answered
+# and come back to it; what they typed is already saved. The badge in the
+# navbar reads `In Progress` for such an argument and the progress counter does
+# not count it. The two arrow buttons beside the counter are a scroll and not a
+# filter: they step to the argument before and the argument after, finished ones
+# included, and the badge says which kind you landed on. See the header of
+# scripts/serve.py.
+
+agreement_metrics: {enabled: true}
+
+# ---------------------------------------------------------------------------
+# Phases
+# ---------------------------------------------------------------------------
+# One phase: annotation. No consent (internal, IRB-exempt lab annotation, per
+# the brief), no training round (annotators are trained before they get the
+# link), and no instructions phase -- the guidelines are the banner on every
+# argument, not two pages before the first one.
+#
+# A phase named in `order` with no block of its own is dropped at boot with one
+# ERROR line, which reads like a broken config; if a practice round is ever
+# wanted back, the `training:` block and its data file have to return together.
+phases:
+  order: [annotation]
+  annotation: {type: annotation}
+
+# ---------------------------------------------------------------------------
+# Accounts
+# ---------------------------------------------------------------------------
+login: {type: password}
+# Named annotators only. `users` is the roster: only these names may register,
+# and each still sets their own password on the landing page. The landing page
+# calls the field "email", but it is just the username string -- whatever is
+# listed here is what the person types. Add an annotator, then redeploy.
+# Removing someone means deleting them here AND deleting their
+# annotation_output/<name>/ directory (RUNNING.md); one without the other
+# leaves orphaned annotations or a login with no data.
+user_config:
+  allow_all_users: false
+  users:
+    - deploy-check@example.invalid   # throwaway for DEPLOY.md step 5; remove once verified
+authentication:
+  user_config_path: annotation_output/user_config.json   # on the Railway volume; survives redeploys
+
+# ---------------------------------------------------------------------------
+# Export
+# ---------------------------------------------------------------------------
+# Potato's own csv/jsonl are a safety net, not the deliverable: they are one
+# sparse column per scheme-and-label and carry no item fields and no derived
+# pass/fail. scripts/export_annotations.py writes the downstream schema.
+export_annotation_format: [csv, jsonl]
+auto_export_interval: 3600
+
+# ---------------------------------------------------------------------------
+# Session and keys
+# ---------------------------------------------------------------------------
+# Without secret_key, a random one is generated per process and every annotator
+# is logged out on every redeploy. Both support ${VAR} substitution.
+secret_key: ${POTATO_SECRET_KEY}
+admin_api_key: ${POTATO_ADMIN_API_KEY}
+session_lifetime_days: 14
