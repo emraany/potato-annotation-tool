@@ -117,6 +117,16 @@ account and annotates into the corpus.
 user_config: {allow_all_users: false}
 ```
 
+> **REVERSED, 2026-09-20, deliberately.** Registration is open again:
+> `allow_all_users: true`, no roster. Administering a named roster -- edit
+> `config.yaml`, redeploy, per annotator, and again for every late addition --
+> cost more than it bought for a study handed to people by link. The risk this
+> step names is real and accepted: anyone with the URL can annotate into the
+> corpus. What stands in for the roster is watching the console's **Who is
+> where** table for a name nobody recognises, and the two-deletion removal in
+> step 4. The reversal is one line, in both directions; `config.yaml` carries
+> the reasoning and `RUNNING.md` the operating notes.
+
 **2. Move the accounts file onto the volume** (`:387`). It must survive
 redeploys, and the volume is mounted at `annotation_output/` (step 2).
 
@@ -287,6 +297,12 @@ are still there. Do it only if querying gets painful.
 ---
 
 ## Step 4 — accounts
+
+> **As built (2026-09-20), there is nothing to do here.** Registration is open
+> (see the note on step 1.1): annotators create their own accounts from the
+> landing page and are on argument 1 immediately. No roster, no redeploy to add
+> somebody. What you send out is the URL and where to start. The paragraph
+> below applies only if the study is closed again.
 
 With `allow_all_users: false`, create each annotator yourself. They still
 register from the landing page, but only names you have permitted go through.

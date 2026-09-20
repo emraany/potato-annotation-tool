@@ -382,19 +382,46 @@ phases:
 # Accounts
 # ---------------------------------------------------------------------------
 login: {type: password}
-# Named annotators only. `users` is the roster: only these names may register,
-# and each still sets their own password on the landing page. The landing page
-# calls the field "email", but it is just the username string -- whatever is
-# listed here is what the person types. Add an annotator, then redeploy.
-# Removing someone means deleting them here AND deleting their
+# OPEN REGISTRATION. Anyone who has the URL creates their own account from the
+# Register tab on the landing page -- a username they choose and a password
+# they choose -- and starts annotating immediately. No roster, no per-annotator
+# setup, no redeploy to add somebody.
+#
+# What that means, so it is not discovered later: the corpus is writable by
+# anyone who has the link. Nothing tells a colleague apart from a stranger
+# except the name they typed, and the console's "Who is where" table is how
+# you notice one you do not recognise. Removing an account is still two
+# deletions -- its line in annotation_output/user_config.json AND its
 # annotation_output/<name>/ directory (RUNNING.md); one without the other
 # leaves orphaned annotations or a login with no data.
+#
+# To close it again: set allow_all_users to false and list the permitted names
+# under `users:` (a roster of one is fine). A closed study with no roster and
+# an empty user_config.json locks everybody out, including you.
+#
+# Two protections stay on either way. A username that already owns a directory
+# in annotation_output/ but has no account is refused at registration rather
+# than handed that directory's work (routes.py:1263) -- so a lost user_config
+# cannot give a stranger somebody else's annotations. And a name already
+# registered is refused as a duplicate, so nobody can take a name in use.
 user_config:
-  allow_all_users: false
-  users:
-    - emraany1220@gmail.com
+  allow_all_users: true
 authentication:
   user_config_path: annotation_output/user_config.json   # on the Railway volume; survives redeploys
+
+# The landing page's own words. Potato's defaults label both fields for
+# somebody who was given an account; here the annotator is making one, and the
+# field named "email" in the HTML is a username, not an address.
+ui_language:
+  login_subtitle_password: Sign in, or register if this is your first visit
+  sign_in_tab: Sign in
+  register_tab: Register
+  username_label: Username
+  username_placeholder: The username you registered with
+  choose_username_placeholder: Choose a username (not an email address)
+  password_label: Password
+  create_password_placeholder: Choose a password
+  register_button: Register and start annotating
 
 # ---------------------------------------------------------------------------
 # Export

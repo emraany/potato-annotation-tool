@@ -178,14 +178,55 @@ people work. Read it, copy it, back it up; do not edit it in place.
 
 ## Accounts
 
-Annotators register themselves from the landing page. `user_config.json` holds
-the logins and is what makes them survive a restart; it is recreated empty on
-the next boot if it is missing. **Do not delete it once the study is live.**
+**Registration is open.** Anyone with the URL opens it, picks the **Register**
+tab, chooses a username and a password, and is on argument 1 straight away.
+There is nothing to do per annotator: no roster to edit, no redeploy, no
+invitation. What you send someone is the URL and where to start ("you take 1 to
+500") -- see *Telling somebody where to start* above.
 
-To remove an account, delete its entry from `user_config.json` *and* its
-`annotation_output/<user>/` directory. Doing only the first leaves the
+The username is a username, not an email address -- the HTML field is named
+`email`, which is Potato's, not ours, and the landing page says so. Whatever
+they type is the name in the export, in **Who is where** and in the agreement
+report, so tell people to use something you will recognise. Passwords are their
+own; they are stored as PBKDF2-HMAC-SHA256 with a per-user salt and nobody,
+including you, can read them back.
+
+Three things the registration form refuses, all deliberately:
+
+* a username somebody has already registered (*Duplicate user*);
+* a username that already owns an `annotation_output/<name>/` directory but has
+  no account -- that combination means the roster file and the output directory
+  have gone out of step, and registering would hand a stranger somebody else's
+  work, so it says to ask the administrator instead;
+* an empty username or password.
+
+`annotation_output/user_config.json` holds the logins -- one JSON object per
+line -- and is what makes them survive a restart. On Railway it is on the
+volume. **Do not delete it once the study is live**: every annotator would be
+locked out, and because of the second refusal above they could not simply
+register again.
+
+To remove an account, delete its line from `annotation_output/user_config.json`
+*and* its `annotation_output/<user>/` directory. Doing only the first leaves the
 annotations in the export; doing only the second leaves an account that can
 still log in.
+
+**The corpus is writable by anyone who has the link.** That is what open
+registration means, and it is the trade for not administering accounts. Nothing
+distinguishes a colleague from a stranger except the name they typed, so read
+the console's **Who is where** table now and again and look for a name you do
+not know; removing one is the two deletions above. To close the study to named
+people instead, in `config.yaml`:
+
+```yaml
+user_config:
+  allow_all_users: false
+  users:
+    - someone@example.com      # only these names may register
+```
+
+and redeploy. Do not set `allow_all_users: false` without a `users:` list and
+with an empty `user_config.json` -- that locks out everybody, you included.
 
 ## Rebuilding anything
 
