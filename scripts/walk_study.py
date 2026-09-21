@@ -296,7 +296,10 @@ def main() -> int:
 
     shots = Path(args.shots)
     shots.mkdir(parents=True, exist_ok=True)
-    user = "walk-" + "".join(random.choices(string.ascii_lowercase + string.digits, k=6)) + "@example.com"
+    # A NetID, not an email: the study is passwordless and the sign-in field
+    # takes either, but a throwaway that looks like a NetID is the one whose
+    # directory is obvious in annotation_output/ afterwards.
+    user = "walk" + "".join(random.choices(string.ascii_lowercase + string.digits, k=6))
 
     with sync_playwright() as p:
         browser = p.chromium.launch()
@@ -304,12 +307,12 @@ def main() -> int:
         w = Walk(page, shots)
 
         page.goto(args.url, wait_until="networkidle")
-        page.evaluate("switchTab('register')")
-        page.fill("#register-email", user)
-        page.fill("#register-pass", "walk-password-1")
-        page.click("#register-content button[type=submit], #register-content input[type=submit]")
+        # One field, no password: the NetID is the whole sign-in, and a NetID
+        # the study has not seen creates the account on the spot.
+        page.fill("#login-email", user)
+        page.click("#login-content button[type=submit], #login-content input[type=submit]")
         page.wait_for_load_state("networkidle")
-        log(f"registered {user}")
+        log(f"signed in as {user}")
 
         # --- the guidelines ----------------------------------------------------
         # They are the banner, not a link to a page: the whole of guidelines.md

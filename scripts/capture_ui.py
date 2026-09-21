@@ -72,11 +72,9 @@ def main() -> int:
                 pass
 
         page.goto(args.url, wait_until="networkidle")
-        shot("01-login-and-register")
-        page.evaluate("switchTab('register')")
-        page.fill("#register-email", user)
-        page.fill("#register-pass", "shot-password-1")
-        page.click("#register-content button[type=submit]")
+        shot("01-sign-in")
+        page.fill("#login-email", user)
+        page.click("#login-content button[type=submit]")
         page.wait_for_load_state("networkidle")
 
         shot("04-annotation-gate-shut")

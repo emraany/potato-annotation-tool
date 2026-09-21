@@ -198,101 +198,49 @@ people work. Read it, copy it, back it up; do not edit it in place.
 
 ## Accounts
 
-**Registration is open.** Anyone with the URL opens it, picks the **Register**
-tab, and fills in four fields -- username, email, password, confirm password --
-and is on argument 1 straight away. There is nothing to do per annotator: no
-roster to edit, no redeploy, no invitation. What you send someone is the URL and
-where to start ("you take 1 to 500") -- see *Telling somebody where to start*
-above.
+**There are no passwords.** An annotator opens the URL, types their NetID, and
+is on argument 1. The page says:
 
-What the form refuses, all server-side and all in `scripts/accounts.py`:
+> Please enter your NetID to continue
+> For UTD students, use your lowercase NetID. For non-UTD students, use your
+> email address.
 
-* a username that is not 3 to 40 characters of letters, digits, dots, dashes
-  and underscores. A username is also a directory name
-  (`annotation_output/<username>/`), so an unrestricted one in an open study
-  is a path for somebody to choose;
-* an address with no `@` and no dot after it;
-* a password under **6 characters**, or two passwords that do not match;
-* a username somebody already has, or an email already on another account --
-  one address, one account, because the address is how a reset finds its way
-  back;
-* a username that already owns an `annotation_output/<name>/` directory
-  without an account (see below).
+A NetID the study has not seen creates the account on the spot. The same NetID
+next time lands them on the argument they left. There is nothing to set up per
+person, nothing to approve, no registration, no reset. What you send someone is
+the URL and where to start.
 
-The username is what appears in the export, in **Who is where** and in the
-agreement report, so tell people to use something you will recognise. The email
-is not used for signing in; it exists so a forgotten password has somewhere to
-go. Passwords are their own; they are stored as PBKDF2-HMAC-SHA256 with a
-per-user salt and nobody, including you, can read them back.
+**The NetID is the whole credential.** Anyone with the link who knows somebody's
+NetID can continue as them. That is the accepted trade for a small internal
+study with a known roster -- the alternative was passwords, a reset flow and a
+mailbox to run it, plus people locked out of a week's annotation by a forgotten
+string. To put passwords back, set `require_password: true` in `config.yaml`:
+the sign-in page grows a password field, a Register tab and a reset link on its
+own.
 
-## Forgotten passwords
+Two things the sign-in still checks, in `scripts/accounts.py`:
 
-**Forgot Password** on the landing page takes a username or an email, and mails
-a reset link to the address on that account. The page says the same sentence
-whoever asks and **never shows a link** -- see `scripts/accounts.py` for why
-that matters: Potato's own version of this page printed a working reset link
-for any username typed into it, which is an account takeover with no credential
-at all. The link is single use and expires in 24 hours, and asking again
-cancels the previous one. Reset links live in memory, so a redeploy cancels any
-outstanding -- somebody mid-reset just asks again.
+* **The NetID has to look like one** -- 3 to 64 characters of letters, digits
+  and `. _ + - @`, nothing else. It becomes a directory name
+  (`annotation_output/<netid>/`), so without a rule about its shape
+  `../../something` is a directory anybody could pick. Potato has no such rule.
+* **It is lower-cased.** `ABC123456` and `abc123456` would otherwise be two
+  annotators, two directories, and one person's work split between them -- with
+  no password there is nothing else that would notice.
 
-It needs an outbound mail account, set as environment variables on the Railway
-service. Anything that speaks SMTP works:
+`/register` and `/forgot-password` are closed and redirect to the front door.
+Neither is linked from the page, but both are still routed by Potato, and its
+forgot-password page mints a real reset token for any username typed into it
+and prints the link on screen.
 
-```
-SMTP_HOST      smtp.gmail.com
-SMTP_PORT      587
-SMTP_USER      the mailbox to send as
-SMTP_PASSWORD  its password, or a Gmail app password
-SMTP_FROM      the From: address (defaults to SMTP_USER)
-```
+**If somebody forgets which NetID they used**, look in `annotation_output/` --
+one directory per person, named after the NetID they typed. The console's **Who
+is where** table is the readable version of the same thing.
 
-**Without those set, no reset email is sent and no link is shown** -- it fails
-closed rather than falling back to printing one. The boot log says which state
-it is in, on the line beginning `reset`, and every request is logged with the
-reason. To let somebody in while mail is not set up, mint a link yourself:
-
-```bash
-curl -X POST -H "X-API-Key: $(cat admin_api_key.txt)" -H "Content-Type: application/json" \
-  -d '{"username":"alice"}' http://localhost:8765/admin/create_reset_token
-```
-
-Three things the registration form refuses, all deliberately:
-
-* a username somebody has already registered (*Duplicate user*);
-* a username that already owns an `annotation_output/<name>/` directory but has
-  no account -- that combination means the roster file and the output directory
-  have gone out of step, and registering would hand a stranger somebody else's
-  work, so it says to ask the administrator instead;
-* an empty username or password.
-
-`annotation_output/user_config.json` holds the logins -- one JSON object per
-line -- and is what makes them survive a restart. On Railway it is on the
-volume. **Do not delete it once the study is live**: every annotator would be
-locked out, and because of the second refusal above they could not simply
-register again.
-
-To remove an account, delete its line from `annotation_output/user_config.json`
-*and* its `annotation_output/<user>/` directory. Doing only the first leaves the
-annotations in the export; doing only the second leaves an account that can
-still log in.
-
-**The corpus is writable by anyone who has the link.** That is what open
-registration means, and it is the trade for not administering accounts. Nothing
-distinguishes a colleague from a stranger except the name they typed, so read
-the console's **Who is where** table now and again and look for a name you do
-not know; removing one is the two deletions above. To close the study to named
-people instead, in `config.yaml`:
-
-```yaml
-user_config:
-  allow_all_users: false
-  users:
-    - someone@example.com      # only these names may register
-```
-
-and redeploy. Do not set `allow_all_users: false` without a `users:` list and
-with an empty `user_config.json` -- that locks out everybody, you included.
+To remove somebody, delete their `annotation_output/<netid>/` directory. There
+is no password file to keep in step any more; `user_config.json` stays on the
+volume but holds nothing that matters, since a NetID needs no stored secret to
+sign in again.
 
 ## Rebuilding anything
 
@@ -365,9 +313,9 @@ python scripts/walk_study.py --url http://localhost:8765     # end-to-end, all b
 python scripts/capture_ui.py --url http://localhost:8765     # full-page screenshots into ui/
 ```
 
-Both register a throwaway annotator. Delete it afterwards — the entry in
-`user_config.json` **and** its `annotation_output/<user>/` directory — or its
-answers count toward agreement.
+Both sign in as a throwaway NetID beginning `walk`. Delete its
+`annotation_output/<netid>/` directory afterwards, or its answers count toward
+agreement.
 
 ## Two things not to change
 

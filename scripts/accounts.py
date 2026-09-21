@@ -1,227 +1,100 @@
 #!/usr/bin/env python3
 """
-Account security for the study: registration that validates, and a password
-reset that goes to the annotator's inbox instead of the screen.
+Sign-in for the study: a NetID and nothing else.
 
-WHAT WAS WRONG.  Potato 2.9.3's `/forgot-password` mints a real reset token for
-any username typed into it and then **renders the link on the page**
-(`routes.py:9485`). The comment beside it says the response is uniform "to
-prevent user enumeration", which it is -- while handing the reader a working
-password reset for somebody else's account. Type a colleague's username, follow
-the link, set their password, sign in as them. That is account takeover with no
-credential at all, and it is the default behaviour of the deployed study.
+There are no passwords, no registration and no password reset. An annotator
+types their NetID, Potato creates the account on the spot if it has not seen it
+before, and they are on argument 1. Coming back, they type the same NetID and
+land on the argument they left. Somebody who forgets which one they used is
+looked up in `annotation_output/`.
 
-Registration had its own gaps: one field and a password of any length, no
-second entry to catch a typo, no email anywhere -- so a forgotten password had
-nowhere to be sent even if the flow had wanted to send it -- and a username
-used verbatim as a directory name (`user_state_management.py:1045`), which an
-open study makes anybody's to choose.
+WHAT THAT MEANS, once, so it is not discovered later: **the NetID is the whole
+credential.** Anyone who has the study link and knows somebody's NetID can
+continue as them. That is a deliberate trade for a small internal study where
+the roster is known and the alternative -- passwords, a reset flow and a
+mailbox to run it -- costs more than it protects. It is `require_password:
+false` in config.yaml, and it is one line to reverse.
 
-WHAT THIS DOES.  Replaces the two view functions and patches the register form
-in Potato's template, rather than forking either. Registration takes a
-username, an email, a password and a confirmation, and checks all four. Reset
-takes a username or an email, and mails the link to the address on the account
--- the page says the same neutral sentence either way and never shows a link.
-No SMTP configured means no reset email is sent and none is displayed: it fails
-closed, and says to contact the administrator.
+WHAT THIS FILE STILL DOES, because passwordless does not mean unchecked:
 
-The token machinery underneath is Potato's and is sound: 32 bytes from
-`secrets`, 24-hour expiry, single use, and a new token invalidates the old one
-(`authentication.py:757`). Tokens live in memory, so a redeploy cancels the
-ones outstanding -- a person mid-reset asks again.
+1. **A NetID is validated before it becomes an account.** It is used verbatim
+   as a directory name (`user_state_management.py:1045`), so without a rule
+   about its shape, `../../something` is a directory anybody can pick. Potato
+   applies no such rule.
 
-SMTP is configured with five environment variables. Nothing here is
-provider-specific; anything that speaks SMTP works.
+2. **A NetID is lower-cased.** "ABC123456" and "abc123456" would otherwise be
+   two annotators, two directories and two halves of one person's work -- and
+   in a study with no password there is nothing else to notice the difference.
+   It is also what the sign-in page asks for.
 
-    SMTP_HOST       smtp.gmail.com
-    SMTP_PORT       587
-    SMTP_USER       the mailbox to authenticate as
-    SMTP_PASSWORD   its password, or an app password
-    SMTP_FROM       the From: address (defaults to SMTP_USER)
+3. **`/register` and `/forgot-password` are turned off.** Neither is linked
+   from the passwordless page, but both are still routed, and Potato's
+   `/forgot-password` mints a real reset token for any username typed into it
+   and prints the link on the page (`routes.py:9485`). With no passwords in the
+   study that endpoint has nothing to do and everything to give away, so it
+   redirects to the front door instead.
 """
 
 from __future__ import annotations
 
 import logging
-import os
 import re
-import smtplib
-import ssl
-from email.message import EmailMessage
 
 logger = logging.getLogger(__name__)
 
-MIN_PASSWORD_CHARS = 6
+# Long enough for an email address, since that is what a non-UTD annotator
+# uses. `@` and `+` are allowed for the same reason. What is NOT allowed is the
+# point: no slash, no backslash, no "..", nothing that leaves the output
+# directory, and no leading dot to hide one.
+NETID_RE = re.compile(r"^[a-z0-9](?:[a-z0-9._+@-]{1,62})[a-z0-9]$")
 
-# A username is also a directory name -- annotation_output/<username>/ -- and
-# in an open study anybody chooses their own. Restricting the alphabet is what
-# stops "../.." being a username, and keeps a name that cannot be typed back
-# out of the export.
-USERNAME_RE = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9._-]{1,38})[A-Za-z0-9]$")
-
-# Deliberately loose. The point is to catch a typo and a missing @, not to
-# adjudicate what is a legal address -- the only test that really matters is
-# whether the reset mail arrives.
-EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s.]+(?:\.[^@\s.]+)+$")
-
-RESET_SUBJECT = "Reset your annotation study password"
-
-RESET_BODY = """\
-Somebody asked to reset the password for the annotation study account "{username}".
-
-Open this link to choose a new one. It works once and expires in 24 hours:
-
-{link}
-
-If that was not you, ignore this message -- nothing has changed and the link
-cannot be used without opening it.
-"""
+NETID_ERROR = ("That does not look like a NetID or an email address. Use 3 to 64 "
+               "characters: letters, digits, and . _ + - @")
 
 
-# --- email --------------------------------------------------------------------
-
-def smtp_settings() -> dict | None:
-    """The SMTP configuration, or None when it is not set up."""
-    host = os.environ.get("SMTP_HOST", "").strip()
-    user = os.environ.get("SMTP_USER", "").strip()
-    password = os.environ.get("SMTP_PASSWORD", "")
-    if not (host and user and password):
-        return None
-    return {
-        "host": host,
-        "port": int(os.environ.get("SMTP_PORT", "587")),
-        "user": user,
-        "password": password,
-        "sender": os.environ.get("SMTP_FROM", "").strip() or user,
-    }
+def clean_netid(raw: str) -> str:
+    """What the annotator typed, as it will be stored. '' if unusable."""
+    netid = (raw or "").strip().lower()
+    if ".." in netid or "/" in netid or "\\" in netid:
+        return ""
+    return netid if NETID_RE.match(netid) else ""
 
 
-def send_reset_email(to_address: str, username: str, link: str) -> bool:
-    """Mail one reset link. False on any failure, and the reason is logged.
+# --- the sign-in page ---------------------------------------------------------
+#
+# The hint under the NetID field. Potato has no ui_language key for a second
+# line of instructions, and this one carries the only thing an annotator has to
+# be told, so it is patched into the template rather than left unsaid.
 
-    The caller must not tell the browser which it was: whether an address is on
-    file is exactly what a stranger typing somebody else's username is trying
-    to learn.
-    """
-    settings = smtp_settings()
-    if settings is None:
-        logger.warning(
-            "Password reset requested for '%s' but SMTP is not configured "
-            "(SMTP_HOST / SMTP_USER / SMTP_PASSWORD); no mail sent and no link "
-            "shown. Mint one deliberately from /admin/create_reset_token.",
-            username)
-        return False
+HINT_ANCHOR = """                    <div class="potato-form-group">
+                        <label for="login-email" class="potato-form-label">{{ ui_lang.username_label|default('Username') }}</label>"""
 
-    message = EmailMessage()
-    message["Subject"] = RESET_SUBJECT
-    message["From"] = settings["sender"]
-    message["To"] = to_address
-    message.set_content(RESET_BODY.format(username=username, link=link))
-
-    try:
-        context = ssl.create_default_context()
-        if settings["port"] == 465:
-            with smtplib.SMTP_SSL(settings["host"], settings["port"],
-                                  context=context, timeout=20) as server:
-                server.login(settings["user"], settings["password"])
-                server.send_message(message)
-        else:
-            with smtplib.SMTP(settings["host"], settings["port"], timeout=20) as server:
-                server.starttls(context=context)
-                server.login(settings["user"], settings["password"])
-                server.send_message(message)
-    except Exception as exc:          # noqa: BLE001 - a reset must never 500
-        logger.error("Could not send the reset email for '%s': %s: %s",
-                     username, type(exc).__name__, exc)
-        return False
-
-    logger.info("Sent a password reset link for '%s'", username)
-    return True
-
-
-# --- the template -------------------------------------------------------------
-
-REGISTER_BLOCK_ANCHOR = '<div class="tab-content" id="register-content">'
-
-REGISTER_BLOCK = """<div class="tab-content" id="register-content">
-                <form method="POST" action="{{ url_prefix }}/register">
-                    <input type="hidden" name="action" value="signup">
+HINT_BLOCK = """                    <p style="color:#6c757d; font-size:0.85rem; line-height:1.45; margin:0 0 1rem;">
+                        For UTD students, use your lowercase NetID.
+                        For non-UTD students, use your email address.
+                    </p>
                     <div class="potato-form-group">
-                        <label for="register-email" class="potato-form-label">Username</label>
-                        <input id="register-email" name="username" type="text" class="potato-form-input"
-                               placeholder="Choose a username (not an email address)"
-                               autocomplete="username" required>
-                    </div>
-                    <div class="potato-form-group">
-                        <label for="register-address" class="potato-form-label">Email</label>
-                        <input id="register-address" name="email" type="email" class="potato-form-input"
-                               placeholder="Where a password reset would be sent"
-                               autocomplete="email" required>
-                    </div>
-                    <div class="potato-form-group">
-                        <label for="register-pass" class="potato-form-label">Password</label>
-                        <input id="register-pass" name="pass" type="password" class="potato-form-input"
-                               placeholder="At least 6 characters" minlength="6"
-                               autocomplete="new-password" required>
-                    </div>
-                    <div class="potato-form-group">
-                        <label for="register-pass2" class="potato-form-label">Confirm password</label>
-                        <input id="register-pass2" name="pass_confirm" type="password" class="potato-form-input"
-                               placeholder="Type it again" minlength="6"
-                               autocomplete="new-password" required>
-                    </div>
-                    <button type="submit" class="potato-form-submit">Register and start annotating</button>
-                </form>
-            </div>"""
-
-# forgot_password.html says "a reset link has been generated", which was true
-# of a page that printed one. It is now sent, or not, and either way the reader
-# is told the same thing.
-FORGOT_OLD = "If the username exists, a reset link has been generated."
-FORGOT_NEW = ("If that account exists and has an email address on file, a reset "
-              "link is on its way. It expires in 24 hours.")
-
-FORGOT_LABEL_OLD = ('<label for="username" class="potato-form-label">Username</label>')
-FORGOT_LABEL_NEW = ('<label for="username" class="potato-form-label">Username or email</label>')
-
-FORGOT_PLACEHOLDER_OLD = 'placeholder="Enter your username"'
-FORGOT_PLACEHOLDER_NEW = 'placeholder="Your username, or the email you registered with"'
+                        <label for="login-email" class="potato-form-label">{{ ui_lang.username_label|default('Username') }}</label>"""
 
 
 def patch_template(name: str, source: str) -> str:
-    """Rewrite one of Potato's templates as it is loaded.
+    """Rewrite Potato's own template as Jinja loads it.
 
-    A replacement of the block rather than a copy of the file: everything else
-    in home.html -- the OAuth branch, the ui_language strings, the layout --
-    stays Potato's and keeps following it. A missing anchor is reported and
-    left alone, which degrades to Potato's own form rather than a blank page.
+    A single insertion rather than a copy of the file: everything else in
+    home.html stays Potato's and keeps following it. A missing anchor is
+    reported and left alone, so the page still renders -- one line short.
     """
-    if name == "home.html":
-        if REGISTER_BLOCK_ANCHOR not in source:
-            logger.error("home.html has no register block to patch; the form is "
-                         "Potato's own and will not ask for an email")
-            return source
-        start = source.index(REGISTER_BLOCK_ANCHOR)
-        end = source.index("</div>", source.index("</form>", start)) + len("</div>")
-        return source[:start] + REGISTER_BLOCK + source[end:]
-
-    if name == "forgot_password.html":
-        for old, new in ((FORGOT_OLD, FORGOT_NEW),
-                         (FORGOT_LABEL_OLD, FORGOT_LABEL_NEW),
-                         (FORGOT_PLACEHOLDER_OLD, FORGOT_PLACEHOLDER_NEW)):
-            if old in source:
-                source = source.replace(old, new, 1)
+    if name != "home.html":
         return source
-
-    return source
+    if HINT_ANCHOR not in source:
+        logger.error("home.html has no sign-in field to patch; the NetID hint line "
+                     "will not appear")
+        return source
+    return source.replace(HINT_ANCHOR, HINT_BLOCK, 1)
 
 
 def install_template_patch(app) -> None:
-    """Rewrite templates as Jinja loads them, keeping Potato's loader beneath.
-
-    Only `get_source` is overridden, so caching, auto-reload and every other
-    loader behaviour stays Jinja's own.
-    """
+    """Only `get_source` is overridden, so caching and auto-reload stay Jinja's."""
     from jinja2 import BaseLoader
 
     inner = app.jinja_loader
@@ -240,141 +113,60 @@ def install_template_patch(app) -> None:
 # --- the views ----------------------------------------------------------------
 
 def install(app, flask_server) -> None:
-    """Replace /register and /forgot-password on a built app."""
-    from flask import redirect, render_template, request, session, url_for
-    from potato.authentication import UserAuthenticator
-
+    """Validate the NetID on /auth, and turn off the two password endpoints."""
     import sys
+
+    from flask import redirect, render_template, request, url_for
+
     routes = next((sys.modules[name] for name in ("routes", "potato.routes")
                    if name in sys.modules), None)
     if routes is None:                                  # pragma: no cover
-        logger.error("routes module not loaded; account hardening NOT installed")
+        logger.error("routes module not loaded; NetID checking NOT installed")
         return
 
     config = flask_server.config
+    original_auth = app.view_functions["auth"]
 
-    def title() -> str:
-        return config.get("annotation_task_name", "Annotation Platform")
+    def auth():
+        """Potato's sign-in, with the NetID checked and normalised first.
 
-    def refuse(message: str):
-        return render_template("home.html", title=title(), login_error=message)
+        Wrapped rather than rewritten: everything after the check -- the
+        auto-registration, the session, the phase advance, the redirect -- is
+        Potato's and stays Potato's. The typed value is replaced on the form so
+        the rest of the request sees the cleaned one.
+        """
+        if request.method != "POST":
+            return original_auth()
 
-    def register():
-        """Username, email, password, confirmation -- all four checked."""
-        if "username" in session:
-            return routes.home()
+        typed = request.form.get("email") or ""
+        netid = clean_netid(typed)
+        if not netid:
+            logger.warning("Refused sign-in for %r: not a usable NetID", typed[:80])
+            return render_template(
+                "home.html",
+                login_error=NETID_ERROR,
+                title=config.get("annotation_task_name", "Annotation Platform"),
+                require_password=config.get("require_password", True))
 
-        username = (request.form.get("username") or "").strip()
-        email = (request.form.get("email") or "").strip()
-        password = request.form.get("pass") or ""
-        confirm = request.form.get("pass_confirm") or ""
+        if netid != typed.strip():
+            logger.info("NetID %r normalised to %r", typed.strip()[:80], netid)
 
-        if not (username and email and password and confirm):
-            return refuse("Username, email, password and confirmation are all required.")
-        if not USERNAME_RE.match(username):
-            return refuse("A username is 3 to 40 characters, letters, digits, dots, "
-                          "dashes and underscores, starting and ending with a letter "
-                          "or a digit.")
-        if not EMAIL_RE.match(email):
-            return refuse("That does not look like an email address.")
-        if len(password) < MIN_PASSWORD_CHARS:
-            return refuse(f"The password needs at least {MIN_PASSWORD_CHARS} characters.")
-        if password != confirm:
-            return refuse("The two passwords are not the same.")
+        # request.form is immutable; a mutable copy is the supported way to
+        # hand the rest of the request a corrected value.
+        form = request.form.copy()
+        form["email"] = netid
+        request.form = form
+        return original_auth()
 
-        authenticator = UserAuthenticator.get_instance()
-
-        # Potato's guard, kept: a username that already owns a directory but no
-        # account means the roster and the output have gone out of step, and
-        # registering would hand a stranger somebody else's annotations.
-        if routes._username_owns_annotations(username):
-            logger.error("Refused registration for '%s': the directory exists but the "
-                         "account does not; restore the roster file", username)
-            return refuse("That username is already in use on this task. "
-                          "Ask the study administrator to restore your account.")
-
-        # One address, one account: the address is how a reset finds its way
-        # back, and two accounts sharing one inbox makes that ambiguous.
-        existing = getattr(authenticator, "users", {}) or {}
-        for other, data in existing.items():
-            if isinstance(data, dict) and \
-                    (data.get("email") or "").strip().casefold() == email.casefold():
-                logger.info("Refused registration for '%s': email already on '%s'",
-                            username, other)
-                return refuse("That email address is already registered. "
-                              "Sign in, or use the reset link if you have "
-                              "forgotten the password.")
-
-        result = authenticator.add_user(username, password, email=email)
-        if result != "Success":
-            logger.warning("Registration failed for '%s': %s", username, result)
-            return refuse("That username is taken." if result == "Duplicate user" else result)
-
-        authenticator.save_user_config()
-
-        session["username"] = username
-        session.permanent = True
-
-        state_manager = routes.get_user_state_manager()
-        if not state_manager.has_user(username):
-            routes.init_user_state(username)
-        user_state = state_manager.get_user_state(username)
-        if user_state and user_state.get_phase() == routes.UserPhase.LOGIN:
-            state_manager.advance_phase(username)
-        if user_state and not user_state.has_assignments():
-            routes.get_item_state_manager().assign_instances_to_user(user_state)
-
-        logger.info("Registered '%s'", username)
+    def closed():
+        """/register and /forgot-password, which this study does not have."""
+        logger.info("Blocked %s: this study has no passwords", request.path)
         return redirect(url_for("home"))
 
-    def forgot_password():
-        """Mail the link. Never show it, never say whether the account exists."""
-        if request.method == "GET":
-            return render_template("forgot_password.html", title=title())
+    app.view_functions["auth"] = auth
+    for endpoint in ("register", "forgot_password"):
+        if endpoint in app.view_functions:
+            app.view_functions[endpoint] = closed
 
-        typed = (request.form.get("username") or "").strip()
-        if not typed:
-            return render_template("forgot_password.html", title=title(),
-                                   error="Enter your username or your email address.")
-
-        authenticator = UserAuthenticator.get_instance()
-        users = getattr(authenticator, "users", {}) or {}
-
-        username = None
-        if typed in users:
-            username = typed
-        else:
-            for name, data in users.items():
-                if isinstance(data, dict) and \
-                        (data.get("email") or "").strip().casefold() == typed.casefold():
-                    username = name
-                    break
-
-        # Everything below renders the same page. Whether the account exists,
-        # whether it has an address, and whether the mail server accepted it are
-        # all invisible to the browser and all in the log.
-        if username is None:
-            logger.info("Password reset asked for '%s', which is not an account", typed)
-        else:
-            address = (users.get(username, {}) or {}).get("email", "").strip()
-            if not address:
-                logger.warning("Password reset asked for '%s', which has no email on "
-                               "file (registered before the email field existed); "
-                               "mint one from /admin/create_reset_token", username)
-            else:
-                token = authenticator.create_reset_token(username)
-                if token:
-                    link = f"{request.host_url.rstrip('/')}/reset/{token}"
-                    send_reset_email(address, username, link)
-
-        return render_template("forgot_password.html", title=title(), success=True)
-
-    app.view_functions["register"] = register
-    app.view_functions["forgot_password"] = forgot_password
-
-    configured = smtp_settings() is not None
-    print("accounts     register asks for username, email, password and confirmation; "
-          f"password floor {MIN_PASSWORD_CHARS} characters")
-    print("reset        " + ("emailed via " + os.environ["SMTP_HOST"] if configured else
-                             "SMTP NOT CONFIGURED - no reset email is sent and no link "
-                             "is shown (fails closed)"))
+    print("sign-in      NetID only, no password; /register and /forgot-password "
+          "are closed")

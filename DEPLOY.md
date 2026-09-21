@@ -117,15 +117,13 @@ account and annotates into the corpus.
 user_config: {allow_all_users: false}
 ```
 
-> **REVERSED, 2026-09-20, deliberately.** Registration is open again:
-> `allow_all_users: true`, no roster. Administering a named roster -- edit
-> `config.yaml`, redeploy, per annotator, and again for every late addition --
-> cost more than it bought for a study handed to people by link. The risk this
-> step names is real and accepted: anyone with the URL can annotate into the
-> corpus. What stands in for the roster is watching the console's **Who is
-> where** table for a name nobody recognises, and the two-deletion removal in
-> step 4. The reversal is one line, in both directions; `config.yaml` carries
-> the reasoning and `RUNNING.md` the operating notes.
+> **SUPERSEDED, 2026-09-20.** There are no passwords and no registration.
+> An annotator types their NetID and is in (`require_password: false`,
+> `allow_all_users: true`). The risk this step names is real and accepted, and
+> is now larger: anyone with the URL who knows a NetID can annotate as that
+> person. It is the trade for a small internal study with a known roster, and
+> it is one line to reverse. `config.yaml` carries the reasoning and
+> `RUNNING.md` the operating notes.
 
 **2. Move the accounts file onto the volume** (`:387`). It must survive
 redeploys, and the volume is mounted at `annotation_output/` (step 2).
@@ -208,17 +206,9 @@ Download tab, or the Postgres mirror from step 3.
 POTATO_SECRET_KEY      = <openssl rand -hex 32>
 POTATO_ADMIN_API_KEY   = <openssl rand -hex 32>
 DATABASE_URL           = <from the Railway Postgres service, step 3>
-
-SMTP_HOST              = smtp.gmail.com          # password resets; RUNNING.md
-SMTP_PORT              = 587
-SMTP_USER              = <the mailbox to send as>
-SMTP_PASSWORD          = <its password or app password>
-SMTP_FROM              = <From: address, defaults to SMTP_USER>
 ```
 
-The five SMTP variables are what make **Forgot Password** work. Without them
-the reset page sends nothing and shows nothing -- it fails closed, and an
-admin mints a link from `/admin/create_reset_token` instead.
+No mail server: the study is passwordless, so there is no reset to send.
 
 **TLS** is Railway's, automatically, on the generated domain. Do not serve this
 over plain HTTP — annotators post passwords.
@@ -308,11 +298,12 @@ are still there. Do it only if querying gets painful.
 
 ## Step 4 — accounts
 
-> **As built (2026-09-20), there is nothing to do here.** Registration is open
-> (see the note on step 1.1): annotators create their own accounts from the
-> landing page and are on argument 1 immediately. No roster, no redeploy to add
-> somebody. What you send out is the URL and where to start. The paragraph
-> below applies only if the study is closed again.
+> **As built (2026-09-20), there is nothing to do here.** There are no
+> accounts to create: an annotator types their NetID and is on argument 1 (see
+> the note on step 1.1). No roster, no passwords, no redeploy to add somebody.
+> What you send out is the URL and where to start. Removing somebody is one
+> deletion now -- their `annotation_output/<netid>/` directory. The paragraph
+> below applies only if passwords are put back.
 
 With `allow_all_users: false`, create each annotator yourself. They still
 register from the landing page, but only names you have permitted go through.

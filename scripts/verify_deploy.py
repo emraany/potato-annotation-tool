@@ -63,20 +63,14 @@ def annotations_in(state: dict) -> dict:
     return {}
 
 
-def sign_in(page, url: str, user: str, password: str, register: bool) -> None:
+def sign_in(page, url: str, user: str) -> None:
+    """One field. The same call whether the NetID is new or returning -- which
+    is the point of the check: --check signs in again after a redeploy, and a
+    NetID that comes back to its own work proves the volume kept it."""
     page.goto(url, wait_until="networkidle")
-    if register:
-        page.evaluate("switchTab('register')")
-        page.fill("#register-email", user)
-        page.fill("#register-pass", password)
-        page.click("#register-content button[type=submit], "
-                   "#register-content input[type=submit]")
-    else:
-        page.evaluate("switchTab('login')")
-        page.fill("#login-email", user)
-        page.fill("#login-pass", password)
-        page.click("#login-content button[type=submit], "
-                   "#login-content input[type=submit]")
+    page.fill("#login-email", user)
+    page.click("#login-content button[type=submit], "
+               "#login-content input[type=submit]")
     page.wait_for_load_state("networkidle")
 
 
@@ -93,8 +87,7 @@ def main() -> int:
 
     ap = argparse.ArgumentParser()
     ap.add_argument("--url", required=True)
-    ap.add_argument("--user", default="deploy-check@example.invalid")
-    ap.add_argument("--password", default="deploy-check-password-1")
+    ap.add_argument("--user", default="deploycheck")
     ap.add_argument("--admin-key", required=True)
     ap.add_argument("--cookies", default="/tmp/potato-verify-cookies.json")
     mode = ap.add_mutually_exclusive_group(required=True)
@@ -117,10 +110,7 @@ def main() -> int:
         w = Walk(page, Path("/tmp"))
 
         if args.annotate:
-            sign_in(page, args.url, args.user, args.password, register=True)
-            if "annotate" not in page.url and not page.query_selector("#next-btn"):
-                # Already registered from an earlier run; log in instead.
-                sign_in(page, args.url, args.user, args.password, register=False)
+            sign_in(page, args.url, args.user)
             if not page.query_selector("#next-btn"):
                 problems.append(f"could not reach the annotation page; at {page.url}")
             else:
