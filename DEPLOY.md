@@ -208,7 +208,17 @@ Download tab, or the Postgres mirror from step 3.
 POTATO_SECRET_KEY      = <openssl rand -hex 32>
 POTATO_ADMIN_API_KEY   = <openssl rand -hex 32>
 DATABASE_URL           = <from the Railway Postgres service, step 3>
+
+SMTP_HOST              = smtp.gmail.com          # password resets; RUNNING.md
+SMTP_PORT              = 587
+SMTP_USER              = <the mailbox to send as>
+SMTP_PASSWORD          = <its password or app password>
+SMTP_FROM              = <From: address, defaults to SMTP_USER>
 ```
+
+The five SMTP variables are what make **Forgot Password** work. Without them
+the reset page sends nothing and shows nothing -- it fails closed, and an
+admin mints a link from `/admin/create_reset_token` instead.
 
 **TLS** is Railway's, automatically, on the generated domain. Do not serve this
 over plain HTTP — annotators post passwords.

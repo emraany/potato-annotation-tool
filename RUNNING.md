@@ -199,17 +199,63 @@ people work. Read it, copy it, back it up; do not edit it in place.
 ## Accounts
 
 **Registration is open.** Anyone with the URL opens it, picks the **Register**
-tab, chooses a username and a password, and is on argument 1 straight away.
-There is nothing to do per annotator: no roster to edit, no redeploy, no
-invitation. What you send someone is the URL and where to start ("you take 1 to
-500") -- see *Telling somebody where to start* above.
+tab, and fills in four fields -- username, email, password, confirm password --
+and is on argument 1 straight away. There is nothing to do per annotator: no
+roster to edit, no redeploy, no invitation. What you send someone is the URL and
+where to start ("you take 1 to 500") -- see *Telling somebody where to start*
+above.
 
-The username is a username, not an email address -- the HTML field is named
-`email`, which is Potato's, not ours, and the landing page says so. Whatever
-they type is the name in the export, in **Who is where** and in the agreement
-report, so tell people to use something you will recognise. Passwords are their
-own; they are stored as PBKDF2-HMAC-SHA256 with a per-user salt and nobody,
-including you, can read them back.
+What the form refuses, all server-side and all in `scripts/accounts.py`:
+
+* a username that is not 3 to 40 characters of letters, digits, dots, dashes
+  and underscores. A username is also a directory name
+  (`annotation_output/<username>/`), so an unrestricted one in an open study
+  is a path for somebody to choose;
+* an address with no `@` and no dot after it;
+* a password under **6 characters**, or two passwords that do not match;
+* a username somebody already has, or an email already on another account --
+  one address, one account, because the address is how a reset finds its way
+  back;
+* a username that already owns an `annotation_output/<name>/` directory
+  without an account (see below).
+
+The username is what appears in the export, in **Who is where** and in the
+agreement report, so tell people to use something you will recognise. The email
+is not used for signing in; it exists so a forgotten password has somewhere to
+go. Passwords are their own; they are stored as PBKDF2-HMAC-SHA256 with a
+per-user salt and nobody, including you, can read them back.
+
+## Forgotten passwords
+
+**Forgot Password** on the landing page takes a username or an email, and mails
+a reset link to the address on that account. The page says the same sentence
+whoever asks and **never shows a link** -- see `scripts/accounts.py` for why
+that matters: Potato's own version of this page printed a working reset link
+for any username typed into it, which is an account takeover with no credential
+at all. The link is single use and expires in 24 hours, and asking again
+cancels the previous one. Reset links live in memory, so a redeploy cancels any
+outstanding -- somebody mid-reset just asks again.
+
+It needs an outbound mail account, set as environment variables on the Railway
+service. Anything that speaks SMTP works:
+
+```
+SMTP_HOST      smtp.gmail.com
+SMTP_PORT      587
+SMTP_USER      the mailbox to send as
+SMTP_PASSWORD  its password, or a Gmail app password
+SMTP_FROM      the From: address (defaults to SMTP_USER)
+```
+
+**Without those set, no reset email is sent and no link is shown** -- it fails
+closed rather than falling back to printing one. The boot log says which state
+it is in, on the line beginning `reset`, and every request is logged with the
+reason. To let somebody in while mail is not set up, mint a link yourself:
+
+```bash
+curl -X POST -H "X-API-Key: $(cat admin_api_key.txt)" -H "Content-Type: application/json" \
+  -d '{"username":"alice"}' http://localhost:8765/admin/create_reset_token
+```
 
 Three things the registration form refuses, all deliberately:
 

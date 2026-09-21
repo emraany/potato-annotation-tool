@@ -257,6 +257,29 @@ def patch_for_drafts(flask_server) -> None:
     user_states.InMemoryUserState.find_prev_unannotated_index = find_prev
 
 
+def patch_for_accounts(flask_server) -> None:
+    """Registration that validates, and a reset that is emailed, not displayed.
+
+    Wrapped around create_app rather than written into Potato: the two view
+    functions are swapped on the built app and the register form is rewritten
+    as Jinja loads the template. scripts/accounts.py says why both had to
+    change -- the short version is that Potato's /forgot-password prints a
+    working reset link for any username typed into it.
+    """
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import accounts
+
+    original_create_app = flask_server.create_app
+
+    def create_app(*args, **kwargs):
+        app = original_create_app(*args, **kwargs)
+        accounts.install_template_patch(app)
+        accounts.install(app, flask_server)
+        return app
+
+    flask_server.create_app = create_app
+
+
 # --- the page script ----------------------------------------------------------
 #
 # static/study.js, inlined into every page as `custom_footer_html`. Inlined
@@ -313,6 +336,7 @@ def main() -> int:
 
     flask_server.init_config = init_config
     patch_for_drafts(flask_server)
+    patch_for_accounts(flask_server)
 
     sys.argv = ["potato", "start", args.config, "-p", str(args.port)]
     flask_server.main()
