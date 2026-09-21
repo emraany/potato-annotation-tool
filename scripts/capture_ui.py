@@ -78,10 +78,7 @@ def main() -> int:
         page.wait_for_load_state("networkidle")
 
         shot("04-annotation-gate-shut")
-        page.click("[data-schema-name='manipulation_check'] input[value='Yes']")
-        page.wait_for_timeout(700)
-        page.click("[data-schema-name='deception_check'] input[value='No']")
-        page.click("[data-schema-name='rhetorical_wrapper_check'] input[value='No']")
+        page.click("[data-schema-name='sensible_test_failed'] input[value='Yes']")
         page.wait_for_timeout(700)
         shot("05-annotation-gate-open")
 

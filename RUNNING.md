@@ -124,7 +124,7 @@ read one.
 Where two people annotated the same argument their answers sit side by side and
 the argument is marked **agree**, or **differ on** whichever of verdict, primary
 mechanism and secondary mechanisms they did not answer the same way. Each block
-is one person's three checks, their mechanisms with the justification they typed,
+is one person's verdict, their mechanisms with the justification they typed,
 their notes, and when they saved it; the argument itself is under *the argument*.
 
 Filter it by annotator, by verdict (Pass / Fail / draft), by mechanism — primary
@@ -288,8 +288,8 @@ place the six mechanism definitions live. Two things to know about editing it:
   markdown renderer has no table support. A `<table>` or a `|---|` in there
   prints the whole document as source text on every page.
 * The boot warns if the six mechanism names stop matching the six labels in
-  `config.yaml`, or if one of the three Sensible Test questions has drifted
-  from the wording on screen. Warnings, not failures — read `server.log`.
+  `config.yaml`, or if one of the three Sensible Test checks has drifted from
+  the copy of it printed above the Sensible Test question on screen. Warnings, not failures — read `server.log`.
 
 ## Getting the data out
 

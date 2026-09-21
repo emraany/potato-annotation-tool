@@ -58,9 +58,7 @@ PLAN = [
     {
         "tag": "pass",
         "answers": {
-            "manipulation_check": "No",
-            "deception_check": "No",
-            "rhetorical_wrapper_check": "No",
+            "sensible_test_failed": "No",
         },
         "text": {"notes": "A pass: the children carry the claim on their own."},
         "flag": False,
@@ -68,9 +66,7 @@ PLAN = [
     {
         "tag": "fail-primary-only",
         "answers": {
-            "manipulation_check": "Yes",
-            "deception_check": "No",
-            "rhetorical_wrapper_check": "No",
+            "sensible_test_failed": "Yes",
             "primary_mechanism": "Spurious Causal Correlation",
         },
         "text": {
@@ -83,9 +79,7 @@ PLAN = [
     {
         "tag": "fail-primary-and-secondary",
         "answers": {
-            "manipulation_check": "No",
-            "deception_check": "Yes",
-            "rhetorical_wrapper_check": "Yes",
+            "sensible_test_failed": "Yes",
             "primary_mechanism": "Esoteric Code Activation",
         },
         "multiselect": {"secondary_mechanisms": ["Affective Hijacking"]},
@@ -96,7 +90,7 @@ PLAN = [
             "secondary_justification_affective_hijacking":
                 "Child #5's described expression supplies the contempt that carries "
                 "the reader past the missing step.",
-            "notes": "Two checks failed here, which is why both boxes are open.",
+            "notes": "A failed test with a second mechanism also at work.",
         },
         "flag": True,
     },
@@ -259,15 +253,15 @@ class Walk:
 
 
 def answer_item(w: Walk, answers: dict, texts: dict, multi: dict, flag: bool) -> None:
-    """Checks first, then whatever the gate opened. Order matters here."""
-    for scheme in ("manipulation_check", "deception_check", "rhetorical_wrapper_check"):
-        if scheme in answers:
-            w.set_radio(scheme, answers[scheme])
+    """The Sensible Test first, then whatever the gate opened. Order matters here."""
+    if "sensible_test_failed" in answers:
+        w.set_radio("sensible_test_failed", answers["sensible_test_failed"])
     w.page.wait_for_timeout(400)
 
     if "primary_mechanism" in answers:
         if not w.visible("primary_mechanism"):
-            w.problems.append("primary_mechanism stayed hidden after a check was answered Yes")
+            w.problems.append("primary_mechanism stayed hidden after the Sensible "
+                              "Test was answered Yes")
         else:
             w.set_radio("primary_mechanism", answers["primary_mechanism"])
 
@@ -375,13 +369,15 @@ def main() -> int:
 
             # What SHOULD be on screen, given the branch.
             gated = {"primary_mechanism", "primary_justification", "secondary_mechanisms"}
-            any_yes = any(v == "Yes" for k, v in step["answers"].items() if k.endswith("_check"))
+            failed = step["answers"].get("sensible_test_failed") == "Yes"
             for scheme in gated:
                 vis = w.visible(scheme)
-                if any_yes and vis is False:
-                    w.problems.append(f"item {n}: {scheme} hidden although a check is Yes")
-                if not any_yes and vis is True:
-                    w.problems.append(f"item {n}: {scheme} shown although all checks are No")
+                if failed and vis is False:
+                    w.problems.append(f"item {n}: {scheme} hidden although the "
+                                      "Sensible Test came back failed")
+                if not failed and vis is True:
+                    w.problems.append(f"item {n}: {scheme} shown although the "
+                                      "Sensible Test came back passed")
 
             expected = dict(step["answers"])
             expected.update(step.get("text", {}))
@@ -418,7 +414,7 @@ def main() -> int:
         log("\nleaving item four as a draft")
         draft_id = w.instance_id()
         draft_index = w.instance_number()
-        w.set_radio("manipulation_check", "Yes")       # opens the gate, answers nothing else
+        w.set_radio("sensible_test_failed", "Yes")     # opens the gate, answers nothing else
         w.shot("04b-draft-part-answered")
 
         # Submit has to refuse this, and say which questions are missing. A
@@ -521,8 +517,7 @@ def main() -> int:
     # mechanism key at all, so it exports as absent rather than as "None".
     log("")
     for iid, expected in typed.items():
-        if all(expected.get(k) == "No" for k in
-               ("manipulation_check", "deception_check", "rhetorical_wrapper_check")):
+        if expected.get("sensible_test_failed") == "No":
             leaked = [k for k in ("primary_mechanism", "primary_justification",
                                   "secondary_mechanisms")
                       if stored.get(iid, {}).get(k) not in (None, {}, [])]

@@ -1,4 +1,4 @@
-<!-- CONFIG_HASH: 9f672696daf35d8a4e73b01dbcd10de9_ac8aeae6e766e6dfd52d457c3225ef2f -->
+<!-- CONFIG_HASH: 1ac96fd5fe43a9287e8c512d72ea7f47_c607414eb6e47615ce6769920f4b845c -->
 <!-- Generated annotation layout file -->
 <!-- This file was automatically generated based on the annotation schemes in your config -->
 <!-- You can customize this file to modify the layout of your annotation interface -->
@@ -8,7 +8,7 @@
 
         <form id="section_sensible_test" class="annotation-form pure-display" data-annotation-type="pure_display" data-schema-name="section_sensible_test" action="javascript:void(0)" data-grid-columns="1">
             <fieldset schema="section_sensible_test">
-                <legend><h4>Step 1 &mdash; Sensible Test</h4> <p class="step-sub">Answer all three. If every answer is No, the argument passes and you are done.</p></legend>
+                <legend><h4>Step 1 &mdash; Sensible Test</h4> <p class="step-sub">Read all three checks, then answer the one question below. Any single check coming back Yes is a failed test.</p> <div class="check-list"><ol> <li><b>Manipulation Check</b> &mdash; Is the creator using emotional hijacking, mockery, side-by-side tricks, out-of-context cropping, or coded dog-whistles to force this connection in lieu of evidence?</li> <li><b>Deception Check</b> &mdash; Does a reader have to accept an unproven assumption, a warped timeline, or a structural lie for the child(ren) to successfully connect to the claim?</li> <li><b>Rhetorical Wrapper Check</b> &mdash; Is the visual format being used as a psychological trap to lower the reader's critical thinking, rather than as a helpful tool to illustrate data or literal facts?</li> </ol></div></legend>
                 <div class="display-content">
                     
                 </div>
@@ -16,124 +16,50 @@
         </form>
     
 
-    <form id="manipulation_check" class="annotation-form radio shadcn-radio-container" action="javascript:void(0)" data-annotation-id="1" data-annotation-type="radio" data-schema-name="manipulation_check" data-grid-columns="1">
+    <form id="sensible_test_failed" class="annotation-form radio shadcn-radio-container" action="javascript:void(0)" data-annotation-id="1" data-annotation-type="radio" data-schema-name="sensible_test_failed" data-grid-columns="1">
         
-        <fieldset schema="manipulation_check">
-            <legend class="shadcn-radio-title">1. Manipulation Check — Is the creator using emotional hijacking, mockery, side-by-side tricks, out-of-context cropping, or coded dog-whistles to force this connection in lieu of evidence?</legend>
+        <fieldset schema="sensible_test_failed">
+            <legend class="shadcn-radio-title">Does this argument fail the Sensible Test? Answer Yes if any one of the three checks above is a Yes.</legend>
             <div class="shadcn-radio-options horizontal">
     
             <div class="shadcn-radio-option">
-                <input class="manipulation_check shadcn-radio-input annotation-input"
+                <input class="sensible_test_failed shadcn-radio-input annotation-input"
                        type="radio"
-                       id="manipulation_check_Yes_radio"
-                       name="manipulation_check"
+                       id="sensible_test_failed_Yes_radio"
+                       name="sensible_test_failed"
                        value="Yes"
                        selection_constraint="single"
-                       schema="manipulation_check"
+                       schema="sensible_test_failed"
                        label_name="Yes"
                        onclick="onlyOne(this);registerAnnotation(this);"
                        validation=""
                        data-key="q">
-                <label for="manipulation_check_Yes_radio" class="shadcn-radio-label" >Yes <span class="keybinding-badge">Q</span></label>
+                <label for="sensible_test_failed_Yes_radio" class="shadcn-radio-label" >Yes <span class="keybinding-badge">Q</span></label>
             </div>
         
             <div class="shadcn-radio-option">
-                <input class="manipulation_check shadcn-radio-input annotation-input"
+                <input class="sensible_test_failed shadcn-radio-input annotation-input"
                        type="radio"
-                       id="manipulation_check_No_radio"
-                       name="manipulation_check"
+                       id="sensible_test_failed_No_radio"
+                       name="sensible_test_failed"
                        value="No"
                        selection_constraint="single"
-                       schema="manipulation_check"
+                       schema="sensible_test_failed"
                        label_name="No"
                        onclick="onlyOne(this);registerAnnotation(this);"
                        validation=""
                        data-key="a">
-                <label for="manipulation_check_No_radio" class="shadcn-radio-label" >No <span class="keybinding-badge">A</span></label>
-            </div>
-        </div></fieldset></form>
-
-    <form id="deception_check" class="annotation-form radio shadcn-radio-container" action="javascript:void(0)" data-annotation-id="2" data-annotation-type="radio" data-schema-name="deception_check" data-grid-columns="1">
-        
-        <fieldset schema="deception_check">
-            <legend class="shadcn-radio-title">2. Deception Check — Does a reader have to accept an unproven assumption, a warped timeline, or a structural lie for the child(ren) to successfully connect to the claim?</legend>
-            <div class="shadcn-radio-options horizontal">
-    
-            <div class="shadcn-radio-option">
-                <input class="deception_check shadcn-radio-input annotation-input"
-                       type="radio"
-                       id="deception_check_Yes_radio"
-                       name="deception_check"
-                       value="Yes"
-                       selection_constraint="single"
-                       schema="deception_check"
-                       label_name="Yes"
-                       onclick="onlyOne(this);registerAnnotation(this);"
-                       validation=""
-                       data-key="w">
-                <label for="deception_check_Yes_radio" class="shadcn-radio-label" >Yes <span class="keybinding-badge">W</span></label>
-            </div>
-        
-            <div class="shadcn-radio-option">
-                <input class="deception_check shadcn-radio-input annotation-input"
-                       type="radio"
-                       id="deception_check_No_radio"
-                       name="deception_check"
-                       value="No"
-                       selection_constraint="single"
-                       schema="deception_check"
-                       label_name="No"
-                       onclick="onlyOne(this);registerAnnotation(this);"
-                       validation=""
-                       data-key="s">
-                <label for="deception_check_No_radio" class="shadcn-radio-label" >No <span class="keybinding-badge">S</span></label>
-            </div>
-        </div></fieldset></form>
-
-    <form id="rhetorical_wrapper_check" class="annotation-form radio shadcn-radio-container" action="javascript:void(0)" data-annotation-id="3" data-annotation-type="radio" data-schema-name="rhetorical_wrapper_check" data-grid-columns="1">
-        
-        <fieldset schema="rhetorical_wrapper_check">
-            <legend class="shadcn-radio-title">3. Rhetorical Wrapper Check — Is the visual format being used as a psychological trap to lower the reader&#x27;s critical thinking, rather than as a helpful tool to illustrate data or literal facts?</legend>
-            <div class="shadcn-radio-options horizontal">
-    
-            <div class="shadcn-radio-option">
-                <input class="rhetorical_wrapper_check shadcn-radio-input annotation-input"
-                       type="radio"
-                       id="rhetorical_wrapper_check_Yes_radio"
-                       name="rhetorical_wrapper_check"
-                       value="Yes"
-                       selection_constraint="single"
-                       schema="rhetorical_wrapper_check"
-                       label_name="Yes"
-                       onclick="onlyOne(this);registerAnnotation(this);"
-                       validation=""
-                       data-key="e">
-                <label for="rhetorical_wrapper_check_Yes_radio" class="shadcn-radio-label" >Yes <span class="keybinding-badge">E</span></label>
-            </div>
-        
-            <div class="shadcn-radio-option">
-                <input class="rhetorical_wrapper_check shadcn-radio-input annotation-input"
-                       type="radio"
-                       id="rhetorical_wrapper_check_No_radio"
-                       name="rhetorical_wrapper_check"
-                       value="No"
-                       selection_constraint="single"
-                       schema="rhetorical_wrapper_check"
-                       label_name="No"
-                       onclick="onlyOne(this);registerAnnotation(this);"
-                       validation=""
-                       data-key="d">
-                <label for="rhetorical_wrapper_check_No_radio" class="shadcn-radio-label" >No <span class="keybinding-badge">D</span></label>
+                <label for="sensible_test_failed_No_radio" class="shadcn-radio-label" >No <span class="keybinding-badge">A</span></label>
             </div>
         </div></fieldset></form>
 <div class="display-logic-container display-logic-hidden"
-     data-display-logic="{&quot;logic&quot;: &quot;any&quot;, &quot;show_when&quot;: [{&quot;schema&quot;: &quot;manipulation_check&quot;, &quot;operator&quot;: &quot;equals&quot;, &quot;value&quot;: &quot;Yes&quot;}, {&quot;schema&quot;: &quot;deception_check&quot;, &quot;operator&quot;: &quot;equals&quot;, &quot;value&quot;: &quot;Yes&quot;}, {&quot;schema&quot;: &quot;rhetorical_wrapper_check&quot;, &quot;operator&quot;: &quot;equals&quot;, &quot;value&quot;: &quot;Yes&quot;}]}"
+     data-display-logic="{&quot;show_when&quot;: [{&quot;schema&quot;: &quot;sensible_test_failed&quot;, &quot;operator&quot;: &quot;equals&quot;, &quot;value&quot;: &quot;Yes&quot;}]}"
      data-schema-name="section_mechanism"
      data-display-logic-target="true">
 
         <form id="section_mechanism" class="annotation-form pure-display" data-annotation-type="pure_display" data-schema-name="section_mechanism" action="javascript:void(0)" data-grid-columns="1">
             <fieldset schema="section_mechanism">
-                <legend><h4>Step 2 &mdash; Mechanism</h4> <p class="step-sub">At least one check came back Yes, so a mechanism is present. Pick the one that does the most work.</p></legend>
+                <legend><h4>Step 2 &mdash; Mechanism</h4> <p class="step-sub">The argument failed the Sensible Test, so a mechanism is present. Pick the one that does the most work.</p></legend>
                 <div class="display-content">
                     
                 </div>
@@ -142,11 +68,11 @@
     
 </div>
 <div class="display-logic-container display-logic-hidden"
-     data-display-logic="{&quot;logic&quot;: &quot;any&quot;, &quot;show_when&quot;: [{&quot;schema&quot;: &quot;manipulation_check&quot;, &quot;operator&quot;: &quot;equals&quot;, &quot;value&quot;: &quot;Yes&quot;}, {&quot;schema&quot;: &quot;deception_check&quot;, &quot;operator&quot;: &quot;equals&quot;, &quot;value&quot;: &quot;Yes&quot;}, {&quot;schema&quot;: &quot;rhetorical_wrapper_check&quot;, &quot;operator&quot;: &quot;equals&quot;, &quot;value&quot;: &quot;Yes&quot;}]}"
+     data-display-logic="{&quot;show_when&quot;: [{&quot;schema&quot;: &quot;sensible_test_failed&quot;, &quot;operator&quot;: &quot;equals&quot;, &quot;value&quot;: &quot;Yes&quot;}]}"
      data-schema-name="primary_mechanism"
      data-display-logic-target="true">
 
-    <form id="primary_mechanism" class="annotation-form radio shadcn-radio-container" action="javascript:void(0)" data-annotation-id="5" data-annotation-type="radio" data-schema-name="primary_mechanism" data-grid-columns="1">
+    <form id="primary_mechanism" class="annotation-form radio shadcn-radio-container" action="javascript:void(0)" data-annotation-id="3" data-annotation-type="radio" data-schema-name="primary_mechanism" data-grid-columns="1">
         
         <fieldset schema="primary_mechanism">
             <legend class="shadcn-radio-title">Primary mechanism — which one does most of the work in getting a reader from these children to this claim?</legend>
@@ -244,11 +170,11 @@
         </div></fieldset></form>
 </div>
 <div class="display-logic-container display-logic-hidden"
-     data-display-logic="{&quot;logic&quot;: &quot;any&quot;, &quot;show_when&quot;: [{&quot;schema&quot;: &quot;manipulation_check&quot;, &quot;operator&quot;: &quot;equals&quot;, &quot;value&quot;: &quot;Yes&quot;}, {&quot;schema&quot;: &quot;deception_check&quot;, &quot;operator&quot;: &quot;equals&quot;, &quot;value&quot;: &quot;Yes&quot;}, {&quot;schema&quot;: &quot;rhetorical_wrapper_check&quot;, &quot;operator&quot;: &quot;equals&quot;, &quot;value&quot;: &quot;Yes&quot;}]}"
+     data-display-logic="{&quot;show_when&quot;: [{&quot;schema&quot;: &quot;sensible_test_failed&quot;, &quot;operator&quot;: &quot;equals&quot;, &quot;value&quot;: &quot;Yes&quot;}]}"
      data-schema-name="primary_justification"
      data-display-logic-target="true">
 
-    <form id="primary_justification" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="6" data-annotation-type="text" data-schema-name="primary_justification"  data-min-chars="15" data-grid-columns="1">
+    <form id="primary_justification" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="4" data-annotation-type="text" data-schema-name="primary_justification"  data-min-chars="15" data-grid-columns="1">
             
         <fieldset schema_name="primary_justification">
     
@@ -274,11 +200,11 @@
             </div></fieldset></form>
 </div>
 <div class="display-logic-container display-logic-hidden"
-     data-display-logic="{&quot;logic&quot;: &quot;any&quot;, &quot;show_when&quot;: [{&quot;schema&quot;: &quot;manipulation_check&quot;, &quot;operator&quot;: &quot;equals&quot;, &quot;value&quot;: &quot;Yes&quot;}, {&quot;schema&quot;: &quot;deception_check&quot;, &quot;operator&quot;: &quot;equals&quot;, &quot;value&quot;: &quot;Yes&quot;}, {&quot;schema&quot;: &quot;rhetorical_wrapper_check&quot;, &quot;operator&quot;: &quot;equals&quot;, &quot;value&quot;: &quot;Yes&quot;}]}"
+     data-display-logic="{&quot;show_when&quot;: [{&quot;schema&quot;: &quot;sensible_test_failed&quot;, &quot;operator&quot;: &quot;equals&quot;, &quot;value&quot;: &quot;Yes&quot;}]}"
      data-schema-name="secondary_mechanisms"
      data-display-logic-target="true">
 
-    <form id="secondary_mechanisms" class="annotation-form multiselect shadcn-multiselect-container" action="javascript:void(0)" data-annotation-id="7" data-annotation-type="multiselect" data-schema-name="secondary_mechanisms" data-grid-columns="1">
+    <form id="secondary_mechanisms" class="annotation-form multiselect shadcn-multiselect-container" action="javascript:void(0)" data-annotation-id="5" data-annotation-type="multiselect" data-schema-name="secondary_mechanisms" data-grid-columns="1">
         
         <fieldset schema="secondary_mechanisms">
             <legend class="shadcn-multiselect-title">Secondary mechanisms — any others also at work in this argument. Optional. Do not repeat the primary.</legend>
@@ -379,7 +305,7 @@
      data-schema-name="secondary_justification_affective_hijacking"
      data-display-logic-target="true">
 
-    <form id="secondary_justification_affective_hijacking" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="8" data-annotation-type="text" data-schema-name="secondary_justification_affective_hijacking"  data-min-chars="15" data-grid-columns="1">
+    <form id="secondary_justification_affective_hijacking" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="6" data-annotation-type="text" data-schema-name="secondary_justification_affective_hijacking"  data-min-chars="15" data-grid-columns="1">
             
         <fieldset schema_name="secondary_justification_affective_hijacking">
     
@@ -409,7 +335,7 @@
      data-schema-name="secondary_justification_episodic_overgeneralization"
      data-display-logic-target="true">
 
-    <form id="secondary_justification_episodic_overgeneralization" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="9" data-annotation-type="text" data-schema-name="secondary_justification_episodic_overgeneralization"  data-min-chars="15" data-grid-columns="1">
+    <form id="secondary_justification_episodic_overgeneralization" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="7" data-annotation-type="text" data-schema-name="secondary_justification_episodic_overgeneralization"  data-min-chars="15" data-grid-columns="1">
             
         <fieldset schema_name="secondary_justification_episodic_overgeneralization">
     
@@ -439,7 +365,7 @@
      data-schema-name="secondary_justification_spurious_causal_correlation"
      data-display-logic-target="true">
 
-    <form id="secondary_justification_spurious_causal_correlation" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="10" data-annotation-type="text" data-schema-name="secondary_justification_spurious_causal_correlation"  data-min-chars="15" data-grid-columns="1">
+    <form id="secondary_justification_spurious_causal_correlation" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="8" data-annotation-type="text" data-schema-name="secondary_justification_spurious_causal_correlation"  data-min-chars="15" data-grid-columns="1">
             
         <fieldset schema_name="secondary_justification_spurious_causal_correlation">
     
@@ -469,7 +395,7 @@
      data-schema-name="secondary_justification_satirical_trivialization"
      data-display-logic-target="true">
 
-    <form id="secondary_justification_satirical_trivialization" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="11" data-annotation-type="text" data-schema-name="secondary_justification_satirical_trivialization"  data-min-chars="15" data-grid-columns="1">
+    <form id="secondary_justification_satirical_trivialization" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="9" data-annotation-type="text" data-schema-name="secondary_justification_satirical_trivialization"  data-min-chars="15" data-grid-columns="1">
             
         <fieldset schema_name="secondary_justification_satirical_trivialization">
     
@@ -499,7 +425,7 @@
      data-schema-name="secondary_justification_esoteric_code_activation"
      data-display-logic-target="true">
 
-    <form id="secondary_justification_esoteric_code_activation" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="12" data-annotation-type="text" data-schema-name="secondary_justification_esoteric_code_activation"  data-min-chars="15" data-grid-columns="1">
+    <form id="secondary_justification_esoteric_code_activation" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="10" data-annotation-type="text" data-schema-name="secondary_justification_esoteric_code_activation"  data-min-chars="15" data-grid-columns="1">
             
         <fieldset schema_name="secondary_justification_esoteric_code_activation">
     
@@ -529,7 +455,7 @@
      data-schema-name="secondary_justification_spurious_legitimacy_signaling"
      data-display-logic-target="true">
 
-    <form id="secondary_justification_spurious_legitimacy_signaling" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="13" data-annotation-type="text" data-schema-name="secondary_justification_spurious_legitimacy_signaling"  data-min-chars="15" data-grid-columns="1">
+    <form id="secondary_justification_spurious_legitimacy_signaling" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="11" data-annotation-type="text" data-schema-name="secondary_justification_spurious_legitimacy_signaling"  data-min-chars="15" data-grid-columns="1">
             
         <fieldset schema_name="secondary_justification_spurious_legitimacy_signaling">
     
@@ -565,7 +491,7 @@
         </form>
     
 
-    <form id="notes" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="15" data-annotation-type="text" data-schema-name="notes"   data-grid-columns="1">
+    <form id="notes" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="13" data-annotation-type="text" data-schema-name="notes"   data-grid-columns="1">
             
         <fieldset schema_name="notes">
     
@@ -586,7 +512,7 @@
                           ></textarea>
             </div></fieldset></form>
 
-    <form id="flag_for_discussion" class="annotation-form multiselect shadcn-multiselect-container" action="javascript:void(0)" data-annotation-id="16" data-annotation-type="multiselect" data-schema-name="flag_for_discussion" data-grid-columns="1">
+    <form id="flag_for_discussion" class="annotation-form multiselect shadcn-multiselect-container" action="javascript:void(0)" data-annotation-id="14" data-annotation-type="multiselect" data-schema-name="flag_for_discussion" data-grid-columns="1">
         
         <fieldset schema="flag_for_discussion">
             <legend class="shadcn-multiselect-title">Flag this argument for discussion.</legend>

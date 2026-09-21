@@ -158,6 +158,28 @@ form.pure-display legend li { margin-bottom: 0.35rem; }
 }
 form.pure-display legend .step-head { margin-top: 0.4rem; }
 
+/* --- The three checks ------------------------------------------------------
+ * Read, not answered: the Sensible Test is one Yes/No question and these are
+ * the three sentences it is a verdict on. Styled as prose rather than as
+ * questions -- no radio beside them, so nothing should look clickable.
+ *
+ * The class is on a wrapping <div> and not on the <ol> itself because Potato
+ * sanitizes `description` against a per-tag attribute allowlist, and `ol`'s
+ * is `{start, type}` -- a class written there is dropped silently, and the
+ * rule below would simply never match anything. `div` and `p` do allow class,
+ * which is why .step-sub above works. `h4` does not -- so .step-head is on a
+ * class that never reaches the page, and the step headings render at the
+ * browser's own h4 size. Left alone here: changing the selector restyles all
+ * three headings, which is a separate decision from this list. */
+.check-list ol {
+  font-size: 0.85rem;
+  color: #3f3f57;
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+}
+.check-list li { margin: 0.3rem 0; }
+.check-list li b { font-weight: 650; }
+
 /* --- Collapsing a shut gate completely ------------------------------------
  * Potato hides a conditional scheme with max-height:0 + visibility:hidden so
  * it can animate. The wrappers keep their margins, so with the mechanism block

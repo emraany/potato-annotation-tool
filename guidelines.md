@@ -6,8 +6,8 @@ For each argument, you will see one claim and its immediate children. A claim an
 
 What you answer for each argument:
 
-- **The Sensible Test** — the three checks explained below, all three required. If all three are answered **No**, the argument passes and nothing further is asked for it. If any one is answered **Yes**, the mechanism questions appear and must be completed, as there is a mechanism present.
-- **Primary Mechanism** — the main mechanism. There is no NONE option, because the question is only asked once a check has come back Yes; NONE is recorded by the three checks all being No.
+- **The Sensible Test** — one required question, *Does this argument fail the Sensible Test?* The three checks explained below are printed above it to be read and worked through; they are not answered one by one. Answer **No** and the argument passes and nothing further is asked for it. Answer **Yes** and the mechanism questions appear and must be completed, as there is a mechanism present.
+- **Primary Mechanism** — the main mechanism. There is no NONE option, because the question is only asked once the Sensible Test has come back failed; NONE is recorded by answering the Sensible Test **No**.
 - **Primary Mechanism Justification** — short reason tied to how this mechanism is accomplished in the argument.
 - **Secondary Mechanisms** — second clear mechanism(s), or none ticked.
 - **Secondary Mechanism Justification** — one box per mechanism you tick: a short reason tied to how that mechanism is accomplished in the argument.
@@ -19,7 +19,7 @@ A banner above each argument says whether the children **support** the claim or 
 
 ## 2. The Sensible Test
 
-The Sensible Test determines if the argument being made is driven by rational comprehension or rhetorical manipulation. Three questions are in this test:
+The Sensible Test determines if the argument being made is driven by rational comprehension or rhetorical manipulation. Three checks are in this test. Work through all three in your head, then record the one verdict the task asks for — *Does this argument fail the Sensible Test?* — **Yes** if any single check is a Yes, **No** only if all three are No.
 
 - **The Manipulation Check:** Is the creator using emotional hijacking, mockery, side-by-side tricks, out-of-context cropping, or coded dog-whistles to force this connection in lieu of evidence?
 - **The Deception Check:** Does a reader have to accept an unproven assumption, a warped timeline, or a structural lie for the child(ren) to successfully connect to the claim?
@@ -27,8 +27,8 @@ The Sensible Test determines if the argument being made is driven by rational co
 
 There are two cases:
 
-- All of these questions can be answered with 'No' (the argument passes the Sensible Test) ⇒ no mechanism is present, and nothing more is asked.
-- Otherwise, there is at least a primary mechanism present ⇒ the argument must be further examined for mechanisms.
+- All three checks are 'No' ⇒ the argument passes the Sensible Test, so answer the question **No**: no mechanism is present, and nothing more is asked.
+- Any one check is 'Yes' ⇒ the argument fails it, so answer the question **Yes**: there is at least a primary mechanism present, and the argument must be further examined for mechanisms.
 
 The Rhetorical Wrapper Check asks about the visual format, and you have only the **Visual element** descriptions. Judge the format those descriptions actually attest to. A description of two panels, a chart, a fake headline or a screenshot frame is evidence about the format; a description of only who is in the picture is not, and the answer is then No unless something else in the children supplies it. If a description is too thin to answer on, answer as best you can, tick **Flag for discussion**, and say in **Notes** what you would have needed to see.
 
@@ -38,7 +38,7 @@ Classify each argument independently. Ask: "How are ONLY the provided children b
 
 - Do not automatically copy/bubble up a mechanism from an earlier argument.
 - Do not judge the meme as a whole. Judge the use of the children to prove the claim in the argument in front of you.
-- If the child as established directly supports the claim and no mechanism is needed, even if that child was established with a mechanism in an earlier argument, answer all three checks No.
+- If the child as established directly supports the claim and no mechanism is needed, even if that child was established with a mechanism in an earlier argument, answer the Sensible Test No.
 
 ## 4. The Mechanisms
 
@@ -87,7 +87,7 @@ Nothing recorded here yet. Add the ones the pilot turns up.
 - Primary Mechanism = the mechanism doing the most important work in the child -> argument step.
 - Secondary Mechanism = a second mechanism only if it clearly contributes to that same step.
 - If there are two mechanisms present, the mechanism that the argument's success is more dependent on is the primary. For the inverse, the mechanism that would weaken the argument more if it were gone is the primary.
-- NONE is correct when none of the six mechanisms are needed for that specific step, and the argument being made is logical and proven fairly (the Sensible Test). It is recorded by answering all three checks No.
+- NONE is correct when none of the six mechanisms are needed for that specific step, and the argument being made is logical and proven fairly (the Sensible Test). It is recorded by answering the Sensible Test question No.
 
 ## 7. Writing the Justification
 
@@ -104,10 +104,10 @@ Say what in the children is being used and what manipulative move it makes towar
 
 1. Read the argument.
 2. Focus only on the children listed under it.
-3. Complete the Sensible Test for this argument by answering the three checks.
-4. If the answer to all 3 checks was 'No', there are no mechanisms and you are done with the argument. If any one of the checks is answered with 'Yes', the mechanism questions must be completed.
-5. Identify the reasoning move from the children to the argument based on the failed check(s) in the Sensible Test.
+3. Read the three checks, then answer the Sensible Test question.
+4. If you answered 'No', there are no mechanisms and you are done with the argument. If you answered 'Yes', the mechanism questions appear and must be completed.
+5. Identify the reasoning move from the children to the argument based on the check(s) that made you answer Yes.
 6. Choose the strongest mechanism taking place as Primary.
 7. Add Secondary only if another mechanism clearly contributes to the same step.
-8. If none fit and the argument is fair, all three checks are No.
+8. If none fit and the argument is fair, the Sensible Test is a No.
 9. Write a short justification on how this mechanism is being enacted in the argument.

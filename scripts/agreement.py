@@ -35,7 +35,6 @@ MECHANISMS = [
     "Spurious Legitimacy Signaling",
 ]
 
-YES_NO = ["Yes", "No"]
 VERDICTS = ["Pass", "Fail"]
 
 
@@ -45,10 +44,6 @@ VERDICTS = ["Pass", "Fail"]
 # argument", and the argument drops out of that question's scoring for them.
 # It is not a category: counting an unanswered question as a category of its
 # own would let two people who have both not got there yet agree perfectly.
-
-def _check(name):
-    return lambda r: r[name]
-
 
 def _verdict(r):
     return r["sensible_test"]
@@ -73,17 +68,7 @@ def _flag(r):
 QUESTIONS = [
     {"name": "sensible_test", "title": "Verdict (Sensible Test)", "kind": "nominal",
      "labels": VERDICTS, "value": _verdict,
-     "scope": "arguments both annotators finished — all three checks answered, "
-              "so the verdict is decided"},
-    {"name": "manipulation_check", "title": "Manipulation check", "kind": "nominal",
-     "labels": YES_NO, "value": _check("manipulation_check"),
-     "scope": "arguments both annotators answered this check on"},
-    {"name": "deception_check", "title": "Deception check", "kind": "nominal",
-     "labels": YES_NO, "value": _check("deception_check"),
-     "scope": "arguments both annotators answered this check on"},
-    {"name": "rhetorical_wrapper_check", "title": "Rhetorical wrapper check", "kind": "nominal",
-     "labels": YES_NO, "value": _check("rhetorical_wrapper_check"),
-     "scope": "arguments both annotators answered this check on"},
+     "scope": "arguments both annotators answered the Sensible Test on"},
     {"name": "primary_mechanism", "title": "Primary mechanism", "kind": "nominal",
      "labels": MECHANISMS, "value": _primary,
      "scope": "arguments both annotators named a primary mechanism on — which "

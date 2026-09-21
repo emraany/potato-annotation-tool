@@ -10,8 +10,8 @@ Reads annotation_output/<user>/user_state.json directly rather than Potato's own
 csv/jsonl export, for three reasons:
 
   * Potato's tabular export is one sparse column per scheme-AND-LABEL --
-    `manipulation_check.Yes` with the value "Yes", and no `manipulation_check`
-    column anywhere. Nothing downstream wants that shape.
+    `sensible_test_failed.Yes` with the value "Yes", and no
+    `sensible_test_failed` column anywhere. Nothing downstream wants that shape.
   * It carries `instance_id` and `user_id` and NO item fields, so the meme,
     the relation and the claim id are not in it at all.
   * It has no timestamps. Those live in `instance_id_to_behavioral_data`.
@@ -44,7 +44,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
-CHECKS = ["manipulation_check", "deception_check", "rhetorical_wrapper_check"]
+# The Sensible Test is one question on screen -- "Does this argument fail the
+# Sensible Test?", Yes or No -- and `sensible_test` downstream is Pass/Fail.
+# This is the whole of the translation between the two namings.
+VERDICT = {"Yes": "Fail", "No": "Pass"}
 
 MECHANISMS = [
     "Affective Hijacking",
@@ -137,17 +140,16 @@ def is_empty_in_spirit(value) -> bool:
     return stripped in NULL_ANSWERS
 
 
-def derive_sensible_test(checks: dict) -> str | None:
-    """All three No is a Pass; any Yes is a Fail; anything missing is undecided.
+def derive_sensible_test(answer: str | None) -> str | None:
+    """Yes is a Fail, No is a Pass, unanswered is undecided.
 
-    Derived here and nowhere else. The brief's spreadsheet asked annotators for
-    a single Pass/Fail and the guidelines contradicted themselves about which
-    direction it ran, so the task does not collect it at all.
+    Translated here and nowhere else. The question is asked in the annotator's
+    direction -- "does this argument FAIL the test" -- because that is the
+    direction the guidelines read in, and Pass/Fail is the direction the brief's
+    spreadsheet reads in. An unrecognised answer is undecided rather than a
+    guess: a renamed label should show up as a draft, not as a Pass.
     """
-    values = [checks.get(c) for c in CHECKS]
-    if any(v is None for v in values):
-        return None
-    return "Fail" if any(v == "Yes" for v in values) else "Pass"
+    return VERDICT.get(answer)
 
 
 def timestamps(behavioral: dict, instance_id: str) -> dict:
@@ -196,8 +198,8 @@ def collect(task_dir: Path, items: dict) -> tuple[list[dict], list[dict]]:
                               "was rebuilt and this id no longer exists",
                 })
 
-            checks = {c: single(labels, c) for c in CHECKS}
-            verdict = derive_sensible_test(checks)
+            failed = single(labels, "sensible_test_failed")
+            verdict = derive_sensible_test(failed)
             primary = single(labels, "primary_mechanism")
             secondaries = multi(labels, "secondary_mechanisms")
             secondary_justifications = {
@@ -219,9 +221,6 @@ def collect(task_dir: Path, items: dict) -> tuple[list[dict], list[dict]]:
                 "source_index": item.get("source_index"),
                 "item_number": item.get("item_number"),
                 "annotator_id": annotator,
-                "manipulation_check": checks["manipulation_check"],
-                "deception_check": checks["deception_check"],
-                "rhetorical_wrapper_check": checks["rhetorical_wrapper_check"],
                 "sensible_test": verdict,
                 "primary_mechanism": primary,
                 "primary_justification": text(labels, "primary_justification"),
@@ -260,7 +259,7 @@ def validate(r: dict) -> list[dict]:
 
     if r["sensible_test"] is None:
         problem("incomplete_sensible_test",
-                f"checks are {[r[c] for c in CHECKS]}; at least one was not answered")
+                "the Sensible Test question was not answered")
 
     # Constraint 1 — the same mechanism cannot be both primary and secondary.
     if r["primary_mechanism"] and r["primary_mechanism"] in r["secondary_mechanisms"]:
@@ -301,7 +300,8 @@ def validate(r: dict) -> list[dict]:
                     f"Sensible Test passed but {leaked + (['secondary_mechanisms'] if r['secondary_mechanisms'] else [])} are filled")
     if r["sensible_test"] == "Fail" and not r["primary_mechanism"]:
         problem("no_mechanism_on_a_failing_item",
-                "a check came back Yes but no primary mechanism was recorded")
+                "the Sensible Test came back failed but no primary mechanism "
+                "was recorded")
 
     return out
 
@@ -310,7 +310,6 @@ CSV_COLUMNS = [
     "instance_id", "item_number", "source_index", "meme_id", "image_file",
     "relation", "claim_id",
     "annotator_id",
-    "manipulation_check", "deception_check", "rhetorical_wrapper_check",
     "sensible_test",
     "primary_mechanism", "primary_justification",
     "secondary_mechanisms",
@@ -366,7 +365,8 @@ SELF_TEST_CASES = [
     ("failing item with no mechanism", "no_mechanism_on_a_failing_item", True, {
         "sensible_test": "Fail"}),
     ("a clean pass", "mechanism_on_a_passing_item", False, {"sensible_test": "Pass"}),
-    ("unanswered check", "incomplete_sensible_test", True, {"sensible_test": None}),
+    ("unanswered Sensible Test", "incomplete_sensible_test", True,
+     {"sensible_test": None}),
 ]
 
 
@@ -377,8 +377,7 @@ def self_test() -> int:
     """
     base = {
         "instance_id": "selftest::0", "annotator_id": "selftest",
-        "manipulation_check": "No", "deception_check": "No",
-        "rhetorical_wrapper_check": "No", "sensible_test": "Pass",
+        "sensible_test": "Pass",
         "primary_mechanism": None, "primary_justification": None,
         "secondary_mechanisms": [], "secondary_justifications": {},
         "notes": None, "flag_for_discussion": False,

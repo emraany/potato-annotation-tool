@@ -55,8 +55,10 @@ not start is worse than a study with a stale sentence in it:
   * the six mechanism names in guidelines.md against the six labels in
     config.yaml, which is the one drift that would have annotators reading one
     set of definitions and clicking another;
-  * the three Sensible Test check sentences in guidelines.md against the three
-    question texts in config.yaml.
+  * the three Sensible Test check sentences in guidelines.md against the copy
+    of them printed above the Sensible Test question in config.yaml. They are
+    read there, not answered -- the task collects one Yes/No verdict -- so the
+    two copies drifting apart is exactly the failure this catches.
 """
 
 from __future__ import annotations

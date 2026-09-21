@@ -23,9 +23,7 @@ are frozen.
 | Scheme | Type | Required | Shown |
 |---|---|---|---|
 | `section_sensible_test` | pure_display | no | always |
-| `manipulation_check` | radio Yes/No | **yes** | always |
-| `deception_check` | radio Yes/No | **yes** | always |
-| `rhetorical_wrapper_check` | radio Yes/No | **yes** | always |
+| `sensible_test_failed` | radio Yes/No | **yes** | always |
 | `section_mechanism` | pure_display | no | gated |
 | `primary_mechanism` | radio, 6 labels | **yes** | gated |
 | `primary_justification` | text, multiline | **yes** | gated |
@@ -40,8 +38,15 @@ are frozen.
 | `notes` | text, multiline | no | always |
 | `flag_for_discussion` | multiselect, 1 label | no | always |
 
-*gated* = `display_logic` with `logic: any` over the three checks, so the block
-appears the moment any one of them is answered **Yes**.
+*gated* = `display_logic` on `sensible_test_failed` equalling **Yes**, so the
+block appears the moment the Sensible Test comes back failed.
+
+**The three checks are read, not answered.** They live as prose inside the
+`section_sensible_test` heading — word for word from `guidelines.md`, which
+`scripts/serve.py` verifies at boot — and the annotator collapses them into the
+one `sensible_test_failed` verdict. Nothing is recorded per check, and the
+export's `sensible_test` column is that verdict read the other way round: Yes
+is a `Fail`, No is a `Pass`, unanswered is a draft.
 
 **Names likely to need changing: none, with one caveat.** The six
 `secondary_justification_*` names are derived from the mechanism labels. If a
@@ -61,11 +66,11 @@ measurement decision:
 
 | Scheme | Kind Potato infers | What it computes |
 |---|---|---|
-| the three checks, `primary_mechanism` | nominal | Cohen's κ, Fleiss' κ, nominal α |
+| `sensible_test_failed`, `primary_mechanism` | nominal | Cohen's κ, Fleiss' κ, nominal α |
 | `secondary_mechanisms`, `flag_for_discussion` | multilabel | mean Jaccard, MASI α |
 | every justification, `notes` | free text | **nothing** — absent from the report |
 
-The checks are genuinely unordered yes/no, and the mechanisms are a nominal set,
+The Sensible Test is a genuinely unordered yes/no, and the mechanisms are a nominal set,
 so nominal is right here. Nothing in this task is an ordered rating, so no
 scheme is at risk of the "1–5 stored as a radio" mis-scoring.
 
@@ -273,7 +278,8 @@ Potato as `annotation_instructions`; nothing rewrites a sentence of it. It was
 translated once, for this tool rather than for a spreadsheet — "for each row"
 became "for each argument", the column table became the list of questions on
 screen, and the Sensible Test row that read the opposite way from §2 became the
-three checks, which is what the tool actually asks. The definitions, the
+one yes/no verdict, with the three checks printed above it to be read, which is
+what the tool actually asks. The definitions, the
 examples, the justification rules and the checklist are word for word what they
 were.
 
@@ -307,16 +313,15 @@ conflicts.
 
 | | |
 |---|---|
-| Manipulation Check | `Q` Yes / `A` No |
-| Deception Check | `W` Yes / `S` No |
-| Rhetorical Wrapper Check | `E` Yes / `D` No |
+| Sensible Test | `Q` Yes / `A` No |
 | Primary mechanism | `1`–`6`, in the order listed |
 | Secondary mechanisms | `Z X C V B N`, same order |
 | Flag for discussion | `F` |
 
-Explicit `key_value` throughout rather than `sequential_key_binding`: three
-yes/no questions would otherwise be allocated overlapping keys, and the layout
-above puts Yes on the top row and No on the home row for all three checks.
+Explicit `key_value` throughout rather than `sequential_key_binding`, which
+allocates from one sequence across all schemes and would put the mechanisms'
+keys wherever the yes/no question left off. `Q`/`A` puts Yes on the top row and
+No on the home row, under the same finger.
 
 ---
 

@@ -629,9 +629,6 @@ const verdictPill = v =>
   `<span class="pill pill-${v ? v.toLowerCase() : 'draft'}">${esc(v ?? 'draft')}</span>`;
 
 function annotation(a) {
-  const checks = [['manipulation', a.manipulation_check], ['deception', a.deception_check],
-                  ['wrapper', a.rhetorical_wrapper_check]]
-    .map(([k, v]) => `<dt>${k}</dt><dd>${esc(v ?? '—')}</dd>`).join('');
   const secondaries = (a.secondary_mechanisms || []).map(m =>
     `<p class="mech secondary"><b>${esc(m)}</b> &mdash;
        <span class="why">${esc(a.secondary_justifications[m] ?? '')}</span></p>`).join('');
@@ -643,7 +640,6 @@ function annotation(a) {
       <span class="muted">${esc(a.last_saved_utc ?? '—')}${
         a.time_on_item_ms ? ' &middot; ' + duration(a.time_on_item_ms) : ''}</span>
     </div>
-    <dl>${checks}</dl>
     ${a.primary_mechanism
       ? `<p class="mech"><b>${esc(a.primary_mechanism)}</b> &mdash;
            <span class="why">${esc(a.primary_justification ?? '')}</span></p>`
@@ -735,10 +731,8 @@ document.getElementById('f-clear').onclick = () => {
 
 // --- Agreement ----------------------------------------------------------------
 
-const SHORT = {sensible_test:'Verdict', manipulation_check:'Manipulation',
-  deception_check:'Deception', rhetorical_wrapper_check:'Wrapper',
-  primary_mechanism:'Primary', secondary_mechanisms:'Secondary',
-  flag_for_discussion:'Flag'};
+const SHORT = {sensible_test:'Verdict', primary_mechanism:'Primary',
+  secondary_mechanisms:'Secondary', flag_for_discussion:'Flag'};
 
 let iaa = null;
 
