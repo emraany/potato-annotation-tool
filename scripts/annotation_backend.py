@@ -83,33 +83,54 @@ def load_records() -> tuple[list[dict], list[dict], dict]:
     return records, problems, items
 
 
-def progress(records: list[dict], items: dict) -> list[dict]:
-    """Per annotator: how much is finished, and how far through the file.
+def as_ranges(numbers: set[int]) -> str:
+    """{1,2,3,5,9,10} -> "1–3, 5, 9–10".
 
-    `finished` counts the arguments whose Sensible Test came out either way; an
-    argument left as a draft has no verdict and is counted under `drafts`.
-    `reached` is the highest argument number they have touched, which is what
-    makes "carry on from 613" a thing anybody can check.
+    A lowest and a highest number could not say whether the stretch between
+    them was done: somebody told to take 1–500 who skipped 200 arguments in
+    the middle read as "from 1, reached 500", which is the answer to a
+    different question. The ranges are the picture, so a gap is visible as a
+    gap.
+    """
+    if not numbers:
+        return ""
+    runs: list[list[int]] = []
+    for number in sorted(numbers):
+        if runs and number == runs[-1][1] + 1:
+            runs[-1][1] = number
+        else:
+            runs.append([number, number])
+    return ", ".join(str(lo) if lo == hi else f"{lo}–{hi}" for lo, hi in runs)
+
+
+def progress(records: list[dict], items: dict) -> list[dict]:
+    """Per annotator: which arguments are finished, and what is outstanding.
+
+    `completed` is the argument numbers whose Sensible Test came out either
+    way, as ranges -- what to read to see whether a stretch was really covered,
+    and what to quote when handing the next one out. An argument left as a
+    draft has no verdict, is not completed, and is counted under `drafts`.
     """
     by_annotator: dict[str, dict] = {}
     for record in records:
         row = by_annotator.setdefault(record["annotator_id"], {
             "annotator": record["annotator_id"], "finished": 0, "drafts": 0,
-            "flagged": 0, "lowest": None, "reached": None, "last_saved_utc": None})
+            "flagged": 0, "completed_numbers": set()})
         if record["sensible_test"] is None:
             row["drafts"] += 1
         else:
             row["finished"] += 1
+            number = record.get("item_number")
+            if number is not None:
+                row["completed_numbers"].add(number)
         if record["flag_for_discussion"]:
             row["flagged"] += 1
-        number = record.get("item_number")
-        if number is not None:
-            row["lowest"] = number if row["lowest"] is None else min(row["lowest"], number)
-            row["reached"] = number if row["reached"] is None else max(row["reached"], number)
-        saved = record.get("last_saved_utc")
-        if saved and (row["last_saved_utc"] is None or saved > row["last_saved_utc"]):
-            row["last_saved_utc"] = saved
-    return sorted(by_annotator.values(), key=lambda r: r["annotator"])
+
+    rows = []
+    for row in sorted(by_annotator.values(), key=lambda r: r["annotator"]):
+        numbers = row.pop("completed_numbers")
+        rows.append({**row, "completed": as_ranges(numbers)})
+    return rows
 
 
 # --- browsing the annotations -------------------------------------------------
@@ -399,13 +420,14 @@ th.raw, .tile .k.raw { text-transform:none; letter-spacing:0.02em; font-size:0.7
   <div class="card">
     <h2>Who is where</h2>
     <p class="hint">Argument numbers are the numbers in <code>args_0911.json</code> and the
-    numbers on screen. <b>Reached</b> is the furthest one somebody has touched &mdash; the
-    number to quote when you hand the next stretch over. A <b>draft</b> is an argument they
-    left part-answered; it is not finished work and the export refuses it under
-    <code>--strict</code>.</p>
-    <table><thead><tr><th>Annotator</th><th class="n">Finished</th><th class="n">Drafts</th>
-      <th class="n">Flags</th><th class="n">From</th><th class="n">Reached</th>
-      <th>Last saved</th></tr></thead><tbody id="who"></tbody></table>
+    numbers on screen. <b>Completed</b> is every argument they have finished, as ranges, so a
+    stretch somebody skipped shows up as a gap rather than hiding inside a first-and-last
+    pair &mdash; it is what to read before handing the next stretch over. A <b>draft</b> is an
+    argument they left part-answered; it is not finished work, it is not in Completed, and the
+    export refuses it under <code>--strict</code>. To see <i>which</i> ones are drafts or
+    flags, filter the Annotations tab by that annotator.</p>
+    <table><thead><tr><th>Annotator</th><th>Completed</th><th class="n">Drafts</th>
+      <th class="n">Flags</th></tr></thead><tbody id="who"></tbody></table>
   </div>
   <div class="card">
     <h2>Download</h2>
@@ -572,11 +594,11 @@ async function loadSummary() {
     ? d.problems + ' constraint violation(s) — they are listed in validation_report.json'
     : 'No constraint violations in what has been annotated so far.';
   document.getElementById('who').innerHTML = d.who.length
-    ? d.who.map(a => `<tr><td>${esc(a.annotator)}</td><td class="n">${a.finished}</td>
-        <td class="n">${a.drafts}</td><td class="n">${a.flagged}</td>
-        <td class="n num">${a.lowest ?? '—'}</td><td class="n num">${a.reached ?? '—'}</td>
-        <td class="muted">${esc(a.last_saved_utc ?? '—')}</td></tr>`).join('')
-    : '<tr><td colspan="7" class="muted">Nobody has annotated anything yet.</td></tr>';
+    ? d.who.map(a => `<tr><td>${esc(a.annotator)}</td>
+        <td><span class="num">${esc(a.completed || '—')}</span>${
+          a.finished ? ` <span class="muted">(${a.finished})</span>` : ''}</td>
+        <td class="n">${a.drafts}</td><td class="n">${a.flagged}</td></tr>`).join('')
+    : '<tr><td colspan="4" class="muted">Nobody has annotated anything yet.</td></tr>';
 }
 
 // --- Annotations --------------------------------------------------------------
@@ -634,7 +656,7 @@ function annotation(a) {
 const FIELD_NAMES = {sensible_test:'verdict', primary_mechanism:'primary mechanism',
   secondary_mechanisms:'secondary mechanisms'};
 
-function argumentGroup(g, openArg) {
+function argumentGroup(g) {
   const differ = g.n_annotators > 1
     ? (g.differs.length
         ? `<span class="pill pill-differ">differ on ${
@@ -650,7 +672,7 @@ function argumentGroup(g, openArg) {
       ${g.n_annotators > 1 ? `<span class="muted">${g.n_annotators} annotators</span>` : ''}
     </div>
     <div class="anns">${g.annotations.map(annotation).join('')}</div>
-    <details class="arg"${openArg ? ' open' : ''}>
+    <details class="arg">
       <summary>the argument</summary>${g.argument_html}</details>
   </div>`;
 }
@@ -678,9 +700,12 @@ async function loadAnnotations(page) {
         ? ` — filtered from ${d.total_annotations.toLocaleString()}` : '')
     : 'Nothing matches these filters.';
 
-  const openArg = d.groups.length <= 3;
+  // Arguments start collapsed, always. They used to spring open whenever the
+  // filters narrowed to three or fewer, which meant the page reflowed into
+  // something different as you typed and a small study never saw the
+  // collapsed form at all.
   document.getElementById('ann-rows').innerHTML =
-    d.groups.map(g => argumentGroup(g, openArg)).join('');
+    d.groups.map(argumentGroup).join('');
 
   document.getElementById('ann-pager').innerHTML = d.pages > 1
     ? `<button ${d.page <= 1 ? 'disabled' : ''} data-page="${d.page - 1}">Previous</button>

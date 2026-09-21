@@ -106,9 +106,19 @@ what stops the Download tab's buttons coming back *Forbidden*.
 
 **Download** has the CSV, the JSONL, the validation report, `flags.csv`,
 `agreement.json` and a zip of the raw `annotation_output/` — and the **Who is
-where** table: per annotator, how many arguments they have finished, how many
-they have left as drafts, and the lowest and highest argument number they have
-touched.
+where** table: per annotator, **Completed**, **Drafts**, **Flags**.
+
+**Completed** is every argument they have finished, written as ranges —
+`1–199, 201–500` — with the total beside it. Ranges rather than a first and a
+last number, because those two cannot tell you whether the stretch between them
+was actually done: somebody given 1 to 500 who skipped two hundred in the
+middle reads as "from 1, reached 500" either way. A gap in the ranges is a gap
+in the work, and it is what to read before handing the next stretch over.
+Drafts are not in it — a draft is not finished. To see *which* arguments are
+drafts or flags, filter the Annotations tab by that annotator.
+
+Arguments start collapsed everywhere on this console; click *the argument* to
+read one.
 
 **Annotations** is every annotation there is, under the argument it is about.
 Where two people annotated the same argument their answers sit side by side and
