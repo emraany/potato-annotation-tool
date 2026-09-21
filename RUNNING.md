@@ -99,8 +99,10 @@ themselves, read the agreement, and read the flags.
 It reads `annotation_output/` directly, so it works with the study server
 stopped. It changes nothing: no config is rewritten, no assignment is made,
 nothing is sent to the study server. It binds loopback only; `--host 0.0.0.0`
-works but then every request has to carry the admin key (`?key=...`), since the
-page hands out every annotation in the study.
+works but then every request has to carry the admin key, since the page hands
+out every annotation in the study. Open it once as `?key=...` and the page
+puts the key on its own links from there — the downloads included, which is
+what stops the Download tab's buttons coming back *Forbidden*.
 
 **Download** has the CSV, the JSONL, the validation report, `flags.csv`,
 `agreement.json` and a zip of the raw `annotation_output/` — and the **Who is
@@ -144,8 +146,16 @@ those words. Nothing in the software creates overlap; "start at 500, stop at
 800" to two annotators is what creates it. `agreement.json` on the Download tab
 is the same report, as it goes into a write-up.
 
-**Flags** is every argument somebody flagged or left a note on, with the
-argument itself. It is a queue, not a workflow: somebody still has to read it.
+**Flags** is every argument somebody ticked **flag for discussion** on, with
+the argument itself. It is a queue, not a workflow: somebody still has to read
+it.
+
+**A note is not a flag.** Notes are ordinary annotation content: they are a
+column in the export and they sit beside their annotation on the Annotations
+tab, where the free-text filter searches them. They do not put an argument in
+this queue and they are not in `flags.csv`. Asking for attention is the
+checkbox, and only the checkbox — a queue that fills up with people thinking
+aloud is a queue nobody reads.
 
 ## Potato's own admin pages
 

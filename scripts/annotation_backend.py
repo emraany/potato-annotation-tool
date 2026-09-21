@@ -24,8 +24,8 @@ own admin dashboard does not do, or does not do readably.
               annotation_output/. Alongside them, who has done what and how far
               through args_0911.json each person has got, which is the number
               you quote when you hand the next stretch to somebody.
-  Flags       every argument somebody ticked `flag_for_discussion` or left a
-              note on, with the argument itself, so they can be read and
+  Flags       every argument somebody ticked `flag_for_discussion`, with the
+              argument itself, so they can be read and
               adjudicated in one pass rather than grepped out of a CSV.
 
 Everything here is computed from the files on disk -- `data/instances.json` and
@@ -100,7 +100,7 @@ def progress(records: list[dict], items: dict) -> list[dict]:
             row["drafts"] += 1
         else:
             row["finished"] += 1
-        if record["flag_for_discussion"] or record["notes"]:
+        if record["flag_for_discussion"]:
             row["flagged"] += 1
         number = record.get("item_number")
         if number is not None:
@@ -152,7 +152,7 @@ def matches(record: dict, f: dict) -> bool:
     if f["mechanism"] and f["mechanism"] != record["primary_mechanism"] \
             and f["mechanism"] not in record["secondary_mechanisms"]:
         return False
-    if f["flagged"] and not (record["flag_for_discussion"] or record["notes"]):
+    if f["flagged"] and not record["flag_for_discussion"]:
         return False
     number = record.get("item_number")
     if f["lo"] is not None and (number is None or number < f["lo"]):
@@ -210,7 +210,7 @@ def group_arguments(records: list[dict], f: dict) -> list[dict]:
         annotations = sorted(group["annotations"], key=lambda r: r["annotator_id"])
         group["annotations"] = annotations
         group["n_annotators"] = len(annotations)
-        group["flagged"] = any(r["flag_for_discussion"] or r["notes"] for r in annotations)
+        group["flagged"] = any(r["flag_for_discussion"] for r in annotations)
         group["differs"] = [
             field for field in ("sensible_test", "primary_mechanism")
             if len({json.dumps(r[field]) for r in annotations}) > 1
@@ -232,21 +232,28 @@ def group_arguments(records: list[dict], f: dict) -> list[dict]:
 
 
 def flag_rows(records: list[dict], items: dict) -> list[dict]:
+    """Only what somebody actually ticked `flag_for_discussion` on.
+
+    A note is not a flag. Notes are ordinary annotation content -- they sit in
+    the export and beside their annotation on the Annotations tab -- and
+    treating one as a queue item made the queue mostly people thinking aloud,
+    which is the surest way to stop it being read. Asking for attention is the
+    checkbox, and only the checkbox.
+    """
     rows = []
     for record in records:
-        if not (record["flag_for_discussion"] or record["notes"]):
+        if not record["flag_for_discussion"]:
             continue
         item = items.get(record["instance_id"], {})
         rows.append({
             **{k: record[k] for k in (
                 "instance_id", "item_number", "annotator_id", "meme_id", "relation",
                 "sensible_test", "primary_mechanism", "primary_justification",
-                "notes", "flag_for_discussion", "last_saved_utc")},
+                "flag_for_discussion", "last_saved_utc")},
             "secondary_mechanisms": "|".join(record["secondary_mechanisms"]),
             "argument_html": item.get("argument_html", ""),
         })
-    rows.sort(key=lambda r: (not r["flag_for_discussion"],
-                             r["item_number"] is None, r["item_number"]))
+    rows.sort(key=lambda r: (r["item_number"] is None, r["item_number"]))
     return rows
 
 
@@ -291,7 +298,6 @@ a.btn:hover { background:#e7e7f6; }
 .pill { font-size:0.7rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase;
   padding:2px 7px; border-radius:3px; }
 .pill-flag { background:#fbeaea; color:#6d2020; }
-.pill-note { background:#eef0fa; color:#33336b; }
 details.arg summary { cursor:pointer; color:#4a4a7a; font-size:0.85rem; }
 details.arg .arg { margin-top:8px; }
 .note-text { white-space:pre-wrap; }
@@ -398,7 +404,7 @@ th.raw, .tile .k.raw { text-transform:none; letter-spacing:0.02em; font-size:0.7
     left part-answered; it is not finished work and the export refuses it under
     <code>--strict</code>.</p>
     <table><thead><tr><th>Annotator</th><th class="n">Finished</th><th class="n">Drafts</th>
-      <th class="n">Flags + notes</th><th class="n">From</th><th class="n">Reached</th>
+      <th class="n">Flags</th><th class="n">From</th><th class="n">Reached</th>
       <th>Last saved</th></tr></thead><tbody id="who"></tbody></table>
   </div>
   <div class="card">
@@ -440,7 +446,7 @@ th.raw, .tile .k.raw { text-transform:none; letter-spacing:0.02em; font-size:0.7
       <label>Order<select id="f-sort">
         <option value="number">argument number</option>
         <option value="recent">most recently saved</option></select></label>
-      <label class="check"><input id="f-flagged" type="checkbox"> flagged or noted only</label>
+      <label class="check"><input id="f-flagged" type="checkbox"> flagged only</label>
       <button id="f-clear" type="button">Clear</button>
     </div>
     <div class="result-line">
@@ -512,9 +518,10 @@ th.raw, .tile .k.raw { text-transform:none; letter-spacing:0.02em; font-size:0.7
 
 <section id="flags">
   <div class="card">
-    <h2>Flagged and noted arguments</h2>
-    <p class="hint">A queue, not a workflow: somebody still has to read it. Flags first, then
-    notes, in argument order.</p>
+    <h2>Flagged arguments</h2>
+    <p class="hint">Arguments somebody ticked <b>flag for discussion</b> on, in argument order.
+    A queue, not a workflow: somebody still has to read it. Notes are not flags &mdash; they
+    are on the Annotations tab, beside the annotation they belong to.</p>
     <a class="btn" href="/download/flags.csv">flags.csv</a>
     <div id="flag-rows"><p class="muted">Loading&hellip;</p></div>
   </div>
@@ -524,6 +531,16 @@ th.raw, .tile .k.raw { text-transform:none; letter-spacing:0.02em; font-size:0.7
 const KEY = new URLSearchParams(location.search).get('key');
 const url = p => p + (KEY ? (p.includes('?') ? '&' : '?') + 'key=' + encodeURIComponent(KEY) : '');
 const get = p => fetch(url(p)).then(r => r.json());
+
+// Every link on the page carries the key too, not just the fetches. On a
+// console reached through its own domain the key lives in the address bar and
+// nowhere else: a browser does not replay it onto an <a href> the way url()
+// does for fetch(), so the six Download buttons and flags.csv all came back
+// 403. Rewriting at boot means a link added later is covered without anybody
+// remembering this. Anchors that are not paths (the '#' jump to Annotations)
+// are left alone.
+document.querySelectorAll('a[href^="/"]').forEach(
+  a => a.setAttribute('href', url(a.getAttribute('href'))));
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
@@ -549,7 +566,7 @@ async function loadSummary() {
     + tile(d.drafts.toLocaleString(), 'drafts')
     + tile(d.annotators, 'annotators')
     + tile(d.verdicts.Pass, 'pass') + tile(d.verdicts.Fail, 'fail')
-    + tile(d.flags, 'flags + notes')
+    + tile(d.flags, 'flags')
     + tile(d.problems, 'export problems');
   document.getElementById('problem-line').textContent = d.problems
     ? d.problems + ' constraint violation(s) — they are listed in validation_report.json'
@@ -845,15 +862,14 @@ async function loadAgreement() {
 async function loadFlags() {
   const d = await get('/api/flags');
   const box = document.getElementById('flag-rows');
-  if (!d.rows.length) { box.innerHTML = '<p class="muted">Nothing flagged and nothing noted.</p>'; return; }
+  if (!d.rows.length) { box.innerHTML = '<p class="muted">Nothing flagged.</p>'; return; }
   box.innerHTML = d.rows.map(r => `<div class="card">
     <div><span class="num">Argument ${r.item_number ?? '—'}</span>
-      ${r.flag_for_discussion ? '<span class="pill pill-flag">flag</span>' : '<span class="pill pill-note">note</span>'}
+      <span class="pill pill-flag">flag</span>
       <span class="muted">${esc(r.instance_id)} &middot; ${esc(r.annotator_id)}
       &middot; ${esc(r.relation)} &middot; ${esc(r.sensible_test ?? 'draft')}</span></div>
     ${r.primary_mechanism ? `<p><b>${esc(r.primary_mechanism)}</b>${r.secondary_mechanisms ? ' + ' + esc(r.secondary_mechanisms) : ''}<br>
       ${esc(r.primary_justification)}</p>` : ''}
-    ${r.notes ? `<p class="note-text"><b>Notes:</b> ${esc(r.notes)}</p>` : ''}
     <details class="arg"><summary>the argument</summary>${r.argument_html}</details>
   </div>`).join('');
 }
@@ -998,7 +1014,7 @@ def create_app() -> Flask:
         rows = flag_rows(records, items)
         columns = ["item_number", "instance_id", "meme_id", "relation", "annotator_id",
                    "sensible_test", "primary_mechanism", "primary_justification",
-                   "secondary_mechanisms", "notes", "flag_for_discussion", "last_saved_utc"]
+                   "secondary_mechanisms", "flag_for_discussion", "last_saved_utc"]
         buffer = io.StringIO()
         writer = csv.DictWriter(buffer, fieldnames=columns, extrasaction="ignore")
         writer.writeheader()
