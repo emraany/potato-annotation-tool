@@ -9,6 +9,7 @@
  *   1. The guidelines banner starts shut, and remembers whoever opens it.
  *   2. Next becomes two buttons: Save draft and Submit.
  *   3. The navbar arrows say they step, and stop at the two ends.
+ *   4. Un-ticking a checkbox re-runs the display_logic gates it feeds.
  */
 (function () {
   "use strict";
@@ -173,6 +174,32 @@
     };
   }
 
+  // --- 4. un-ticking a checkbox closes the gate it opened --------------------
+  //
+  // annotation.js's handleInputChange() ends the UNCHECKED branch with its own
+  // `return`, several lines above the `displayLogicManager.evaluateForSchema()`
+  // call every other branch reaches. So ticking a secondary mechanism opened
+  // its justification box and un-ticking it left the box on screen: the answer
+  // was gone from currentAnnotations, but nothing asked the gate about it
+  // again. Submit then refused an argument over a question that should not
+  // have been there, and the only ways out were to re-tick the mechanism and
+  // write a justification nobody wanted, or to Save draft.
+  //
+  // `change` listeners bound on the input itself run before one bound here on
+  // the document, so by this point currentAnnotations has already had the
+  // label deleted and the gate is asked about the state it should see. Asking
+  // again when nothing changed is free -- updateVisibility() returns early
+  // unless the answer differs from what is on screen.
+
+  function regate(event) {
+    var input = event.target;
+    if (!input || input.type !== "checkbox" || input.checked) { return; }
+    var schema = input.getAttribute("schema");
+    if (!schema || typeof getDisplayLogicManager !== "function") { return; }
+    var manager = getDisplayLogicManager();
+    if (manager) { manager.evaluateForSchema(schema); }
+  }
+
   // --- 3. the navbar arrows --------------------------------------------------
   //
   // scripts/serve.py has already changed where they go: they are the previous
@@ -230,6 +257,13 @@
   function watch() {
     document.addEventListener("input", recheck, true);
     document.addEventListener("change", recheck, true);
+    // Bubble phase, not capture: regate has to run AFTER annotation.js has
+    // deleted the label, and a marked question has to stop being marked in the
+    // same gesture that closed its gate -- hence recheck once more behind it.
+    document.addEventListener("change", function (event) {
+      regate(event);
+      recheck();
+    });
   }
 
   function recheck() {
