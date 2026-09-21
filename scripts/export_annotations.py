@@ -68,7 +68,7 @@ NULL_ANSWERS = {
     "same as above", "as above", "see above", "ditto", "tbd", "todo", "x",
 }
 
-MIN_JUSTIFICATION_CHARS = 25
+MIN_JUSTIFICATION_CHARS = 15
 
 
 def normalize_stored(raw):
@@ -351,7 +351,7 @@ SELF_TEST_CASES = [
         "primary_justification": "-"}),
     ("justification too short", "short_primary_justification", True, {
         "sensible_test": "Fail", "primary_mechanism": "Affective Hijacking",
-        "primary_justification": "emotional appeal"}),
+        "primary_justification": "emotive appeal"}),
     ("secondary with no justification", "empty_secondary_justification", True, {
         "sensible_test": "Fail", "primary_mechanism": "Affective Hijacking",
         "primary_justification": "Child #5's described expression carries the claim.",

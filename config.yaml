@@ -170,7 +170,7 @@ annotation_schemes:
       makes toward the claim. Do not restate the label.
     multiline: true
     rows: 3
-    min_chars: 25
+    min_chars: 15
     # Kept short: the box is one column of a three-column grid, and a long
     # placeholder is clipped mid-sentence there.
     placeholder: 'What is used, and what move does it make?' 
@@ -211,7 +211,7 @@ annotation_schemes:
     description: 'Secondary — Affective Hijacking: what is being used, and what move does it make?'
     multiline: true
     rows: 2
-    min_chars: 25
+    min_chars: 15
     label_requirement: {required: true}
     display_logic:
       show_when:
@@ -222,7 +222,7 @@ annotation_schemes:
     description: 'Secondary — Episodic Overgeneralization: what is being used, and what move does it make?'
     multiline: true
     rows: 2
-    min_chars: 25
+    min_chars: 15
     label_requirement: {required: true}
     display_logic:
       show_when:
@@ -233,7 +233,7 @@ annotation_schemes:
     description: 'Secondary — Spurious Causal Correlation: what is being used, and what move does it make?'
     multiline: true
     rows: 2
-    min_chars: 25
+    min_chars: 15
     label_requirement: {required: true}
     display_logic:
       show_when:
@@ -244,7 +244,7 @@ annotation_schemes:
     description: 'Secondary — Satirical Trivialization: what is being used, and what move does it make?'
     multiline: true
     rows: 2
-    min_chars: 25
+    min_chars: 15
     label_requirement: {required: true}
     display_logic:
       show_when:
@@ -255,7 +255,7 @@ annotation_schemes:
     description: 'Secondary — Esoteric Code Activation: what is being used, and what move does it make?'
     multiline: true
     rows: 2
-    min_chars: 25
+    min_chars: 15
     label_requirement: {required: true}
     display_logic:
       show_when:
@@ -266,7 +266,7 @@ annotation_schemes:
     description: 'Secondary — Spurious Legitimacy Signaling: what is being used, and what move does it make?'
     multiline: true
     rows: 2
-    min_chars: 25
+    min_chars: 15
     label_requirement: {required: true}
     display_logic:
       show_when:

@@ -212,7 +212,7 @@ behind a shut `display_logic` gate is skipped, read off the DOM rather than from
 a second copy of the gate's rules — annotation.js is what opens and shuts them,
 live.
 
-The floor on a justification (`min_chars: 25`) is part of the completeness test
+The floor on a justification (`min_chars: 15`) is part of the completeness test
 too, so an argument with a three-word justification reads `In Progress` while
 the annotator can still do something about it — which is where that ought to be
 caught, rather than in the export weeks later.
@@ -539,7 +539,7 @@ Each was found by driving the page, and each passes `validate --strict`,
    discussion flag mandatory. Not set; every scheme declares
    `label_requirement` explicitly instead.
 
-3. **`min_chars` is advisory.** It draws a red `3/25 min characters` counter and
+3. **`min_chars` is advisory.** It draws a red `3/15 min characters` counter and
    does not block anything. Typed `n/a` into a required justification, clicked
    Next, and it saved. This is why constraint 2 needs the export check.
 

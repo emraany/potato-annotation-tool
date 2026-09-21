@@ -57,7 +57,7 @@ There are two buttons at the bottom of every argument where Potato has one.
 
 **Submit** ends the argument. If anything required is missing it refuses, says
 which questions in a message, and outlines each of them with *needs an answer*
-— including a justification typed under 25 characters. The right-arrow key does
+— including a justification typed under 15 characters. The right-arrow key does
 the same thing.
 
 **Save draft** leaves the argument unfinished and goes to the next one. It never
