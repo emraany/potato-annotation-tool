@@ -310,6 +310,10 @@ def main() -> int:
     ap.add_argument("--instances", default=str(ROOT / "data" / "instances.json"))
     ap.add_argument("--dry-run", action="store_true",
                     help="resolve and summarise, write nothing")
+    ap.add_argument("--name", action="append", default=[], metavar="SHEET=NETID",
+                    help="the sign-in name for one annotator, e.g. --name Denny=dht220001. "
+                         "Repeatable. An annotator with no mapping keeps their name from "
+                         "the sheet, lowercased.")
     ap.add_argument("--keep-case", action="store_true",
                     help="keep the spreadsheet's capitalisation in the directory name")
     ap.add_argument("--overwrite", action="store_true",
@@ -318,6 +322,27 @@ def main() -> int:
                     help="leave a blank Sensible Test blank instead of reading it off "
                          "the mechanisms; such rows import as drafts")
     args = ap.parse_args()
+
+    # The sheet names people; the study knows them by what they sign in with.
+    # The directory IS the annotator id -- it is what the export, the console
+    # and the agreement report key on -- so the mapping has to happen here and
+    # not by renaming directories afterwards.
+    renames = {}
+    for pair in args.name:
+        sheet, _, netid = pair.partition("=")
+        if not sheet.strip() or not netid.strip():
+            raise SystemExit(f"--name wants SHEET=NETID, got {pair!r}")
+        renames[sheet.strip().casefold()] = netid.strip()
+
+    # The same rule the sign-in page applies, so an id that could never be
+    # typed in is caught here rather than by an annotator who cannot get in.
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from accounts import NETID_RE
+    for sheet, netid in renames.items():
+        if not NETID_RE.match(netid):
+            raise SystemExit(
+                f"{netid!r} is not something anybody could sign in with: 3 to 64 "
+                "characters, lowercase letters, digits, and . _ + - @ inside")
 
     instances = json.loads(Path(args.instances).read_text())
     ordering = [i["id"] for i in sorted(instances, key=lambda i: int(i["item_number"]))]
@@ -332,7 +357,8 @@ def main() -> int:
     written, problems, inferences, unresolved = [], [], [], []
 
     for annotator, their_rows in sorted(by_annotator.items()):
-        username = annotator if args.keep_case else annotator.casefold()
+        username = renames.get(annotator.casefold()) or (
+            annotator if args.keep_case else annotator.casefold())
         resolved, trouble = resolve(their_rows, index)
         problems += [f"{annotator}: {t}" for t in trouble]
 
@@ -378,6 +404,9 @@ def main() -> int:
         })
 
     print(f"{len(rows)} row(s), {len(by_annotator)} annotator(s)\n")
+    for entry in written:
+        if entry["username"] != entry["annotator"].casefold():
+            print(f"  {entry['annotator']} signs in as {entry['username']}")
     for entry in written:
         numbers = entry["numbers"]
         reach = f"{min(numbers)}–{max(numbers)}" if numbers else "—"
