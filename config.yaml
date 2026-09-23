@@ -392,4 +392,6 @@ auto_export_interval: 3600
 # is logged out on every redeploy. Both support ${VAR} substitution.
 secret_key: ${POTATO_SECRET_KEY}
 admin_api_key: ${POTATO_ADMIN_API_KEY}
+# Not in effect: scripts/accounts.py signs annotators in with a cookie that
+# ends when the browser closes, so they type their NetID each time.
 session_lifetime_days: 14

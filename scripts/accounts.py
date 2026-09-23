@@ -116,7 +116,7 @@ def install(app, flask_server) -> None:
     """Validate the NetID on /auth, and turn off the two password endpoints."""
     import sys
 
-    from flask import redirect, render_template, request, url_for
+    from flask import redirect, render_template, request, session, url_for
 
     routes = next((sys.modules[name] for name in ("routes", "potato.routes")
                    if name in sys.modules), None)
@@ -156,7 +156,21 @@ def install(app, flask_server) -> None:
         form = request.form.copy()
         form["email"] = netid
         request.form = form
-        return original_auth()
+
+        # The NetID typed is the account signed into. Potato's /auth sees a
+        # username already in the session and sends them to /annotate as that
+        # user, ignoring the form -- and one can be there although they just
+        # pressed Logout: the page's unload beacons (autosave, telemetry) leave
+        # with the old cookie, and a response that lands after /logout's puts
+        # it back. Clearing first means the form always wins.
+        session.clear()
+        response = original_auth()
+
+        # A browser-session cookie, not a 14-day one: nobody stays signed in
+        # after closing the browser, and a cookie that is not permanent is not
+        # re-sent on every request, so a late beacon has nothing to put back.
+        session.permanent = False
+        return response
 
     def closed():
         """/register and /forgot-password, which this study does not have."""
