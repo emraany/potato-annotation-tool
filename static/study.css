@@ -128,6 +128,25 @@
 .annotation-instructions-content ul,
 .annotation-instructions-content ol { margin: 0.4rem 0 0.5rem 1.1rem; padding-left: 0.4rem; }
 .annotation-instructions-content li { margin-bottom: 0.3rem; }
+/* The three tables -- task overview, mechanisms, rules -- rendered by
+   scripts/serve.py. Cells are prose, so they top-align and wrap; the first
+   column names the row and is set in bold. */
+.guidelines-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5rem 0 0.8rem;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+.guidelines-table th,
+.guidelines-table td {
+  border: 1px solid #d9d9e3;
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: top;
+}
+.guidelines-table th { background: #eef2fb; font-weight: 650; }
+.guidelines-table td:first-child { font-weight: 600; width: 24%; }
 
 /* --- pure_display schemes --------------------------------------------------
  * A pure_display scheme's prose lands in a <legend>, which the theme sets to

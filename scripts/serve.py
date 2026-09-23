@@ -13,8 +13,9 @@ are done here rather than in config.yaml. Two reasons they are here:
   so the only ways to put guidelines.md in front of an annotator are to paste a
   copy of it into config.yaml or to read the file at boot. A pasted copy is a
   second copy of the six definitions, and it goes stale the first time the
-  research team edits theirs. So: read the file, hand it to Potato as markdown.
-  Nothing rewrites a sentence of it.
+  research team edits theirs. So: read the file at boot and hand it to Potato
+  as HTML -- rendered here rather than by Potato, because Potato's markdown has
+  no tables and the guidelines have three. Nothing rewrites a sentence of it.
 
   DRAFTS.  `required: true` on a question means two different things, and Potato
   ties them together: "this has to be answered before the argument is done" and
@@ -89,20 +90,83 @@ REQUIRED: "list[tuple[str, int]]" = []
 # --- the guidelines -----------------------------------------------------------
 
 def guidelines_markdown() -> str:
-    """guidelines.md, verbatim.
-
-    Potato renders `annotation_instructions` as markdown only when it holds no
-    block-level HTML tag, so this must stay free of raw HTML -- a single <table>
-    in guidelines.md would send the whole document down the HTML path and the
-    markdown around it would show as source text on every page.
-    """
+    """guidelines.md, verbatim."""
     if not GUIDELINES.exists():
         raise SystemExit(f"{GUIDELINES} does not exist; there are no guidelines to show")
     return GUIDELINES.read_text()
 
 
-MECHANISM_HEADING = re.compile(r"^#{3,4}\s+(.+?)\s*$", re.M)
-CHECK_LINE = re.compile(r"^-\s+\*\*The\s+(.+?)\s+Check:\*\*\s*(.+)$", re.M)
+# --- tables -------------------------------------------------------------------
+#
+# The guidelines carry three tables -- the task overview, the mechanisms and the
+# rules -- and Potato's markdown renderer has no table syntax: a pipe table
+# comes out as one paragraph of `|` characters. So the document is rendered
+# here, a table at a time, and handed to Potato as HTML. Everything between
+# the tables is still Potato's own markdown renderer, and the result goes
+# through Potato's sanitizer either way (it lets table tags through).
+
+TABLE_ROW = re.compile(r"^\s*\|.*\|\s*$")
+TABLE_RULE = re.compile(r"^\s*\|(\s*:?-+:?\s*\|)+\s*$")
+
+
+def table_cells(line: str) -> list[str]:
+    return [cell.strip() for cell in line.strip()[1:-1].split("|")]
+
+
+def inline(text: str) -> str:
+    """One cell's markdown, without the <p> a renderer wraps it in."""
+    from potato.codebook.markdown import render_markdown
+
+    html = render_markdown(text).strip()
+    if html.startswith("<p>") and html.endswith("</p>"):
+        html = html[3:-4]
+    return html
+
+
+def render_table(lines: list[str]) -> str:
+    header, body = table_cells(lines[0]), [table_cells(line) for line in lines[2:]]
+    head = "".join(f"<th>{inline(cell)}</th>" for cell in header)
+    rows = "".join(
+        "<tr>" + "".join(f"<td>{inline(cell)}</td>" for cell in row) + "</tr>"
+        for row in body)
+    return (f'<table class="guidelines-table"><thead><tr>{head}</tr></thead>'
+            f"<tbody>{rows}</tbody></table>")
+
+
+def guidelines_html(markdown: str) -> str:
+    """guidelines.md as HTML, pipe tables included."""
+    from potato.codebook.markdown import render_markdown
+
+    parts, prose, lines, i = [], [], markdown.splitlines(), 0
+    while i < len(lines):
+        if (TABLE_ROW.match(lines[i]) and i + 1 < len(lines)
+                and TABLE_RULE.match(lines[i + 1])):
+            parts.append(render_markdown("\n".join(prose)) if "".join(prose).strip() else "")
+            prose, end = [], i + 2
+            while end < len(lines) and TABLE_ROW.match(lines[end]):
+                end += 1
+            parts.append(render_table(lines[i:end]))
+            i = end
+            continue
+        prose.append(lines[i])
+        i += 1
+    if "".join(prose).strip():
+        parts.append(render_markdown("\n".join(prose)))
+    return "\n".join(parts)
+
+
+CHECK_LINE = re.compile(
+    r"^(?:-|\d+\.)\s+\*\*The\s+(.+?)\s+Check:?\*\*:?\s*(.+)$", re.M)
+
+
+def guidelines_mechanisms(markdown: str) -> list[str]:
+    """The first column of the table under `## 4. The Mechanisms`."""
+    section = markdown.split("## 4. The Mechanisms", 1)
+    if len(section) < 2:
+        return []
+    rows = [line for line in section[1].split("\n## ", 1)[0].splitlines()
+            if TABLE_ROW.match(line) and not TABLE_RULE.match(line)]
+    return [table_cells(row)[0] for row in rows[1:]]
 
 
 def config_mechanism_labels(text: str) -> list[str]:
@@ -115,8 +179,7 @@ def config_mechanism_labels(text: str) -> list[str]:
 def warn_on_drift(markdown: str) -> None:
     config_text = CONFIG.read_text()
 
-    section = markdown.split("## 4. The Mechanisms", 1)
-    found = MECHANISM_HEADING.findall(section[1].split("\n## ", 1)[0]) if len(section) > 1 else []
+    found = guidelines_mechanisms(markdown)
     expected = config_mechanism_labels(config_text)
     if found != expected:
         print("  WARNING  guidelines.md and config.yaml disagree about the mechanisms.\n"
@@ -554,7 +617,7 @@ def main() -> int:
     def init_config(parsed):
         original_init_config(parsed)
         config = flask_server.config
-        config["annotation_instructions"] = markdown
+        config["annotation_instructions"] = guidelines_html(markdown)
         # After take_requirements, which is what fills REQUIRED.
         take_requirements(config.get("annotation_schemes") or [])
         config["custom_footer_html"] = footer()

@@ -378,12 +378,12 @@ were.
 
 Three mechanics behind it, all measured:
 
-- **Markdown, not HTML.** `render_annotation_instructions` sends the text
-  through the markdown renderer only when it contains no block-level HTML tag,
-  and Potato's markdown renderer has no table support. So the mechanism table
-  in `guidelines.md` is written as headed entries, and a single `<table>` in
-  that file would send the whole document down the HTML path and print the
-  markdown around it as source text on every page.
+- **Tables rendered by `serve.py`.** Potato's markdown renderer has no table
+  support, and `guidelines.md` has three (the task overview, the mechanisms and
+  the rules), written as markdown pipe tables. `serve.py` renders each table
+  itself, runs everything between them through Potato's own markdown renderer,
+  and hands Potato the result as HTML, which Potato sanitizes and passes
+  through. `guidelines.md` stays plain markdown; do not put raw HTML in it.
 - **It starts shut.** Potato's template hardcodes `open` on the banner, which
   with a whole document inside it would put three screens of prose above the
   work on every item. `serve.py` injects a `custom_footer_html` script that
@@ -450,8 +450,8 @@ push back.
    flat, so two mechanisms that both fit are both ticked and there is nothing
    to break a tie between. What replaced it is a different judgement — *is this
    second mechanism doing work, or am I reading the whole meme?* — and section
-   6 of `guidelines.md` is where that is answered. Section 5 (*Common
-   Misconceptions*, currently empty) is still the cheapest place to sharpen it
+   6 of `guidelines.md` is where that is answered. Section 5 (*Rules*, a table
+   of rule, advice and example) is still the cheapest place to sharpen it
    after the pilot.
 
 3. **`attack` arguments read in the opposite direction.** 19 of 1,621 have

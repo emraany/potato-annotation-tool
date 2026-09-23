@@ -313,7 +313,8 @@ def main() -> int:
         # renders above every argument. Two things have to hold. All six
         # mechanism definitions have to be in it -- a markdown document that
         # failed to render comes through as source text and would still contain
-        # the names, so the check is on the rendered headings. And it has to
+        # the names, so the check is on the first column of the rendered
+        # mechanism table. And it has to
         # start shut: Potato hardcodes `open`, scripts/serve.py shuts it, and a
         # banner that stopped being shut puts three screens of prose above the
         # work on every item.
@@ -326,12 +327,13 @@ def main() -> int:
                 w.problems.append("the guidelines banner is open by default")
             # text_content, not inner_text: the banner is shut, and Playwright
             # reads nothing out of an element that is not being rendered.
-            headings = [h.text_content().strip() for h in content.query_selector_all("h4")]
+            headings = [td.text_content().strip() for td in
+                        content.query_selector_all("table.guidelines-table td:first-child")]
             missing = [m for m in MECHANISMS if m not in headings]
             if missing:
                 w.problems.append(f"the guidelines banner is missing {missing}")
             else:
-                log(f"  guidelines in the banner, shut, {len(headings)} mechanisms")
+                log(f"  guidelines in the banner, shut, all {len(MECHANISMS)} mechanisms")
 
         # Two buttons, not one. If study.js failed to load, Potato's single
         # `Next` is still there and still works, so nothing else in this walk
