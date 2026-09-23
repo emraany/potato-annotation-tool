@@ -72,6 +72,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 GUIDELINES = ROOT / "guidelines.md"
 CONFIG = ROOT / "config.yaml"
+INSTANCES = ROOT / "data" / "instances.json"
+
+# scripts/ on the path, so `import assignments` and `import accounts` work
+# however this file was started -- `python scripts/serve.py` puts it there,
+# `python -m scripts.serve` does not.
+sys.path.insert(0, str(ROOT / "scripts"))
 
 # Every question that has to be answered before an argument counts as done, and
 # the minimum length where there is one. Filled in from config.yaml at boot --
@@ -259,6 +265,228 @@ def patch_for_drafts(flask_server) -> None:
     user_states.InMemoryUserState.find_prev_unannotated_index = find_prev
 
 
+# --- assignments ---------------------------------------------------------------
+#
+# A stretch of the corpus handed to somebody, read off
+# annotation_output/assignments.json -- see scripts/assignments.py for the file
+# and why it is an overlay rather than a Potato assignment. Three things read
+# it, and none of them changes what anybody can reach:
+#
+#   the band          `/vlmd/batch` feeds the strip static/study.js draws under
+#                     the navbar: the stretch, how much of it is done, how much
+#                     is left, and the next unfinished argument in it.
+#   the arrows        stop at the edges of the batch instead of the edges of the
+#                     corpus -- but only while the annotator is inside their
+#                     batch. Outside it they step as they always did, so typing
+#                     an out-of-batch number into `Go to` cannot strand anybody.
+#   where you land    first arrival in a browser session goes to the first
+#                     unfinished argument of the batch rather than argument 1.
+#
+# `Go to` still reaches all 1,621, an out-of-batch argument still saves, and an
+# annotator with no entry in the file sees exactly the study as it ran before
+# any of this existed.
+
+_ASSIGNMENTS: dict = {"mtime": None, "data": None}
+_CORPUS: dict = {}
+
+
+def corpus() -> dict:
+    """`{number: id}`, `{id: number}` and the corpus size, read once."""
+    if not _CORPUS:
+        instances = json.loads(INSTANCES.read_text()) if INSTANCES.exists() else []
+        numbers = {int(i["item_number"]): i["id"] for i in instances}
+        _CORPUS.update(number_to_id=numbers,
+                       id_to_number={v: k for k, v in numbers.items()},
+                       total=len(instances))
+    return _CORPUS
+
+
+def assignment_data() -> dict:
+    """assignments.json, re-read when it changes.
+
+    Re-read rather than loaded at boot because the console writes it while the
+    study is running: an admin handing somebody a stretch should not need a
+    restart to do it, and the annotator should see the band on their next page.
+    Cheap -- it is one stat() per page render, and the file is a few hundred
+    bytes.
+    """
+    import assignments
+
+    try:
+        mtime = assignments.FILE.stat().st_mtime
+    except OSError:
+        mtime = None
+    if mtime != _ASSIGNMENTS["mtime"] or _ASSIGNMENTS["data"] is None:
+        _ASSIGNMENTS["mtime"] = mtime
+        _ASSIGNMENTS["data"] = assignments.load()
+    return _ASSIGNMENTS["data"]
+
+
+def batch_numbers(username: str) -> set:
+    import assignments
+    return assignments.numbers_for(assignment_data(), username, corpus()["total"])
+
+
+def batch_state(flask_server, username: str) -> dict:
+    """What the band says: the stretch, what is done in it, what is left.
+
+    Only the arguments that already carry an answer are examined for
+    finishedness, for the same reason `progress_counts` only examines those:
+    an argument nobody has touched cannot be finished, and walking every
+    argument of a 400-long batch on every page render is work nobody asked for.
+    """
+    import assignments
+
+    numbers = sorted(batch_numbers(username))
+    if not numbers:
+        return {"assigned": False, "corpus": corpus()["total"]}
+
+    number_to_id = corpus()["number_to_id"]
+    user_state = flask_server.get_user_state(username)
+    annotated = set(user_state.get_annotated_instance_ids())
+
+    done, drafts, next_unfinished = 0, 0, None
+    for number in numbers:
+        instance_id = number_to_id.get(number)
+        if instance_id in annotated and not unfinished(flask_server, user_state, instance_id):
+            done += 1
+            continue
+        if instance_id in annotated:
+            drafts += 1
+        if next_unfinished is None:
+            next_unfinished = number
+
+    current = None
+    index = user_state.get_current_instance_index()
+    ordering = user_state.instance_id_ordering
+    if 0 <= index < len(ordering):
+        current = corpus()["id_to_number"].get(ordering[index])
+
+    data = assignment_data()
+    return {
+        "assigned": True,
+        "corpus": corpus()["total"],
+        "ranges": assignments.as_ranges(numbers),
+        "labels": [e["label"] for e in assignments.ranges_for(data, username) if e.get("label")],
+        "total": len(numbers),
+        "done": done,
+        "drafts": drafts,
+        "left": len(numbers) - done,
+        "next_unfinished": next_unfinished,
+        "current": current,
+        "in_batch": current in set(numbers) if current else False,
+        # Whether the two arrows have anywhere to go. They are bounded by the
+        # batch (see `step` below) and study.js greys out an arrow with nothing
+        # behind it -- but study.js reads the CORPUS ends off the navbar, and
+        # the batch ends are not in the page. They are here.
+        "has_prev": bool(current and any(n < current for n in numbers)),
+        "has_next": bool(current and any(n > current for n in numbers)),
+    }
+
+
+def patch_for_assignments(flask_server) -> None:
+    import potato.user_state_management as user_states
+    from flask import jsonify, session
+
+    original_find_next = user_states.InMemoryUserState.find_next_unannotated_index
+    original_find_prev = user_states.InMemoryUserState.find_prev_unannotated_index
+
+    def step(self, forward: bool):
+        """The neighbouring argument, inside the batch if they are inside it.
+
+        Outside their batch -- somebody who typed 900 into `Go to` with 1-320
+        to do -- the arrows are the plain neighbours they were before, because
+        an arrow that jumped them back into the batch would be a trapdoor, and
+        one that refused to move would be a dead end.
+        """
+        fallback = (original_find_next if forward else original_find_prev)(self)
+        numbers = batch_numbers(getattr(self, "user_id", ""))
+        if not numbers:
+            return fallback
+
+        index = self.get_current_instance_index()
+        ordering = self.instance_id_ordering
+        if not 0 <= index < len(ordering):
+            return fallback
+        here = corpus()["id_to_number"].get(ordering[index])
+        if here is None or here not in numbers:
+            return fallback
+
+        candidates = [n for n in numbers if (n > here if forward else n < here)]
+        if not candidates:
+            return None            # the edge of the batch; study.js greys it out
+        target = min(candidates) if forward else max(candidates)
+        return self.instance_id_to_order.get(corpus()["number_to_id"].get(target), fallback)
+
+    user_states.InMemoryUserState.find_next_unannotated_index = lambda self: step(self, True)
+    user_states.InMemoryUserState.find_prev_unannotated_index = lambda self: step(self, False)
+
+    original_create_app = flask_server.create_app
+
+    def create_app(*args, **kwargs):
+        app = original_create_app(*args, **kwargs)
+
+        @app.route("/vlmd/batch")
+        def vlmd_batch():
+            username = session.get("username")
+            if not username:
+                return jsonify({"assigned": False}), 200
+            try:
+                return jsonify(batch_state(flask_server, username))
+            except Exception as error:      # noqa: BLE001 -- a band, not the study
+                # The band is an aid. A study that will not render because the
+                # strip above it could not be computed is a worse study.
+                print(f"  WARNING  batch state for {username!r}: {error}", file=sys.stderr)
+                return jsonify({"assigned": False}), 200
+
+        @app.before_request
+        def land_in_batch():
+            """First arrival of a session lands on the first unfinished
+            argument of the batch, not on argument 1.
+
+            Once per session, and only from outside the batch: somebody who
+            stopped at 180 yesterday comes back to 180, and somebody who walked
+            out of their batch on purpose is not dragged back on the next page.
+            """
+            from flask import request
+
+            if request.path not in ("/", "/annotate") or session.get("vlmd_landed"):
+                return None
+            username = session.get("username")
+            if not username:
+                return None
+            session["vlmd_landed"] = True
+
+            try:
+                numbers = batch_numbers(username)
+                if not numbers:
+                    return None
+                user_state = flask_server.get_user_state(username)
+                ordering = user_state.instance_id_ordering
+                if not ordering:
+                    return None
+                index = user_state.get_current_instance_index()
+                here = (corpus()["id_to_number"].get(ordering[index])
+                        if 0 <= index < len(ordering) else None)
+                if here in numbers:
+                    return None
+
+                state = batch_state(flask_server, username)
+                target = state.get("next_unfinished") or min(numbers)
+                landing = user_state.instance_id_to_order.get(
+                    corpus()["number_to_id"].get(target))
+                if landing is not None:
+                    user_state.current_instance_index = landing
+            except Exception as error:      # noqa: BLE001
+                print(f"  WARNING  could not land {username!r} in their batch: {error}",
+                      file=sys.stderr)
+            return None
+
+        return app
+
+    flask_server.create_app = create_app
+
+
 def patch_for_accounts(flask_server) -> None:
     """Registration that validates, and a reset that is emailed, not displayed.
 
@@ -268,7 +496,6 @@ def patch_for_accounts(flask_server) -> None:
     change -- the short version is that Potato's /forgot-password prints a
     working reset link for any username typed into it.
     """
-    sys.path.insert(0, str(ROOT / "scripts"))
     import accounts
 
     original_create_app = flask_server.create_app
@@ -338,6 +565,7 @@ def main() -> int:
 
     flask_server.init_config = init_config
     patch_for_drafts(flask_server)
+    patch_for_assignments(flask_server)
     patch_for_accounts(flask_server)
 
     sys.argv = ["potato", "start", args.config, "-p", str(args.port)]

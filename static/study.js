@@ -10,6 +10,7 @@
  *   2. Next becomes two buttons: Save draft and Submit.
  *   3. The navbar arrows say they step, and stop at the two ends.
  *   4. Un-ticking a checkbox re-runs the display_logic gates it feeds.
+ *   5. The band: the stretch this annotator was given, and what is left of it.
  */
 (function () {
   "use strict";
@@ -274,12 +275,120 @@
     });
   }
 
+  // --- 5. the band ------------------------------------------------------------
+  //
+  // The stretch of the corpus this annotator was given, drawn as a strip under
+  // the navbar: what it is, how much of it is done, how much is left, and one
+  // button to the next argument in it they have not finished.
+  //
+  // It exists because the two numbers already on the page answer a different
+  // question. "Argument 412 of 1621" is where they are in the corpus, and the
+  // navbar's own Progress counter -- hidden in study.css -- counted the whole
+  // corpus against one person's work, so somebody three hundred arguments into
+  // a three-hundred-and-twenty argument batch read as 1,300 behind. Everything
+  // here is scoped to the batch instead.
+  //
+  // Nothing is drawn for an annotator with no assignment: /vlmd/batch answers
+  // `assigned: false`, and the page is the page it was before any of this.
+  // The same is true if the fetch fails -- a band is an aid, and a study that
+  // renders without it is a study, while one that breaks over it is not.
+
+  function band(state) {
+    var host = document.getElementById("vlmd-band");
+    if (!host) {
+      host = document.createElement("div");
+      host.id = "vlmd-band";
+      var nav = document.querySelector("nav.potato-navbar");
+      if (nav && nav.parentNode) {
+        nav.parentNode.insertBefore(host, nav.nextSibling);
+      } else {
+        document.body.insertBefore(host, document.body.firstChild);
+      }
+    }
+
+    var done = state.done || 0, total = state.total || 0;
+    var pct = total ? Math.round((done / total) * 100) : 0;
+    var parts = [];
+
+    var labels = (state.labels || []).join(", ");
+    parts.push('<span class="vlmd-band-label">Your batch</span>'
+      + '<span class="vlmd-band-range"'
+      + (labels ? ' title="' + labels.replace(/"/g, "&quot;") + '"' : "")
+      + ">" + state.ranges + "</span>");
+    parts.push('<span class="vlmd-band-bar"><i style="width:' + pct + '%"></i></span>');
+    parts.push('<span class="vlmd-band-count"><b>' + done + "</b> of " + total
+      + " done <span class=\"vlmd-band-left\">" + state.left + " left</span></span>");
+    if (state.drafts) {
+      parts.push('<span class="vlmd-band-draft">' + state.drafts + " draft"
+        + (state.drafts === 1 ? "" : "s") + "</span>");
+    }
+
+    // The one action the band offers. It is the answer to "where was I?", and
+    // it is the same jump the Go to box does -- through Potato's own navigation
+    // so the save, the reload and the position all happen the way they do
+    // everywhere else on this page.
+    if (state.next_unfinished) {
+      parts.push('<button type="button" class="vlmd-band-go" '
+        + 'title="The first argument in your batch you have not finished">'
+        + "Next unfinished #" + state.next_unfinished + "</button>");
+    } else {
+      parts.push('<span class="vlmd-band-done">Batch finished ✓</span>');
+    }
+
+    // Outside the batch is allowed -- Go to reaches every argument in the
+    // corpus and an argument out here still saves -- so this says where they
+    // are rather than stopping them being there.
+    if (state.current && !state.in_batch) {
+      parts.push('<span class="vlmd-band-out">You are on #' + state.current
+        + ", outside your batch</span>");
+    }
+
+    host.innerHTML = parts.join("");
+    var go = host.querySelector(".vlmd-band-go");
+    if (go) {
+      go.addEventListener("click", function () { jump(state.next_unfinished); });
+    }
+
+    // The arrows stop at the ends of the batch, not the ends of the corpus --
+    // the server sends them there (scripts/serve.py, `step`) and this is what
+    // says so on screen. Only while the annotator is inside their batch:
+    // outside it the arrows are the plain neighbours again, and arrows() has
+    // already greyed them against the two ends of the corpus.
+    if (state.in_batch) {
+      var prev = document.getElementById("jump-unannotated-prev-btn");
+      var next = document.getElementById("jump-unannotated-btn");
+      if (prev) { prev.disabled = !state.has_prev; }
+      if (next) { next.disabled = !state.has_next; }
+    }
+  }
+
+  function jump(number) {
+    if (typeof window.navigateToInstance === "function") {
+      window.navigateToInstance(number - 1);   // the page counts from 0
+      return;
+    }
+    var box = document.getElementById("go_to");
+    var button = document.getElementById("go-to-btn");
+    if (box && button) { box.value = number; button.click(); }
+  }
+
+  function loadBand() {
+    if (!window.fetch) { return; }
+    fetch("/vlmd/batch", { credentials: "same-origin" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (state) {
+        if (state && state.assigned) { band(state); }
+      })
+      .catch(function () { /* no band, same page as before */ });
+  }
+
   function start() {
     banner();
     wire();
     buttons();
     arrows();
     watch();
+    loadBand();
   }
 
   if (document.readyState === "loading") {

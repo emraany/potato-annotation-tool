@@ -27,12 +27,24 @@ own admin dashboard does not do, or does not do readably.
   Flags       every argument somebody ticked `flag_for_discussion`, with the
               argument itself, so they can be read and
               adjudicated in one pass rather than grepped out of a CSV.
+  Assign      who has which stretch of the corpus, as ranges of argument
+              number, with the coverage of the whole corpus drawn end to end.
+              The annotator sees their stretch, their progress through it and
+              what is left, in a band under their navbar.
 
 Everything here is computed from the files on disk -- `data/instances.json` and
 `annotation_output/*/user_state.json` -- so it works with the study server
-stopped, which is when you will want it. It changes nothing: no config is
-rewritten, no assignment is made, nothing is sent to the study server. Who
-annotates which stretch of the corpus is settled between people, by number.
+stopped, which is when you will want it.
+
+One thing here writes, and it writes one file: Assign writes
+`annotation_output/assignments.json`, which the study server re-reads on its
+next page render. No config is rewritten and nothing is sent to the study
+server; Potato still hands every annotator the whole corpus in one fixed order,
+because that global numbering is what this study is built on. An assignment
+changes what an annotator is SHOWN, never what they can reach -- `Go to` still
+reaches all 1,621 and an argument outside somebody's stretch still saves. An
+annotator with nothing assigned sees the study exactly as it ran before any of
+this existed. See scripts/assignments.py.
 
 Potato's own dashboard at http://localhost:8765/admin is still there and still
 has the live view of the study running -- who is logged in, how long each
@@ -62,6 +74,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import agreement as iaa            # noqa: E402  (needs the path above)
+import assignments as assign      # noqa: E402
 import export_annotations as export  # noqa: E402
 
 INSTANCES = ROOT / "data" / "instances.json"
@@ -110,6 +123,12 @@ def progress(records: list[dict], items: dict) -> list[dict]:
     way, as ranges -- what to read to see whether a stretch was really covered,
     and what to quote when handing the next one out. An argument left as a
     draft has no verdict, is not completed, and is counted under `drafts`.
+
+    `assigned` is the stretch they were given, and `outside` is how much
+    finished work fell out of it. Neither is a rule -- an argument outside
+    somebody's batch saves like any other -- so the pair is there to be read:
+    a large `outside` is two people on one stretch by accident, or a batch
+    handed over verbally and never written down.
     """
     by_annotator: dict[str, dict] = {}
     for record in records:
@@ -126,11 +145,91 @@ def progress(records: list[dict], items: dict) -> list[dict]:
         if record["flag_for_discussion"]:
             row["flagged"] += 1
 
+    data = assign.load()
+    total = len(items)
+    for netid in (data.get("assignments") or {}):
+        by_annotator.setdefault(netid, {
+            "annotator": netid, "finished": 0, "drafts": 0,
+            "flagged": 0, "completed_numbers": set()})
+
     rows = []
     for row in sorted(by_annotator.values(), key=lambda r: r["annotator"]):
         numbers = row.pop("completed_numbers")
-        rows.append({**row, "completed": as_ranges(numbers)})
+        batch = assign.numbers_for(data, row["annotator"], total)
+        rows.append({**row,
+                     "completed": as_ranges(numbers),
+                     "assigned": assign.as_ranges(batch),
+                     "assigned_n": len(batch),
+                     "left": len(batch - numbers) if batch else None,
+                     "outside": len(numbers - batch) if batch else 0})
     return rows
+
+
+# --- handing out stretches ----------------------------------------------------
+#
+# The Assign tab. It writes one file -- annotation_output/assignments.json --
+# and nothing else: no config is rewritten and nothing is sent to the study
+# server, which still hands every annotator the whole corpus in one order. What
+# a range in that file changes is what the annotator is shown (the band under
+# their navbar: their stretch, their progress, what is left) and what this page
+# can say about coverage. Nobody is blocked from an argument by it.
+#
+# See scripts/assignments.py for the file, and DESIGN.md *Assignment* for why
+# this is an overlay rather than Potato's own assignment machinery.
+
+def meme_order(items: dict) -> list[str]:
+    """The meme each argument belongs to, indexed by argument number - 1."""
+    ordered = sorted(items.values(), key=lambda i: int(i["item_number"]))
+    return [i["meme_id"] for i in ordered]
+
+
+def coverage(data: dict, total: int) -> dict:
+    """How much of the corpus is held, by how many people.
+
+    `overlap` is the arguments two or more annotators were given on purpose --
+    the only overlap this study has, and the only thing the agreement
+    coefficients have anything to be computed over.
+    """
+    counts = assign.per_number(data, total)
+    return {
+        "unassigned": sum(1 for n in counts if n == 0),
+        "once": sum(1 for n in counts if n == 1),
+        "overlap": sum(1 for n in counts if n > 1),
+    }
+
+
+def assignment_view() -> dict:
+    """Everything the Assign tab draws, in one response."""
+    records, _, items = load_records()
+    total = len(items)
+    data = assign.load()
+
+    finished_by: dict[str, set] = {}
+    for record in records:
+        if record["sensible_test"] is not None and record.get("item_number"):
+            finished_by.setdefault(record["annotator_id"], set()).add(int(record["item_number"]))
+
+    rows = []
+    for netid in sorted(set(data.get("assignments") or {}) | set(finished_by)):
+        batch = assign.numbers_for(data, netid, total)
+        finished = finished_by.get(netid, set())
+        rows.append({
+            "annotator": netid,
+            "ranges": [{**entry, "index": i}
+                       for i, entry in enumerate(assign.ranges_for(data, netid))],
+            "assigned_n": len(batch),
+            "done_in": len(finished & batch),
+            "done_out": len(finished - batch),
+            "left": len(batch - finished),
+        })
+
+    return {
+        "total": total,
+        "rows": rows,
+        "coverage": coverage(data, total),
+        "updated": data.get("updated"),
+        "path": str(assign.FILE.relative_to(ROOT)),
+    }
 
 
 # --- browsing the annotations -------------------------------------------------
@@ -403,6 +502,25 @@ th.raw, .tile .k.raw { text-transform:none; letter-spacing:0.02em; font-size:0.7
 .axis { color:#6a6a80; font-size:0.8rem; margin:10px 0 0; }
 .empty { text-align:center; padding:26px 18px; color:#5a5a72; }
 .empty .big { font-size:1.05rem; font-weight:600; color:#33334d; margin-bottom:6px; }
+
+/* --- the Progress pane -----------------------------------------------------
+ * Label, number, and a note where a number needs one. The label column is
+ * fixed so the numbers line up in a column of their own rather than drifting
+ * to wherever the longest label leaves them. */
+table.stat td:first-child { width: 17rem; }
+table.stat td.n { width: 5rem; padding-right: 18px; }
+
+/* --- the Assign pane ------------------------------------------------------- */
+.assign-form input.n { width:6rem; } .assign-form input.who { width:11rem; }
+.assign-form input.lab { width:13rem; }
+.rng { display:inline-flex; align-items:center; gap:6px; margin:0 7px 5px 0;
+  padding:3px 4px 3px 9px; border:1px solid #d9d9e8; border-radius:4px; background:#fafaff; }
+.rng .num { color:#33336b; font-weight:600; }
+.rng .lab { color:#6a6a80; font-size:0.8rem; }
+.rng button { border:none; background:none; cursor:pointer; color:#9a9ab0; font-size:0.95rem;
+  line-height:1; padding:2px 5px; border-radius:3px; }
+.rng button:hover { background:#f0e2e2; color:#6d2020; }
+.warn { color:#7a4508; }
 </style></head><body><main>
 <header>
   <h1>Annotation tool backend</h1>
@@ -410,23 +528,21 @@ th.raw, .tile .k.raw { text-transform:none; letter-spacing:0.02em; font-size:0.7
 </header>
 <nav>
   <button class="on" data-pane="download">Download</button>
+  <button data-pane="assign">Assign</button>
+  <button data-pane="progress">Progress</button>
   <button data-pane="annotations">Annotations</button>
   <button data-pane="agreement">Agreement</button>
   <button data-pane="flags">Flags</button>
 </nav>
 
 <section id="download" class="on">
-  <div class="tiles" id="tiles"></div>
   <div class="card">
     <h2>Who is where</h2>
-    <p class="hint">Argument numbers are the numbers in <code>args_0911.json</code> and the
-    numbers on screen. <b>Completed</b> is every argument they have finished, as ranges, so a
-    stretch somebody skipped shows up as a gap rather than hiding inside a first-and-last
-    pair &mdash; it is what to read before handing the next stretch over. A <b>draft</b> is an
-    argument they left part-answered; it is not finished work, it is not in Completed, and the
-    export refuses it under <code>--strict</code>. To see <i>which</i> ones are drafts or
-    flags, filter the Annotations tab by that annotator.</p>
-    <table><thead><tr><th>Annotator</th><th>Completed</th><th class="n">Drafts</th>
+    <p class="hint">Finished arguments as ranges, so a skipped stretch shows as a gap. A
+    <b>draft</b> is part-answered: not finished, not in Completed, refused by
+    <code>--strict</code>. Filter the Annotations tab by an annotator to see which ones.</p>
+    <table><thead><tr><th>Annotator</th><th>Completed</th><th>Assigned</th>
+      <th class="n">Left</th><th class="n">Drafts</th>
       <th class="n">Flags</th></tr></thead><tbody id="who"></tbody></table>
   </div>
   <div class="card">
@@ -439,6 +555,47 @@ th.raw, .tile .k.raw { text-transform:none; letter-spacing:0.02em; font-size:0.7
     <a class="btn" href="/download/agreement.json">agreement.json</a>
     <a class="btn" href="/download/annotation_output.zip">annotation_output.zip</a>
     <p class="hint" id="problem-line"></p>
+  </div>
+</section>
+
+<section id="assign">
+  <div class="card">
+    <h2>Assign</h2>
+    <div class="filters assign-form">
+      <label>Annotator
+        <input id="a-who" class="who" list="a-known" placeholder="netid" autocomplete="off"></label>
+      <datalist id="a-known"></datalist>
+      <label>From <input id="a-from" class="n" type="number" min="1"></label>
+      <label>To <input id="a-to" class="n" type="number" min="1"></label>
+      <label>Label <input id="a-label" class="lab" placeholder="optional"></label>
+      <label class="check"><input id="a-snap" type="checkbox" checked> whole memes</label>
+      <button id="a-add">Assign</button>
+    </div>
+    <p class="hint" id="a-msg"></p>
+  </div>
+
+  <div class="card">
+    <h2>Assignment and progress</h2>
+    <table><thead><tr><th>Annotator</th><th>Stretches</th><th class="n">Assigned</th>
+      <th class="n">Done</th><th class="n">Left</th><th class="n">Outside</th></tr></thead>
+      <tbody id="a-rows"></tbody></table>
+    <p class="hint"><a class="btn" href="/download/assignments.json">assignments.json</a>
+      <span class="muted" id="a-file"></span></p>
+  </div>
+</section>
+
+<section id="progress">
+  <div class="card">
+    <h2>Corpus</h2>
+    <table class="stat"><tbody id="p-corpus"></tbody></table>
+  </div>
+  <div class="card">
+    <h2>Assignment</h2>
+    <table class="stat"><tbody id="p-assigned"></tbody></table>
+  </div>
+  <div class="card">
+    <h2>Work</h2>
+    <table class="stat"><tbody id="p-work"></tbody></table>
   </div>
 </section>
 
@@ -486,17 +643,9 @@ th.raw, .tile .k.raw { text-transform:none; letter-spacing:0.02em; font-size:0.7
     <div class="tiles" id="iaa-tiles"></div>
     <div class="card">
       <h2>Agreement by question</h2>
-      <p class="hint">Computed over the arguments two or more people have actually annotated,
-      question by question. <b>Krippendorff&rsquo;s &alpha;</b> is the headline because it is the
-      one that copes with annotators having answered different arguments, which is what
-      happens when work is handed out by number; <b>observed</b> beside it is the plain
-      proportion of answers that match, uncorrected for the agreement chance alone would
-      produce. Read them together with <b>arguments</b>: a coefficient over a handful of
-      arguments is not yet a finding. Bands are Landis &amp; Koch, a convention and not a
-      threshold anybody has to meet. A &kappa; near zero beside a high <b>observed</b> is not
-      a contradiction and usually not a problem: when nearly every argument gets the same
-      answer, chance agreement is already almost total and there is little left for a
-      chance-corrected coefficient to credit.</p>
+      <p class="hint">Over the arguments two or more people annotated. <b>&alpha;</b> is the
+      headline; <b>observed</b> is the raw match rate. Read both against <b>arguments</b> &mdash;
+      a coefficient over a handful is not a finding. Bands are Landis &amp; Koch.</p>
       <table class="iaa"><thead><tr><th>Question</th><th class="n">Arguments</th>
         <th class="n">Differ</th><th class="n">Observed</th>
         <th class="n raw">Krippendorff &alpha;</th><th class="n raw">Fleiss &kappa;</th>
@@ -504,29 +653,23 @@ th.raw, .tile .k.raw { text-transform:none; letter-spacing:0.02em; font-size:0.7
     </div>
     <div class="card">
       <h2>Secondary mechanisms</h2>
-      <p class="hint">A multi-select is not scored like a single choice: two people who both
-      chose three mechanisms and share two of them have not simply disagreed.
-      <b>&alpha;-MASI</b> is Krippendorff&rsquo;s &alpha; with a set distance that counts a
-      subset as closer than an unrelated set; <b>Jaccard</b> is the mean overlap of the two
-      sets; <b>exact match</b> is how often the sets are identical.</p>
+      <p class="hint">Scored as sets, not single choices. <b>&alpha;-MASI</b> counts a subset
+      as closer than an unrelated set; <b>Jaccard</b> is mean overlap; <b>exact match</b> is
+      identical sets.</p>
       <table class="iaa"><thead><tr><th>Question</th><th class="n">Arguments</th>
         <th class="n">Differ</th><th class="n">Exact match</th><th class="n raw">&alpha;-MASI</th>
         <th class="n">Mean Jaccard</th></tr></thead><tbody id="iaa-multi"></tbody></table>
     </div>
     <div class="card">
       <h2>Between each pair</h2>
-      <p class="hint">Plain observed agreement per pair of annotators, on the arguments that
-      pair both answered. This is the table that says whether one person is the odd one out;
-      the coefficients above pool everybody.</p>
+      <p class="hint">Observed agreement per pair, on what that pair both answered &mdash;
+      where one person being the odd one out shows up.</p>
       <div style="overflow-x:auto"><table id="iaa-pairs"></table></div>
     </div>
     <div class="card">
       <h2>Where they part company</h2>
-      <p class="hint">Every shared answer to one question, counted once: what the first
-      annotator said down the side, what the second said across the top. The diagonal is
-      agreement; everything off it is a pair of arguments worth reading. This is the table
-      that tells you <i>which</i> two mechanisms are being confused for each other, which is
-      the thing a single coefficient cannot.</p>
+      <p class="hint">First annotator down the side, second across the top. The diagonal is
+      agreement; off it is which two mechanisms are being confused.</p>
       <div class="filters">
         <label>Pair<select id="iaa-pair"></select></label>
         <label>Question<select id="iaa-question"></select></label>
@@ -541,9 +684,7 @@ th.raw, .tile .k.raw { text-transform:none; letter-spacing:0.02em; font-size:0.7
 <section id="flags">
   <div class="card">
     <h2>Flagged arguments</h2>
-    <p class="hint">Arguments somebody ticked <b>flag for discussion</b> on, in argument order.
-    A queue, not a workflow: somebody still has to read it. Notes are not flags &mdash; they
-    are on the Annotations tab, beside the annotation they belong to.</p>
+    <p class="hint">In argument order. Notes are on the Annotations tab.</p>
     <a class="btn" href="/download/flags.csv">flags.csv</a>
     <div id="flag-rows"><p class="muted">Loading&hellip;</p></div>
   </div>
@@ -569,6 +710,8 @@ document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
   document.querySelectorAll('nav button').forEach(x => x.classList.toggle('on', x === b));
   document.querySelectorAll('section').forEach(s => s.classList.toggle('on', s.id === b.dataset.pane));
   if (b.dataset.pane === 'flags') loadFlags();
+  if (b.dataset.pane === 'assign') loadAssign();
+  if (b.dataset.pane === 'progress') loadProgress();
   if (b.dataset.pane === 'annotations') loadAnnotations(1);
   if (b.dataset.pane === 'agreement') loadAgreement();
 });
@@ -582,14 +725,8 @@ function tile(n, k, cls) {
 
 async function loadSummary() {
   const d = await get('/api/summary');
-  document.getElementById('tiles').innerHTML =
-    tile(d.covered.toLocaleString() + '/' + d.arguments.toLocaleString(), 'arguments covered')
-    + tile(d.annotations.toLocaleString(), 'annotations')
-    + tile(d.drafts.toLocaleString(), 'drafts')
-    + tile(d.annotators, 'annotators')
-    + tile(d.verdicts.Pass, 'pass') + tile(d.verdicts.Fail, 'fail')
-    + tile(d.flags, 'flags')
-    + tile(d.problems, 'export problems');
+  summary = d;
+  if (document.getElementById('progress').classList.contains('on')) drawProgress(d);
   document.getElementById('problem-line').textContent = d.problems
     ? d.problems + ' constraint violation(s) — they are listed in validation_report.json'
     : 'No constraint violations in what has been annotated so far.';
@@ -597,9 +734,137 @@ async function loadSummary() {
     ? d.who.map(a => `<tr><td>${esc(a.annotator)}</td>
         <td><span class="num">${esc(a.completed || '—')}</span>${
           a.finished ? ` <span class="muted">(${a.finished})</span>` : ''}</td>
+        <td>${a.assigned
+          ? `<span class="num">${esc(a.assigned)}</span>${
+              a.outside ? ` <span class="warn">+${a.outside} outside</span>` : ''}`
+          : '<span class="muted">whole corpus</span>'}</td>
+        <td class="n">${a.left === null ? '—' : a.left}</td>
         <td class="n">${a.drafts}</td><td class="n">${a.flagged}</td></tr>`).join('')
-    : '<tr><td colspan="4" class="muted">Nobody has annotated anything yet.</td></tr>';
+    : '<tr><td colspan="6" class="muted">Nobody has annotated anything yet.</td></tr>';
 }
+
+// --- Progress -----------------------------------------------------------------
+//
+// The corpus, three ways: how much of it is finished and by how many people,
+// how much of it is handed out, and what the work itself came to. Every number
+// is computed the same way it is everywhere else on this page -- the summary
+// endpoint is the only source -- so nothing here can disagree with a tab
+// beside it.
+
+let summary = null;
+
+function rows(id, pairs) {
+  document.getElementById(id).innerHTML = pairs.map(([k, v, note]) =>
+    `<tr><td>${k}</td><td class="n">${v}</td>
+      <td class="muted">${note || ''}</td></tr>`).join('');
+}
+
+function pc(n, total) {
+  return total ? '<span class="muted">' + Math.round((n / total) * 100) + '%</span>' : '';
+}
+
+function drawProgress(d) {
+  const n = x => x.toLocaleString();
+  const depth = d.depth;
+  rows('p-corpus', [
+    ['Arguments', n(d.arguments)],
+    ['Finished by somebody', n(d.covered), pc(d.covered, d.arguments)],
+    ['Finished by one annotator', n(depth.once)],
+    ['Finished by two', n(depth.twice), 'agreement is computed over these'],
+    ['Finished by three or more', n(depth.more)],
+    ['Nobody has finished', n(d.arguments - d.covered), pc(d.arguments - d.covered, d.arguments)],
+  ]);
+  const a = d.assignment;
+  rows('p-assigned', [
+    ['Assigned to somebody', n(a.once + a.overlap), pc(a.once + a.overlap, d.arguments)],
+    ['Assigned to one annotator', n(a.once)],
+    ['Assigned to two or more', n(a.overlap), 'the overlap you handed out on purpose'],
+    ['Unassigned', n(a.unassigned), pc(a.unassigned, d.arguments)],
+  ]);
+  rows('p-work', [
+    ['Annotations', n(d.annotations)],
+    ['Pass', n(d.verdicts.Pass)],
+    ['Fail', n(d.verdicts.Fail)],
+    ['Drafts', n(d.drafts), 'part-answered; --strict refuses them'],
+    ['Flagged', n(d.flags)],
+    ['Annotators', n(d.annotators)],
+    ['Export problems', n(d.problems)],
+  ]);
+}
+
+async function loadProgress() {
+  drawProgress(summary || await get('/api/summary'));
+}
+
+// --- Assign -------------------------------------------------------------------
+//
+// The only pane that writes. Every write POSTs and is answered with the whole
+// pane's state, so what is on screen after a change came back from the file
+// rather than being patched in here -- a range that was snapped to a meme
+// boundary, or refused, shows as what actually got written.
+
+let assignState = null;
+
+async function post(body) {
+  const r = await fetch(url('/api/assignments'), {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(body)});
+  const d = await r.json();
+  if (!r.ok) { document.getElementById('a-msg').innerHTML =
+    '<span class="warn">' + esc(d.error || 'that did not go through') + '</span>'; return null; }
+  return d;
+}
+
+async function loadAssign(d) {
+  assignState = d || await get('/api/assignments');
+  document.getElementById('a-known').innerHTML =
+    assignState.rows.map(r => `<option value="${esc(r.annotator)}">`).join('');
+  document.getElementById('a-file').textContent = assignState.updated || '';
+
+  document.getElementById('a-rows').innerHTML = assignState.rows.length
+    ? assignState.rows.map(r => `<tr><td>${esc(r.annotator)}</td>
+        <td>${r.ranges.length ? r.ranges.map(g => `<span class="rng">
+            <span class="num">${g.from}–${g.to}</span>
+            ${g.label ? `<span class="lab">${esc(g.label)}</span>` : ''}
+            <button data-who="${esc(r.annotator)}" data-i="${g.index}"
+              title="Take this stretch back">&times;</button></span>`).join('')
+          : '<span class="muted">whole corpus</span>'}</td>
+        <td class="n">${r.assigned_n || '—'}</td>
+        <td class="n">${r.done_in}</td>
+        <td class="n">${r.assigned_n ? r.left : '—'}</td>
+        <td class="n">${r.done_out ? `<span class="warn">${r.done_out}</span>` : '0'}</td></tr>`).join('')
+    : '<tr><td colspan="6" class="muted">Nobody is assigned.</td></tr>';
+
+  document.querySelectorAll('#a-rows .rng button').forEach(b => b.onclick = async () => {
+    const d2 = await post({action: 'remove', annotator: b.dataset.who, index: +b.dataset.i});
+    if (d2) { document.getElementById('a-msg').textContent =
+      'Took a stretch back from ' + b.dataset.who + '.';
+      loadAssign(d2); loadSummary(); }
+  });
+}
+
+document.getElementById('a-add').onclick = async () => {
+  const who = document.getElementById('a-who').value.trim();
+  const from = document.getElementById('a-from').value;
+  const to = document.getElementById('a-to').value;
+  const msg = document.getElementById('a-msg');
+  if (!who || !from || !to) { msg.innerHTML =
+    '<span class="warn">Needs an annotator, a from and a to.</span>'; return; }
+  const d = await post({action: 'add', annotator: who, from: +from, to: +to,
+    label: document.getElementById('a-label').value,
+    snap: document.getElementById('a-snap').checked});
+  if (!d) return;
+  // Read the stretch back off the file rather than echoing what was typed:
+  // `whole memes` may have widened it, and the widened one is what the
+  // annotator will see.
+  const row = d.rows.find(r => r.annotator === who.toLowerCase());
+  const last = row && row.ranges[row.ranges.length - 1];
+  msg.textContent = last
+    ? `${who}: ${last.from}–${last.to}, ${last.to - last.from + 1} arguments.`
+    : 'Written.';
+  document.getElementById('a-label').value = '';
+  loadAssign(d); loadSummary();
+};
 
 // --- Annotations --------------------------------------------------------------
 
@@ -819,14 +1084,10 @@ async function loadAgreement() {
   if (!iaa.n_shared_arguments) {
     body.hidden = true;
     empty.innerHTML = `<div class="card empty">
-      <div class="big">No two people have annotated the same argument yet.</div>
-      <p>Agreement is a property of overlap, and there is none: ${iaa.n_annotators}
-      annotator(s) have between them annotated ${iaa.n_arguments_annotated.toLocaleString()}
-      argument(s), each one once. Hand the same stretch of argument numbers to a second
-      annotator &mdash; &ldquo;start at 500, stop at 800&rdquo; to both &mdash; and every
-      coefficient on this page fills in by itself.</p>
-      <p class="muted">Potato&rsquo;s own report at <code>/admin/iaa</code> says the same
-      thing in nulls.</p></div>`;
+      <div class="big">Nothing to compare yet.</div>
+      <p>${iaa.n_annotators} annotator(s), ${iaa.n_arguments_annotated.toLocaleString()}
+      argument(s), none of them annotated twice. Assign the same stretch to a second
+      annotator and this page fills in.</p></div>`;
     return;
   }
   empty.innerHTML = '';
@@ -923,10 +1184,24 @@ def create_app() -> Flask:
         # one argument covered and two annotations recorded, and a tile reading
         # "12/1621" that meant annotations would overstate coverage by exactly
         # the amount of overlap.
+        # How many people have FINISHED each argument. Two or more is what an
+        # agreement coefficient is computed over, so the distribution is the
+        # answer to "is there anything to compare yet", not a curiosity.
+        finished_by: dict = {}
+        for record in records:
+            if record["sensible_test"] is not None:
+                finished_by.setdefault(record["instance_id"], set()).add(record["annotator_id"])
+        depth = [len(who) for who in finished_by.values()]
+
         return jsonify({
             "arguments": len(items),
-            "covered": len({r["instance_id"] for r in records
-                            if r["sensible_test"] is not None}),
+            "covered": len(finished_by),
+            "depth": {
+                "once": sum(1 for n in depth if n == 1),
+                "twice": sum(1 for n in depth if n == 2),
+                "more": sum(1 for n in depth if n > 2),
+            },
+            "assignment": coverage(assign.load(), len(items)),
             "annotations": sum(verdicts.values()),
             "drafts": sum(1 for r in records if r["sensible_test"] is None),
             "annotators": len({r["annotator_id"] for r in records}),
@@ -977,6 +1252,48 @@ def create_app() -> Flask:
     def api_flags():
         records, _, items = load_records()
         return jsonify({"rows": flag_rows(records, items)})
+
+    # --- assignments ----------------------------------------------------------
+    #
+    # The one thing on this page that writes. It writes
+    # annotation_output/assignments.json and only that: the study server reads
+    # the file on its next page render, so a stretch handed out here shows up in
+    # the annotator's band without a restart, and deleting the file puts every
+    # annotator back on the whole corpus.
+
+    @app.route("/api/assignments")
+    def api_assignments():
+        return jsonify(assignment_view())
+
+    @app.route("/api/assignments", methods=["POST"])
+    def api_assign():
+        body = request.get_json(silent=True) or {}
+        action = body.get("action")
+        data = assign.load()
+        total = len(load_items())
+
+        try:
+            if action == "add":
+                low, high = int(body.get("from")), int(body.get("to"))
+                if body.get("snap"):
+                    low, high = assign.snap(low, high, meme_order(load_items()))
+                assign.add(data, body.get("annotator", ""), low, high, total,
+                           label=body.get("label", ""))
+            elif action == "remove":
+                if not assign.remove(data, body.get("annotator", ""), int(body.get("index", -1))):
+                    return jsonify({"error": "no such range"}), 400
+            else:
+                return jsonify({"error": f"unknown action {action!r}"}), 400
+        except (TypeError, ValueError) as error:
+            return jsonify({"error": str(error) or "from and to have to be numbers"}), 400
+
+        assign.save(data)
+        return jsonify(assignment_view())
+
+    @app.route("/download/assignments.json")
+    def download_assignments():
+        return attachment(json.dumps(assign.load(), indent=1, ensure_ascii=False),
+                          "assignments.json", "application/json")
 
     # --- downloads ------------------------------------------------------------
 

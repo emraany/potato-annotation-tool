@@ -149,11 +149,57 @@ target. Measured with three annotators registering in turn: each was handed
 The second row is the one that looks like it works and does not: it does not
 error and it does not warn.
 
-*The tradeoff, stated plainly:* nothing now stops two annotators doing the same
+*The tradeoff, stated plainly:* nothing stops two annotators doing the same
 stretch by accident, and nothing guarantees the corpus is covered. Both are
-visible — the backend's **Who is where** table has each person's lowest
-and highest argument number, and the export reports the coverage — but they are
-watched rather than enforced. That is the deal the numbering bought.
+visible — the console's **Assign** tab counts what is assigned, unassigned and
+doubly assigned, and its **Who is where** table has each person's finished
+ranges — but they are watched rather than enforced. That is the deal the numbering bought.
+
+### The assignment overlay
+
+Who has which stretch is *written down* rather than only said out loud, in
+`annotation_output/assignments.json` (`scripts/assignments.py`):
+
+```json
+{"version": 1,
+ "assignments": {"ey1220": [{"from": 1, "to": 320, "label": "batch A"}]}}
+```
+
+**It is an overlay, and that is the whole design.** Nothing in it reaches
+Potato's assignment machinery: `assignment_strategy` is still `fixed_order`,
+`max_annotations_per_user` is still absent, every annotator is still handed all
+1,621 arguments in the one order. Each of those knobs hands out a contiguous
+block whose first item becomes *that annotator's* argument 1, and the global
+numbering is the thing this study is built on. So the file changes what an
+annotator is **shown**, never what they can **reach**:
+
+| | |
+|---|---|
+| the band | a strip under the navbar: their stretch, how much of it is finished, how much is left, how many drafts, and one button to the next argument in it they have not finished. `static/study.js` draws it from `/vlmd/batch` |
+| the arrows | stop at the ends of the stretch instead of the ends of the corpus — but only while the annotator is *inside* it. Outside, they are the plain neighbours again, so an out-of-batch `Go to` cannot strand anybody |
+| where they land | first arrival of a browser session goes to the first unfinished argument of the stretch rather than to argument 1, and only from outside it: somebody who stopped at 180 yesterday comes back to 180 |
+
+`Go to` still reaches all 1,621, an argument outside somebody's stretch still
+saves, and **an annotator with no entry in the file gets the study exactly as it
+ran before any of this existed** — whole corpus, no band. So it ships dark, it
+is turned on one person at a time, and a missing or corrupt file degrades to the
+old study rather than breaking the new one.
+
+*Soft, not hard, deliberately.* An out-of-batch argument warns in the band and
+saves like any other. Two reasons: it matches everything else here, which is
+watched rather than enforced, and a stretch is often extended verbally
+mid-shift — an annotator told "keep going to 400" should not have to wait for
+somebody to open the console. What the numbers are for is reading afterwards:
+**Outside** in the console is finished work that fell out of somebody's stretch,
+which is either an agreement set handed out on purpose or one handed out
+verbally and never written down.
+
+*Ranges, not a range.* The value is a list, appended to and never merged: a
+second batch is a second entry rather than an edit, so the record of what was
+handed out and when survives. An overlapping range on a second annotator is how
+an agreement set is collected, and the console counts those arguments — two or
+more annotators on an argument is the only overlap this study has, and the only
+thing the coefficients have to be computed over.
 
 **The gone machinery.** `overlap_sample`, the `overlap_stratum` field the build
 used to stamp, and the 20-bucket stratification behind it are all removed: they
@@ -371,10 +417,11 @@ push back.
    unique.** See *The data* below.
 
 5. **The corpus is served meme by meme in source order, each meme bottom up,
-   and who does what is arranged
-   between people rather than by the software.** Covered under *Assignment*.
-   Nothing enforces coverage and nothing prevents two people doing the same
-   stretch; both are visible in the console and neither is blocked.
+   and who does what is decided by people, written down, and shown rather than
+   enforced.** Covered under *Assignment*. A stretch handed out on the
+   console's Assign tab is what the annotator sees in their band and what the
+   console's coverage counts; nothing enforces coverage and nothing prevents
+   two people doing the same stretch, and both are visible in the console.
 
 6. **No in-task quality control is running**, by decision: no practice round,
    no gold standards, no post-study survey, and no attention checks. Prior
@@ -392,10 +439,13 @@ push back.
    scheme *including the ones behind the gate*, or it dead-ends the annotator
    on a question they cannot guess.
 
-7. **Nobody's shift is bounded.** There is no per-annotator cap, and there
-   cannot be one without breaking the numbering — a cap hands out a contiguous
-   block and the block's first item stops being argument 1. Bound a shift by
-   telling somebody where to stop.
+7. **Nobody's shift is bounded — it is only drawn.** There is no per-annotator
+   cap, and there cannot be one without breaking the numbering: a cap hands out
+   a contiguous block and the block's first item stops being argument 1. What
+   an assignment does instead is *show* somebody where their stretch ends —
+   the band, the arrows stopping, the count of what is left — while leaving
+   every argument reachable and saveable. A stretch is a statement about what
+   was asked for, not a fence.
 
 ## Running it: the annotation tool backend
 
@@ -407,7 +457,9 @@ behavioural and integrity reports — is still there and is not duplicated here.
 
 | Tab | What it does |
 |---|---|
-| Download | `annotations.csv`, `annotations.jsonl`, `validation_report.json`, `flags.csv`, `agreement.json`, a zip of `annotation_output/`; and **Who is where** — per annotator, how much is finished, how many drafts, and the lowest and highest argument number they have touched |
+| Assign | the form that hands a stretch out, optionally widened to whole memes, and who has which stretch, with what they have done, what is left and what fell outside it. The one thing on the page that writes — see below |
+| Progress | the corpus three ways: how much of it is finished and by how many people (finished by two is what agreement has to work with), how much of it is assigned and how much doubly assigned, and what the work itself came to — annotations, verdicts, drafts, flags, export problems |
+| Download | `annotations.csv`, `annotations.jsonl`, `validation_report.json`, `flags.csv`, `agreement.json`, a zip of `annotation_output/`; and **Who is where** — per annotator, what they have finished as ranges, what they were assigned, what is left, and how many drafts and flags |
 | Annotations | every annotation, grouped under the argument it is about, two annotators side by side, filterable by annotator, verdict, mechanism, argument number or free text, and downloadable as the filter leaves it |
 | Agreement | Krippendorff's α, Fleiss' and Cohen's κ, α-MASI and observed agreement, per question and per pair, with the confusion between each pair — see below |
 | Flags | every flagged or noted argument, with the argument itself, the verdict, the mechanism and the justification |
@@ -432,22 +484,29 @@ perfectly. And a coefficient that comes out undefined says why — no overlap
 yet, or one category used throughout — rather than printing a null, which is
 the whole difference between this page and the one it replaces.
 
-**It changes nothing.** No config is rewritten, no assignment is made, nothing
-is sent to the study server — which is also why it needs no admin key and works
-with the study server stopped, through `scripts/export_annotations.py` rather
-than a second copy of its logic. That is when you want the backup.
+**It changes one file, and only that one.** No config is rewritten and nothing
+is sent to the study server: the Assign tab writes
+`annotation_output/assignments.json`, which the study server re-reads on its
+next page render — so a stretch handed out here reaches the annotator's band
+without a restart, and deleting the file puts everybody back on the whole
+corpus. Everything else on the page is read-only and computed from disk through
+`scripts/export_annotations.py` rather than a second copy of its logic, which is
+why the console still works with the study server stopped. That is when you want
+the backup.
 
-It used to do more. The **Assign** tab set per-annotator caps through Potato's
-admin API and wrote a default cap into `config.yaml`, snapping each one up to a
-meme boundary; the **Attention checks** tab wrote a config block. Both are gone
-with the features behind them, and the file went from about a thousand lines to
-four hundred. What the Assign tab did is now a sentence said to a person:
-*start at 500*.
+The Assign tab is not the one that used to be here. The old one set
+per-annotator caps through Potato's admin API and wrote a default cap into
+`config.yaml` — that is the machinery that breaks the numbering, and it is
+still gone, along with the **Attention checks** tab that wrote a config block.
+What is here now writes one file that Potato never sees, and the meme-boundary
+snapping is the one thing carried over from the old tab: a meme's arguments are
+read bottom up as a unit, and half of one is half the context.
 
-**Who is where** is the tab that replaced it. `Reached` is the highest argument
-number somebody has touched, which is the number to quote when you hand the
-next stretch over, and `Drafts` is how many arguments they left part-answered —
-work that is not finished and that `--strict` will refuse.
+**Who is where** carries the other half of the picture. `Completed` is every
+argument somebody has finished, as ranges, so a skipped stretch shows as a gap;
+`Assigned` and `Left` are what they were given and how much of it is
+outstanding; and `Drafts` is how many arguments they left part-answered — work
+that is not finished and that `--strict` will refuse.
 
 ## Items with nowhere to go
 
@@ -510,7 +569,10 @@ source — it exits non-zero if any id disappeared.
 | `require_fully_annotated: true` | It makes unanswerable schemes required and dead-ends the annotator. See *Potato defects* |
 | `batch_assignment` for whole-meme overlap | Needs the full annotator roster in the config; incompatible with open registration |
 | `overlap_sample` for an automatic 10% agreement set | Raising a stratified sample to 3 annotators is automatic assignment, and assignment is what was given up for the numbering. Give two people the same stretch instead |
-| A per-annotator cap, in config or from a console | A cap hands out a contiguous block, so the block's first item is no longer argument 1 and the whole numbering stops meaning anything |
+| A per-annotator cap, in config or from a console | A cap hands out a contiguous block, so the block's first item is no longer argument 1 and the whole numbering stops meaning anything. The assignment overlay is the answer instead: it draws the stretch without fencing it |
+| Blocking an argument outside somebody's assigned stretch | A stretch gets extended verbally mid-shift, and an annotator told to keep going should not be waiting on somebody to open a console. The band says where they are and the console says what fell outside |
+| Assigning a stretch automatically at first login | For a roster this size the admin knows who is doing what, and an automatic hand-out is a second thing to reason about when the numbers stop lining up |
+| Scoping the navbar's own `Progress` counter to the stretch | `total_count` feeds `Go to`'s `max` as well, so scoping it would cap the box at the end of somebody's batch — and `Go to` reaching every argument is the point of the numbering. The band carries the batch-scoped numbers instead |
 | Leaving `Next` as one button | Whether it would let you past was invisible until you pressed it, and a button that sometimes refuses teaches people to fill boxes to get past it. Two buttons say what the choice is |
 | A `Save draft` that stays on the argument | Nobody wants to save and stay; the reason to save a draft is to move on |
 | Potato's own `csv`/`jsonl` export as the deliverable | One sparse column per scheme-and-label, no item fields, no timestamps |

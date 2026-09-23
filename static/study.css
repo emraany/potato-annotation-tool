@@ -258,3 +258,89 @@ form.pure-display legend .step-head { margin-top: 0.4rem; }
 .potato-navbar .nav-control-btn:disabled:hover {
   background: rgba(255, 255, 255, 0.1);
 }
+
+/* --- The band --------------------------------------------------------------
+ * The stretch this annotator was given, under the navbar and above everything
+ * else, because it is the frame the whole shift is read in: which arguments
+ * are theirs, how much of that is done, how much is left. static/study.js
+ * draws it from /vlmd/batch and draws nothing at all for somebody with no
+ * assignment -- so an unassigned annotator gets the page exactly as it was.
+ *
+ * It sits in the flow rather than fixed to the top: the guidelines banner
+ * below it opens to several screens, and a strip floating over a document
+ * somebody is reading is a strip in the way. */
+#vlmd-band {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem 1rem;
+  flex-wrap: wrap;
+  padding: 9px 20px;
+  background: #f4f4fa;
+  border-bottom: 1px solid #e0e0ea;
+  font-size: 0.85rem;
+  color: #3a3a52;
+}
+
+.vlmd-band-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #6a6a80;
+  margin-right: -0.6rem;
+}
+
+/* The numbers are the numbers people say out loud when they hand work over, so
+   they are set in the same face as the argument number on the item itself. */
+.vlmd-band-range {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 600;
+  color: #23232e;
+}
+
+.vlmd-band-bar {
+  flex: 1 1 8rem;
+  max-width: 16rem;
+  height: 6px;
+  border-radius: 3px;
+  background: #e0e0ea;
+  overflow: hidden;
+}
+.vlmd-band-bar i { display: block; height: 100%; background: #4a4a68; }
+
+.vlmd-band-count { font-variant-numeric: tabular-nums; }
+.vlmd-band-count b { font-weight: 650; }
+
+/* What is left is the number an annotator actually watches, so it is the one
+   thing in the strip that is not grey. */
+.vlmd-band-left { color: #33336b; font-weight: 600; margin-left: 0.35rem; }
+
+.vlmd-band-draft {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+  background: #fdf0e0;
+  color: #7a4508;
+}
+
+.vlmd-band-go {
+  font: inherit;
+  font-size: 0.82rem;
+  padding: 4px 11px;
+  border-radius: 5px;
+  border: 1px solid #c3c3dc;
+  background: #fff;
+  color: #33336b;
+  cursor: pointer;
+}
+.vlmd-band-go:hover { background: #ebebf6; }
+
+.vlmd-band-done { color: #23503a; font-weight: 600; }
+
+/* Being outside the batch is allowed -- Go to reaches all 1,621 and the
+   argument still saves -- so this is a note about where they are, in the
+   amber that means "unfinished" elsewhere on this page, not the red that
+   would mean they had done something wrong. */
+.vlmd-band-out { color: #7a4508; }
