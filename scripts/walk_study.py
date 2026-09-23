@@ -4,9 +4,9 @@ Walk this study the way an annotator does, and check the server kept what the
 page showed.
 
 The generic walker in the potato-skill answers every radio with its first
-option, which cannot drive this task: `primary_mechanism` is behind
-`display_logic`, so the walker fills it before the gate has opened and never
-exercises the branch that carries the dataset.
+option, which cannot drive this task: `mechanisms` is behind `display_logic`,
+so the walker fills it before the gate has opened and never exercises the
+branch that carries the dataset.
 
 So this script:
 
@@ -14,9 +14,9 @@ So this script:
      phase; the guidelines are the banner above the argument, and the walk
      checks all six mechanisms are in it
   2. annotates three real items, one per branch:
-        a PASS (three No, nothing else asked)
-        a FAIL with a primary mechanism only
-        a FAIL with a primary and one secondary, each justified
+        a PASS (Sensible Test No, nothing else asked)
+        a FAIL with one mechanism ticked, justified
+        a FAIL with two mechanisms ticked, each justified
   3. leaves a fourth item deliberately unfinished: Submit has to refuse it and
      say what is missing, Save draft has to let it go, and the item left behind
      has to read In Progress
@@ -64,33 +64,36 @@ PLAN = [
         "flag": False,
     },
     {
-        "tag": "fail-primary-only",
+        "tag": "fail-one-mechanism",
         "answers": {
             "sensible_test_failed": "Yes",
-            "primary_mechanism": "Spurious Causal Correlation",
         },
+        "multiselect": {"mechanisms": ["Spurious Causal Correlation"]},
         "text": {
-            "primary_justification":
+            "justification_spurious_causal_correlation":
                 "Child #2 and child #5 are only adjacent; nothing in either "
                 "asserts the causal link the claim needs.",
         },
         "flag": False,
     },
     {
-        "tag": "fail-primary-and-secondary",
+        "tag": "fail-two-mechanisms",
         "answers": {
             "sensible_test_failed": "Yes",
-            "primary_mechanism": "Esoteric Code Activation",
         },
-        "multiselect": {"secondary_mechanisms": ["Affective Hijacking"]},
+        # Ticked in the order the codebook lists them, which is also the order
+        # the six justification boxes appear in. Two ticks and two boxes is the
+        # branch the flat scheme exists for.
+        "multiselect": {"mechanisms": ["Affective Hijacking",
+                                       "Esoteric Code Activation"]},
         "text": {
-            "primary_justification":
-                "The link only lands for a reader who already holds the stereotype "
-                "named in child #14; the argument never states it.",
-            "secondary_justification_affective_hijacking":
+            "justification_affective_hijacking":
                 "Child #5's described expression supplies the contempt that carries "
                 "the reader past the missing step.",
-            "notes": "A failed test with a second mechanism also at work.",
+            "justification_esoteric_code_activation":
+                "The link only lands for a reader who already holds the stereotype "
+                "named in child #14; the argument never states it.",
+            "notes": "A failed test with two mechanisms at work, neither ranked.",
         },
         "flag": True,
     },
@@ -258,12 +261,9 @@ def answer_item(w: Walk, answers: dict, texts: dict, multi: dict, flag: bool) ->
         w.set_radio("sensible_test_failed", answers["sensible_test_failed"])
     w.page.wait_for_timeout(400)
 
-    if "primary_mechanism" in answers:
-        if not w.visible("primary_mechanism"):
-            w.problems.append("primary_mechanism stayed hidden after the Sensible "
-                              "Test was answered Yes")
-        else:
-            w.set_radio("primary_mechanism", answers["primary_mechanism"])
+    if "mechanisms" in (multi or {}) and not w.visible("mechanisms"):
+        w.problems.append("mechanisms stayed hidden after the Sensible Test was "
+                          "answered Yes")
 
     for scheme, values in (multi or {}).items():
         for value in values:
@@ -347,7 +347,7 @@ def main() -> int:
             log("  Save draft and Submit are both on the page")
 
         # --- the annotation phase ---------------------------------------------
-        if not page.query_selector("[data-schema-name='primary_mechanism']"):
+        if not page.query_selector("[data-schema-name='mechanisms']"):
             w.shot("03-never-reached-annotation")
             log("\nnever reached the annotation phase")
             browser.close()
@@ -368,7 +368,7 @@ def main() -> int:
             w.shot(f"04-item{n}-{step['tag']}")
 
             # What SHOULD be on screen, given the branch.
-            gated = {"primary_mechanism", "primary_justification", "secondary_mechanisms"}
+            gated = {"mechanisms", "section_mechanism"}
             failed = step["answers"].get("sensible_test_failed") == "Yes"
             for scheme in gated:
                 vis = w.visible(scheme)
@@ -518,8 +518,9 @@ def main() -> int:
     log("")
     for iid, expected in typed.items():
         if expected.get("sensible_test_failed") == "No":
-            leaked = [k for k in ("primary_mechanism", "primary_justification",
-                                  "secondary_mechanisms")
+            leaked = [k for k in ["mechanisms"] + [
+                          "justification_" + m.lower().replace(" ", "_")
+                          for m in MECHANISMS]
                       if stored.get(iid, {}).get(k) not in (None, {}, [])]
             if leaked:
                 log(f"  BAD  {iid} passed the Sensible Test but still stores {leaked}")

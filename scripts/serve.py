@@ -106,7 +106,7 @@ CHECK_LINE = re.compile(r"^-\s+\*\*The\s+(.+?)\s+Check:\*\*\s*(.+)$", re.M)
 
 
 def config_mechanism_labels(text: str) -> list[str]:
-    block = re.search(r"name:\s*primary_mechanism\b(.*?)\n\n", text, re.S)
+    block = re.search(r"name:\s*mechanisms\b(.*?)\n\n", text, re.S)
     if not block:
         return []
     return re.findall(r"\{name:\s*'([^']+)'", block.group(1))

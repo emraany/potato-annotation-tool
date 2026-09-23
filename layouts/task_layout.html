@@ -1,4 +1,4 @@
-<!-- CONFIG_HASH: a1405e5df32db06b1f620cf6fd551176_c607414eb6e47615ce6769920f4b845c -->
+<!-- CONFIG_HASH: da9458f1532df04f503baa29e3ed9664_d608857930cc1f2d3683b65fa7101ac1 -->
 <!-- Generated annotation layout file -->
 <!-- This file was automatically generated based on the annotation schemes in your config -->
 <!-- You can customize this file to modify the layout of your annotation interface -->
@@ -59,7 +59,7 @@
 
         <form id="section_mechanism" class="annotation-form pure-display" data-annotation-type="pure_display" data-schema-name="section_mechanism" action="javascript:void(0)" data-grid-columns="1">
             <fieldset schema="section_mechanism">
-                <legend><h4>Step 2 &mdash; Mechanism</h4> <p class="step-sub">The argument failed the Sensible Test, so a mechanism is present. Pick the one that does the most work.</p></legend>
+                <legend><h4>Step 2 &mdash; Mechanisms</h4> <p class="step-sub">The argument failed the Sensible Test, so at least one mechanism is present. Tick every mechanism at work, and say for each one how it works. There is no ranking between them.</p></legend>
                 <div class="display-content">
                     
                 </div>
@@ -69,429 +69,287 @@
 </div>
 <div class="display-logic-container display-logic-hidden"
      data-display-logic="{&quot;show_when&quot;: [{&quot;schema&quot;: &quot;sensible_test_failed&quot;, &quot;operator&quot;: &quot;equals&quot;, &quot;value&quot;: &quot;Yes&quot;}]}"
-     data-schema-name="primary_mechanism"
+     data-schema-name="mechanisms"
      data-display-logic-target="true">
 
-    <form id="primary_mechanism" class="annotation-form radio shadcn-radio-container" action="javascript:void(0)" data-annotation-id="3" data-annotation-type="radio" data-schema-name="primary_mechanism" data-grid-columns="1">
+    <form id="mechanisms" class="annotation-form multiselect shadcn-multiselect-container" action="javascript:void(0)" data-annotation-id="3" data-annotation-type="multiselect" data-schema-name="mechanisms" data-grid-columns="1">
         
-        <fieldset schema="primary_mechanism">
-            <legend class="shadcn-radio-title">Primary mechanism — which one does most of the work in getting a reader from these children to this claim?</legend>
-            <div class="shadcn-radio-options">
-    
-            <div class="shadcn-radio-option">
-                <input class="primary_mechanism shadcn-radio-input annotation-input"
-                       type="radio"
-                       id="primary_mechanism_Affective Hijacking_radio"
-                       name="primary_mechanism"
+        <fieldset schema="mechanisms">
+            <legend class="shadcn-multiselect-title">Mechanisms — tick every one at work in getting a reader from these children to this claim. At least one, since the Sensible Test came back failed.</legend>
+    <div class="shadcn-multiselect-grid" style="grid-template-columns: repeat(1, 1fr);">
+            <div class="shadcn-multiselect-item">
+                <input class="mechanisms shadcn-multiselect-checkbox annotation-input"
+                       type="checkbox"
+                       id="mechanisms_Affective Hijacking_checkbox"
+                       name="mechanisms:::Affective Hijacking"
                        value="Affective Hijacking"
-                       selection_constraint="single"
-                       schema="primary_mechanism"
                        label_name="Affective Hijacking"
-                       onclick="onlyOne(this);registerAnnotation(this);"
-                       validation=""
-                       data-key="1">
-                <label for="primary_mechanism_Affective Hijacking_radio" class="shadcn-radio-label" >Affective Hijacking <span class="keybinding-badge">1</span></label>
+                       schema="mechanisms"
+                       onclick="whetherNone(this);registerAnnotation(this)"
+                       validation="" data-key="1">
+                <label for="mechanisms_Affective Hijacking_checkbox"  schema="mechanisms" class="shadcn-multiselect-label">
+                    Affective Hijacking <span class="keybinding-badge shadcn-multiselect-key">1</span>
+                </label>
             </div>
         
-            <div class="shadcn-radio-option">
-                <input class="primary_mechanism shadcn-radio-input annotation-input"
-                       type="radio"
-                       id="primary_mechanism_Episodic Overgeneralization_radio"
-                       name="primary_mechanism"
+            <div class="shadcn-multiselect-item">
+                <input class="mechanisms shadcn-multiselect-checkbox annotation-input"
+                       type="checkbox"
+                       id="mechanisms_Episodic Overgeneralization_checkbox"
+                       name="mechanisms:::Episodic Overgeneralization"
                        value="Episodic Overgeneralization"
-                       selection_constraint="single"
-                       schema="primary_mechanism"
                        label_name="Episodic Overgeneralization"
-                       onclick="onlyOne(this);registerAnnotation(this);"
-                       validation=""
-                       data-key="2">
-                <label for="primary_mechanism_Episodic Overgeneralization_radio" class="shadcn-radio-label" >Episodic Overgeneralization <span class="keybinding-badge">2</span></label>
+                       schema="mechanisms"
+                       onclick="whetherNone(this);registerAnnotation(this)"
+                       validation="" data-key="2">
+                <label for="mechanisms_Episodic Overgeneralization_checkbox"  schema="mechanisms" class="shadcn-multiselect-label">
+                    Episodic Overgeneralization <span class="keybinding-badge shadcn-multiselect-key">2</span>
+                </label>
             </div>
         
-            <div class="shadcn-radio-option">
-                <input class="primary_mechanism shadcn-radio-input annotation-input"
-                       type="radio"
-                       id="primary_mechanism_Spurious Causal Correlation_radio"
-                       name="primary_mechanism"
+            <div class="shadcn-multiselect-item">
+                <input class="mechanisms shadcn-multiselect-checkbox annotation-input"
+                       type="checkbox"
+                       id="mechanisms_Spurious Causal Correlation_checkbox"
+                       name="mechanisms:::Spurious Causal Correlation"
                        value="Spurious Causal Correlation"
-                       selection_constraint="single"
-                       schema="primary_mechanism"
                        label_name="Spurious Causal Correlation"
-                       onclick="onlyOne(this);registerAnnotation(this);"
-                       validation=""
-                       data-key="3">
-                <label for="primary_mechanism_Spurious Causal Correlation_radio" class="shadcn-radio-label" >Spurious Causal Correlation <span class="keybinding-badge">3</span></label>
+                       schema="mechanisms"
+                       onclick="whetherNone(this);registerAnnotation(this)"
+                       validation="" data-key="3">
+                <label for="mechanisms_Spurious Causal Correlation_checkbox"  schema="mechanisms" class="shadcn-multiselect-label">
+                    Spurious Causal Correlation <span class="keybinding-badge shadcn-multiselect-key">3</span>
+                </label>
             </div>
         
-            <div class="shadcn-radio-option">
-                <input class="primary_mechanism shadcn-radio-input annotation-input"
-                       type="radio"
-                       id="primary_mechanism_Satirical Trivialization_radio"
-                       name="primary_mechanism"
+            <div class="shadcn-multiselect-item">
+                <input class="mechanisms shadcn-multiselect-checkbox annotation-input"
+                       type="checkbox"
+                       id="mechanisms_Satirical Trivialization_checkbox"
+                       name="mechanisms:::Satirical Trivialization"
                        value="Satirical Trivialization"
-                       selection_constraint="single"
-                       schema="primary_mechanism"
                        label_name="Satirical Trivialization"
-                       onclick="onlyOne(this);registerAnnotation(this);"
-                       validation=""
-                       data-key="4">
-                <label for="primary_mechanism_Satirical Trivialization_radio" class="shadcn-radio-label" >Satirical Trivialization <span class="keybinding-badge">4</span></label>
+                       schema="mechanisms"
+                       onclick="whetherNone(this);registerAnnotation(this)"
+                       validation="" data-key="4">
+                <label for="mechanisms_Satirical Trivialization_checkbox"  schema="mechanisms" class="shadcn-multiselect-label">
+                    Satirical Trivialization <span class="keybinding-badge shadcn-multiselect-key">4</span>
+                </label>
             </div>
         
-            <div class="shadcn-radio-option">
-                <input class="primary_mechanism shadcn-radio-input annotation-input"
-                       type="radio"
-                       id="primary_mechanism_Esoteric Code Activation_radio"
-                       name="primary_mechanism"
+            <div class="shadcn-multiselect-item">
+                <input class="mechanisms shadcn-multiselect-checkbox annotation-input"
+                       type="checkbox"
+                       id="mechanisms_Esoteric Code Activation_checkbox"
+                       name="mechanisms:::Esoteric Code Activation"
                        value="Esoteric Code Activation"
-                       selection_constraint="single"
-                       schema="primary_mechanism"
                        label_name="Esoteric Code Activation"
-                       onclick="onlyOne(this);registerAnnotation(this);"
-                       validation=""
-                       data-key="5">
-                <label for="primary_mechanism_Esoteric Code Activation_radio" class="shadcn-radio-label" >Esoteric Code Activation <span class="keybinding-badge">5</span></label>
+                       schema="mechanisms"
+                       onclick="whetherNone(this);registerAnnotation(this)"
+                       validation="" data-key="5">
+                <label for="mechanisms_Esoteric Code Activation_checkbox"  schema="mechanisms" class="shadcn-multiselect-label">
+                    Esoteric Code Activation <span class="keybinding-badge shadcn-multiselect-key">5</span>
+                </label>
             </div>
         
-            <div class="shadcn-radio-option">
-                <input class="primary_mechanism shadcn-radio-input annotation-input"
-                       type="radio"
-                       id="primary_mechanism_Spurious Legitimacy Signaling_radio"
-                       name="primary_mechanism"
+            <div class="shadcn-multiselect-item">
+                <input class="mechanisms shadcn-multiselect-checkbox annotation-input"
+                       type="checkbox"
+                       id="mechanisms_Spurious Legitimacy Signaling_checkbox"
+                       name="mechanisms:::Spurious Legitimacy Signaling"
                        value="Spurious Legitimacy Signaling"
-                       selection_constraint="single"
-                       schema="primary_mechanism"
                        label_name="Spurious Legitimacy Signaling"
-                       onclick="onlyOne(this);registerAnnotation(this);"
-                       validation=""
-                       data-key="6">
-                <label for="primary_mechanism_Spurious Legitimacy Signaling_radio" class="shadcn-radio-label" >Spurious Legitimacy Signaling <span class="keybinding-badge">6</span></label>
+                       schema="mechanisms"
+                       onclick="whetherNone(this);registerAnnotation(this)"
+                       validation="" data-key="6">
+                <label for="mechanisms_Spurious Legitimacy Signaling_checkbox"  schema="mechanisms" class="shadcn-multiselect-label">
+                    Spurious Legitimacy Signaling <span class="keybinding-badge shadcn-multiselect-key">6</span>
+                </label>
             </div>
         </div></fieldset></form>
 </div>
 <div class="display-logic-container display-logic-hidden"
-     data-display-logic="{&quot;show_when&quot;: [{&quot;schema&quot;: &quot;sensible_test_failed&quot;, &quot;operator&quot;: &quot;equals&quot;, &quot;value&quot;: &quot;Yes&quot;}]}"
-     data-schema-name="primary_justification"
+     data-display-logic="{&quot;show_when&quot;: [{&quot;schema&quot;: &quot;mechanisms&quot;, &quot;operator&quot;: &quot;contains&quot;, &quot;value&quot;: &quot;Affective Hijacking&quot;}]}"
+     data-schema-name="justification_affective_hijacking"
      data-display-logic-target="true">
 
-    <form id="primary_justification" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="4" data-annotation-type="text" data-schema-name="primary_justification"  data-min-chars="15" data-grid-columns="1">
+    <form id="justification_affective_hijacking" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="4" data-annotation-type="text" data-schema-name="justification_affective_hijacking"  data-min-chars="15" data-grid-columns="1">
             
-        <fieldset schema_name="primary_justification">
+        <fieldset schema_name="justification_affective_hijacking">
     
-            <legend class="shadcn-textbox-title">Why that one? Name what in the children is being used and what move it makes toward the claim. Do not restate the label.</legend>
+            <legend class="shadcn-textbox-title">Affective Hijacking: what is being used, and what move does it make?</legend>
         
             <div class="shadcn-textbox-item">
                 
         
-                <textarea class="primary_justification shadcn-textbox-input shadcn-textbox-textarea annotation-input"
-                          id="primary_justification_text_box_text"
-                          name="primary_justification:::text_box"
+                <textarea class="justification_affective_hijacking shadcn-textbox-input shadcn-textbox-textarea annotation-input"
+                          id="justification_affective_hijacking_text_box_text"
+                          name="justification_affective_hijacking:::text_box"
                           validation=""
-                          schema="primary_justification"
+                          schema="justification_affective_hijacking"
                           label_name="text_box"
-                          rows='3' cols='40'
+                          rows='2' cols='40'
                           placeholder="What is used, and what move does it make?"
                           style=""
                           ></textarea>
             
-                <div class="shadcn-textbox-char-counter" data-input-id="primary_justification_text_box_text" data-min-chars="15">
+                <div class="shadcn-textbox-char-counter" data-input-id="justification_affective_hijacking_text_box_text" data-min-chars="15">
                     <span class="shadcn-textbox-char-count">0</span>/15 min characters
                 </div>
             </div></fieldset></form>
 </div>
 <div class="display-logic-container display-logic-hidden"
-     data-display-logic="{&quot;show_when&quot;: [{&quot;schema&quot;: &quot;sensible_test_failed&quot;, &quot;operator&quot;: &quot;equals&quot;, &quot;value&quot;: &quot;Yes&quot;}]}"
-     data-schema-name="secondary_mechanisms"
+     data-display-logic="{&quot;show_when&quot;: [{&quot;schema&quot;: &quot;mechanisms&quot;, &quot;operator&quot;: &quot;contains&quot;, &quot;value&quot;: &quot;Episodic Overgeneralization&quot;}]}"
+     data-schema-name="justification_episodic_overgeneralization"
      data-display-logic-target="true">
 
-    <form id="secondary_mechanisms" class="annotation-form multiselect shadcn-multiselect-container" action="javascript:void(0)" data-annotation-id="5" data-annotation-type="multiselect" data-schema-name="secondary_mechanisms" data-grid-columns="1">
-        
-        <fieldset schema="secondary_mechanisms">
-            <legend class="shadcn-multiselect-title">Secondary mechanisms — any others also at work in this argument. Optional. Do not repeat the primary.</legend>
-    <div class="shadcn-multiselect-grid" style="grid-template-columns: repeat(1, 1fr);">
-            <div class="shadcn-multiselect-item">
-                <input class="secondary_mechanisms shadcn-multiselect-checkbox annotation-input"
-                       type="checkbox"
-                       id="secondary_mechanisms_Affective Hijacking_checkbox"
-                       name="secondary_mechanisms:::Affective Hijacking"
-                       value="Affective Hijacking"
-                       label_name="Affective Hijacking"
-                       schema="secondary_mechanisms"
-                       onclick="whetherNone(this);registerAnnotation(this)"
-                       validation="" data-key="z">
-                <label for="secondary_mechanisms_Affective Hijacking_checkbox"  schema="secondary_mechanisms" class="shadcn-multiselect-label">
-                    Affective Hijacking <span class="keybinding-badge shadcn-multiselect-key">Z</span>
-                </label>
-            </div>
-        
-            <div class="shadcn-multiselect-item">
-                <input class="secondary_mechanisms shadcn-multiselect-checkbox annotation-input"
-                       type="checkbox"
-                       id="secondary_mechanisms_Episodic Overgeneralization_checkbox"
-                       name="secondary_mechanisms:::Episodic Overgeneralization"
-                       value="Episodic Overgeneralization"
-                       label_name="Episodic Overgeneralization"
-                       schema="secondary_mechanisms"
-                       onclick="whetherNone(this);registerAnnotation(this)"
-                       validation="" data-key="x">
-                <label for="secondary_mechanisms_Episodic Overgeneralization_checkbox"  schema="secondary_mechanisms" class="shadcn-multiselect-label">
-                    Episodic Overgeneralization <span class="keybinding-badge shadcn-multiselect-key">X</span>
-                </label>
-            </div>
-        
-            <div class="shadcn-multiselect-item">
-                <input class="secondary_mechanisms shadcn-multiselect-checkbox annotation-input"
-                       type="checkbox"
-                       id="secondary_mechanisms_Spurious Causal Correlation_checkbox"
-                       name="secondary_mechanisms:::Spurious Causal Correlation"
-                       value="Spurious Causal Correlation"
-                       label_name="Spurious Causal Correlation"
-                       schema="secondary_mechanisms"
-                       onclick="whetherNone(this);registerAnnotation(this)"
-                       validation="" data-key="c">
-                <label for="secondary_mechanisms_Spurious Causal Correlation_checkbox"  schema="secondary_mechanisms" class="shadcn-multiselect-label">
-                    Spurious Causal Correlation <span class="keybinding-badge shadcn-multiselect-key">C</span>
-                </label>
-            </div>
-        
-            <div class="shadcn-multiselect-item">
-                <input class="secondary_mechanisms shadcn-multiselect-checkbox annotation-input"
-                       type="checkbox"
-                       id="secondary_mechanisms_Satirical Trivialization_checkbox"
-                       name="secondary_mechanisms:::Satirical Trivialization"
-                       value="Satirical Trivialization"
-                       label_name="Satirical Trivialization"
-                       schema="secondary_mechanisms"
-                       onclick="whetherNone(this);registerAnnotation(this)"
-                       validation="" data-key="v">
-                <label for="secondary_mechanisms_Satirical Trivialization_checkbox"  schema="secondary_mechanisms" class="shadcn-multiselect-label">
-                    Satirical Trivialization <span class="keybinding-badge shadcn-multiselect-key">V</span>
-                </label>
-            </div>
-        
-            <div class="shadcn-multiselect-item">
-                <input class="secondary_mechanisms shadcn-multiselect-checkbox annotation-input"
-                       type="checkbox"
-                       id="secondary_mechanisms_Esoteric Code Activation_checkbox"
-                       name="secondary_mechanisms:::Esoteric Code Activation"
-                       value="Esoteric Code Activation"
-                       label_name="Esoteric Code Activation"
-                       schema="secondary_mechanisms"
-                       onclick="whetherNone(this);registerAnnotation(this)"
-                       validation="" data-key="b">
-                <label for="secondary_mechanisms_Esoteric Code Activation_checkbox"  schema="secondary_mechanisms" class="shadcn-multiselect-label">
-                    Esoteric Code Activation <span class="keybinding-badge shadcn-multiselect-key">B</span>
-                </label>
-            </div>
-        
-            <div class="shadcn-multiselect-item">
-                <input class="secondary_mechanisms shadcn-multiselect-checkbox annotation-input"
-                       type="checkbox"
-                       id="secondary_mechanisms_Spurious Legitimacy Signaling_checkbox"
-                       name="secondary_mechanisms:::Spurious Legitimacy Signaling"
-                       value="Spurious Legitimacy Signaling"
-                       label_name="Spurious Legitimacy Signaling"
-                       schema="secondary_mechanisms"
-                       onclick="whetherNone(this);registerAnnotation(this)"
-                       validation="" data-key="n">
-                <label for="secondary_mechanisms_Spurious Legitimacy Signaling_checkbox"  schema="secondary_mechanisms" class="shadcn-multiselect-label">
-                    Spurious Legitimacy Signaling <span class="keybinding-badge shadcn-multiselect-key">N</span>
-                </label>
-            </div>
-        </div></fieldset></form>
-</div>
-<div class="display-logic-container display-logic-hidden"
-     data-display-logic="{&quot;show_when&quot;: [{&quot;schema&quot;: &quot;secondary_mechanisms&quot;, &quot;operator&quot;: &quot;contains&quot;, &quot;value&quot;: &quot;Affective Hijacking&quot;}]}"
-     data-schema-name="secondary_justification_affective_hijacking"
-     data-display-logic-target="true">
-
-    <form id="secondary_justification_affective_hijacking" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="6" data-annotation-type="text" data-schema-name="secondary_justification_affective_hijacking"  data-min-chars="15" data-grid-columns="1">
+    <form id="justification_episodic_overgeneralization" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="5" data-annotation-type="text" data-schema-name="justification_episodic_overgeneralization"  data-min-chars="15" data-grid-columns="1">
             
-        <fieldset schema_name="secondary_justification_affective_hijacking">
+        <fieldset schema_name="justification_episodic_overgeneralization">
     
-            <legend class="shadcn-textbox-title">Secondary — Affective Hijacking: what is being used, and what move does it make?</legend>
+            <legend class="shadcn-textbox-title">Episodic Overgeneralization: what is being used, and what move does it make?</legend>
         
             <div class="shadcn-textbox-item">
                 
         
-                <textarea class="secondary_justification_affective_hijacking shadcn-textbox-input shadcn-textbox-textarea annotation-input"
-                          id="secondary_justification_affective_hijacking_text_box_text"
-                          name="secondary_justification_affective_hijacking:::text_box"
+                <textarea class="justification_episodic_overgeneralization shadcn-textbox-input shadcn-textbox-textarea annotation-input"
+                          id="justification_episodic_overgeneralization_text_box_text"
+                          name="justification_episodic_overgeneralization:::text_box"
                           validation=""
-                          schema="secondary_justification_affective_hijacking"
+                          schema="justification_episodic_overgeneralization"
                           label_name="text_box"
                           rows='2' cols='40'
-                          
+                          placeholder="What is used, and what move does it make?"
                           style=""
                           ></textarea>
             
-                <div class="shadcn-textbox-char-counter" data-input-id="secondary_justification_affective_hijacking_text_box_text" data-min-chars="15">
+                <div class="shadcn-textbox-char-counter" data-input-id="justification_episodic_overgeneralization_text_box_text" data-min-chars="15">
                     <span class="shadcn-textbox-char-count">0</span>/15 min characters
                 </div>
             </div></fieldset></form>
 </div>
 <div class="display-logic-container display-logic-hidden"
-     data-display-logic="{&quot;show_when&quot;: [{&quot;schema&quot;: &quot;secondary_mechanisms&quot;, &quot;operator&quot;: &quot;contains&quot;, &quot;value&quot;: &quot;Episodic Overgeneralization&quot;}]}"
-     data-schema-name="secondary_justification_episodic_overgeneralization"
+     data-display-logic="{&quot;show_when&quot;: [{&quot;schema&quot;: &quot;mechanisms&quot;, &quot;operator&quot;: &quot;contains&quot;, &quot;value&quot;: &quot;Spurious Causal Correlation&quot;}]}"
+     data-schema-name="justification_spurious_causal_correlation"
      data-display-logic-target="true">
 
-    <form id="secondary_justification_episodic_overgeneralization" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="7" data-annotation-type="text" data-schema-name="secondary_justification_episodic_overgeneralization"  data-min-chars="15" data-grid-columns="1">
+    <form id="justification_spurious_causal_correlation" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="6" data-annotation-type="text" data-schema-name="justification_spurious_causal_correlation"  data-min-chars="15" data-grid-columns="1">
             
-        <fieldset schema_name="secondary_justification_episodic_overgeneralization">
+        <fieldset schema_name="justification_spurious_causal_correlation">
     
-            <legend class="shadcn-textbox-title">Secondary — Episodic Overgeneralization: what is being used, and what move does it make?</legend>
+            <legend class="shadcn-textbox-title">Spurious Causal Correlation: what is being used, and what move does it make?</legend>
         
             <div class="shadcn-textbox-item">
                 
         
-                <textarea class="secondary_justification_episodic_overgeneralization shadcn-textbox-input shadcn-textbox-textarea annotation-input"
-                          id="secondary_justification_episodic_overgeneralization_text_box_text"
-                          name="secondary_justification_episodic_overgeneralization:::text_box"
+                <textarea class="justification_spurious_causal_correlation shadcn-textbox-input shadcn-textbox-textarea annotation-input"
+                          id="justification_spurious_causal_correlation_text_box_text"
+                          name="justification_spurious_causal_correlation:::text_box"
                           validation=""
-                          schema="secondary_justification_episodic_overgeneralization"
+                          schema="justification_spurious_causal_correlation"
                           label_name="text_box"
                           rows='2' cols='40'
-                          
+                          placeholder="What is used, and what move does it make?"
                           style=""
                           ></textarea>
             
-                <div class="shadcn-textbox-char-counter" data-input-id="secondary_justification_episodic_overgeneralization_text_box_text" data-min-chars="15">
+                <div class="shadcn-textbox-char-counter" data-input-id="justification_spurious_causal_correlation_text_box_text" data-min-chars="15">
                     <span class="shadcn-textbox-char-count">0</span>/15 min characters
                 </div>
             </div></fieldset></form>
 </div>
 <div class="display-logic-container display-logic-hidden"
-     data-display-logic="{&quot;show_when&quot;: [{&quot;schema&quot;: &quot;secondary_mechanisms&quot;, &quot;operator&quot;: &quot;contains&quot;, &quot;value&quot;: &quot;Spurious Causal Correlation&quot;}]}"
-     data-schema-name="secondary_justification_spurious_causal_correlation"
+     data-display-logic="{&quot;show_when&quot;: [{&quot;schema&quot;: &quot;mechanisms&quot;, &quot;operator&quot;: &quot;contains&quot;, &quot;value&quot;: &quot;Satirical Trivialization&quot;}]}"
+     data-schema-name="justification_satirical_trivialization"
      data-display-logic-target="true">
 
-    <form id="secondary_justification_spurious_causal_correlation" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="8" data-annotation-type="text" data-schema-name="secondary_justification_spurious_causal_correlation"  data-min-chars="15" data-grid-columns="1">
+    <form id="justification_satirical_trivialization" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="7" data-annotation-type="text" data-schema-name="justification_satirical_trivialization"  data-min-chars="15" data-grid-columns="1">
             
-        <fieldset schema_name="secondary_justification_spurious_causal_correlation">
+        <fieldset schema_name="justification_satirical_trivialization">
     
-            <legend class="shadcn-textbox-title">Secondary — Spurious Causal Correlation: what is being used, and what move does it make?</legend>
+            <legend class="shadcn-textbox-title">Satirical Trivialization: what is being used, and what move does it make?</legend>
         
             <div class="shadcn-textbox-item">
                 
         
-                <textarea class="secondary_justification_spurious_causal_correlation shadcn-textbox-input shadcn-textbox-textarea annotation-input"
-                          id="secondary_justification_spurious_causal_correlation_text_box_text"
-                          name="secondary_justification_spurious_causal_correlation:::text_box"
+                <textarea class="justification_satirical_trivialization shadcn-textbox-input shadcn-textbox-textarea annotation-input"
+                          id="justification_satirical_trivialization_text_box_text"
+                          name="justification_satirical_trivialization:::text_box"
                           validation=""
-                          schema="secondary_justification_spurious_causal_correlation"
+                          schema="justification_satirical_trivialization"
                           label_name="text_box"
                           rows='2' cols='40'
-                          
+                          placeholder="What is used, and what move does it make?"
                           style=""
                           ></textarea>
             
-                <div class="shadcn-textbox-char-counter" data-input-id="secondary_justification_spurious_causal_correlation_text_box_text" data-min-chars="15">
+                <div class="shadcn-textbox-char-counter" data-input-id="justification_satirical_trivialization_text_box_text" data-min-chars="15">
                     <span class="shadcn-textbox-char-count">0</span>/15 min characters
                 </div>
             </div></fieldset></form>
 </div>
 <div class="display-logic-container display-logic-hidden"
-     data-display-logic="{&quot;show_when&quot;: [{&quot;schema&quot;: &quot;secondary_mechanisms&quot;, &quot;operator&quot;: &quot;contains&quot;, &quot;value&quot;: &quot;Satirical Trivialization&quot;}]}"
-     data-schema-name="secondary_justification_satirical_trivialization"
+     data-display-logic="{&quot;show_when&quot;: [{&quot;schema&quot;: &quot;mechanisms&quot;, &quot;operator&quot;: &quot;contains&quot;, &quot;value&quot;: &quot;Esoteric Code Activation&quot;}]}"
+     data-schema-name="justification_esoteric_code_activation"
      data-display-logic-target="true">
 
-    <form id="secondary_justification_satirical_trivialization" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="9" data-annotation-type="text" data-schema-name="secondary_justification_satirical_trivialization"  data-min-chars="15" data-grid-columns="1">
+    <form id="justification_esoteric_code_activation" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="8" data-annotation-type="text" data-schema-name="justification_esoteric_code_activation"  data-min-chars="15" data-grid-columns="1">
             
-        <fieldset schema_name="secondary_justification_satirical_trivialization">
+        <fieldset schema_name="justification_esoteric_code_activation">
     
-            <legend class="shadcn-textbox-title">Secondary — Satirical Trivialization: what is being used, and what move does it make?</legend>
+            <legend class="shadcn-textbox-title">Esoteric Code Activation: what is being used, and what move does it make?</legend>
         
             <div class="shadcn-textbox-item">
                 
         
-                <textarea class="secondary_justification_satirical_trivialization shadcn-textbox-input shadcn-textbox-textarea annotation-input"
-                          id="secondary_justification_satirical_trivialization_text_box_text"
-                          name="secondary_justification_satirical_trivialization:::text_box"
+                <textarea class="justification_esoteric_code_activation shadcn-textbox-input shadcn-textbox-textarea annotation-input"
+                          id="justification_esoteric_code_activation_text_box_text"
+                          name="justification_esoteric_code_activation:::text_box"
                           validation=""
-                          schema="secondary_justification_satirical_trivialization"
+                          schema="justification_esoteric_code_activation"
                           label_name="text_box"
                           rows='2' cols='40'
-                          
+                          placeholder="What is used, and what move does it make?"
                           style=""
                           ></textarea>
             
-                <div class="shadcn-textbox-char-counter" data-input-id="secondary_justification_satirical_trivialization_text_box_text" data-min-chars="15">
+                <div class="shadcn-textbox-char-counter" data-input-id="justification_esoteric_code_activation_text_box_text" data-min-chars="15">
                     <span class="shadcn-textbox-char-count">0</span>/15 min characters
                 </div>
             </div></fieldset></form>
 </div>
 <div class="display-logic-container display-logic-hidden"
-     data-display-logic="{&quot;show_when&quot;: [{&quot;schema&quot;: &quot;secondary_mechanisms&quot;, &quot;operator&quot;: &quot;contains&quot;, &quot;value&quot;: &quot;Esoteric Code Activation&quot;}]}"
-     data-schema-name="secondary_justification_esoteric_code_activation"
+     data-display-logic="{&quot;show_when&quot;: [{&quot;schema&quot;: &quot;mechanisms&quot;, &quot;operator&quot;: &quot;contains&quot;, &quot;value&quot;: &quot;Spurious Legitimacy Signaling&quot;}]}"
+     data-schema-name="justification_spurious_legitimacy_signaling"
      data-display-logic-target="true">
 
-    <form id="secondary_justification_esoteric_code_activation" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="10" data-annotation-type="text" data-schema-name="secondary_justification_esoteric_code_activation"  data-min-chars="15" data-grid-columns="1">
+    <form id="justification_spurious_legitimacy_signaling" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="9" data-annotation-type="text" data-schema-name="justification_spurious_legitimacy_signaling"  data-min-chars="15" data-grid-columns="1">
             
-        <fieldset schema_name="secondary_justification_esoteric_code_activation">
+        <fieldset schema_name="justification_spurious_legitimacy_signaling">
     
-            <legend class="shadcn-textbox-title">Secondary — Esoteric Code Activation: what is being used, and what move does it make?</legend>
+            <legend class="shadcn-textbox-title">Spurious Legitimacy Signaling: what is being used, and what move does it make?</legend>
         
             <div class="shadcn-textbox-item">
                 
         
-                <textarea class="secondary_justification_esoteric_code_activation shadcn-textbox-input shadcn-textbox-textarea annotation-input"
-                          id="secondary_justification_esoteric_code_activation_text_box_text"
-                          name="secondary_justification_esoteric_code_activation:::text_box"
+                <textarea class="justification_spurious_legitimacy_signaling shadcn-textbox-input shadcn-textbox-textarea annotation-input"
+                          id="justification_spurious_legitimacy_signaling_text_box_text"
+                          name="justification_spurious_legitimacy_signaling:::text_box"
                           validation=""
-                          schema="secondary_justification_esoteric_code_activation"
+                          schema="justification_spurious_legitimacy_signaling"
                           label_name="text_box"
                           rows='2' cols='40'
-                          
+                          placeholder="What is used, and what move does it make?"
                           style=""
                           ></textarea>
             
-                <div class="shadcn-textbox-char-counter" data-input-id="secondary_justification_esoteric_code_activation_text_box_text" data-min-chars="15">
-                    <span class="shadcn-textbox-char-count">0</span>/15 min characters
-                </div>
-            </div></fieldset></form>
-</div>
-<div class="display-logic-container display-logic-hidden"
-     data-display-logic="{&quot;show_when&quot;: [{&quot;schema&quot;: &quot;secondary_mechanisms&quot;, &quot;operator&quot;: &quot;contains&quot;, &quot;value&quot;: &quot;Spurious Legitimacy Signaling&quot;}]}"
-     data-schema-name="secondary_justification_spurious_legitimacy_signaling"
-     data-display-logic-target="true">
-
-    <form id="secondary_justification_spurious_legitimacy_signaling" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="11" data-annotation-type="text" data-schema-name="secondary_justification_spurious_legitimacy_signaling"  data-min-chars="15" data-grid-columns="1">
-            
-        <fieldset schema_name="secondary_justification_spurious_legitimacy_signaling">
-    
-            <legend class="shadcn-textbox-title">Secondary — Spurious Legitimacy Signaling: what is being used, and what move does it make?</legend>
-        
-            <div class="shadcn-textbox-item">
-                
-        
-                <textarea class="secondary_justification_spurious_legitimacy_signaling shadcn-textbox-input shadcn-textbox-textarea annotation-input"
-                          id="secondary_justification_spurious_legitimacy_signaling_text_box_text"
-                          name="secondary_justification_spurious_legitimacy_signaling:::text_box"
-                          validation=""
-                          schema="secondary_justification_spurious_legitimacy_signaling"
-                          label_name="text_box"
-                          rows='2' cols='40'
-                          
-                          style=""
-                          ></textarea>
-            
-                <div class="shadcn-textbox-char-counter" data-input-id="secondary_justification_spurious_legitimacy_signaling_text_box_text" data-min-chars="15">
+                <div class="shadcn-textbox-char-counter" data-input-id="justification_spurious_legitimacy_signaling_text_box_text" data-min-chars="15">
                     <span class="shadcn-textbox-char-count">0</span>/15 min characters
                 </div>
             </div></fieldset></form>
 </div>
 
-        <form id="section_record" class="annotation-form pure-display" data-annotation-type="pure_display" data-schema-name="section_record" action="javascript:void(0)" data-grid-columns="1">
-            <fieldset schema="section_record">
-                <legend><h4>Step 3 &mdash; Anything else</h4></legend>
-                <div class="display-content">
-                    
-                </div>
-            </fieldset>
-        </form>
-    
-
-    <form id="notes" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="13" data-annotation-type="text" data-schema-name="notes"   data-grid-columns="1">
+    <form id="notes" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="10" data-annotation-type="text" data-schema-name="notes"   data-grid-columns="1">
             
         <fieldset schema_name="notes">
     
@@ -512,7 +370,7 @@
                           ></textarea>
             </div></fieldset></form>
 
-    <form id="flag_for_discussion" class="annotation-form multiselect shadcn-multiselect-container" action="javascript:void(0)" data-annotation-id="14" data-annotation-type="multiselect" data-schema-name="flag_for_discussion" data-grid-columns="1">
+    <form id="flag_for_discussion" class="annotation-form multiselect shadcn-multiselect-container" action="javascript:void(0)" data-annotation-id="11" data-annotation-type="multiselect" data-schema-name="flag_for_discussion" data-grid-columns="1">
         
         <fieldset schema="flag_for_discussion">
             <legend class="shadcn-multiselect-title">Flag this argument for discussion.</legend>

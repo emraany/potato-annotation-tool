@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Export VLMD Subtask 1 annotations to the downstream CSV and JSONL, and check
-the three constraints Potato cannot enforce on its own.
+the constraints Potato cannot enforce on its own.
 
     python scripts/export_annotations.py
     python scripts/export_annotations.py --strict      # exit 1 on any error
@@ -22,10 +22,17 @@ Outputs, into annotation_output/export/:
     annotations.jsonl      the same, in the downstream schema
     validation_report.json every constraint violation, with ids
 
-`primary_mechanism` is `null` and `secondary_mechanisms` is `[]` on an argument
-that passed the Sensible Test. Never the string "None", in any casing: the
-absent case is written from the ABSENCE of the key in the stored state, so
-there is no code path that can produce a placeholder string.
+`mechanisms` is `[]` and `justifications` is `{}` on an argument that passed
+the Sensible Test. Never the string "None", in any casing: the absent case is
+written from the ABSENCE of the key in the stored state, so there is no code
+path that can produce a placeholder string.
+
+The mechanisms are FLAT. There is no primary and no secondary: one list, every
+mechanism at work in the argument in it, nothing ranking them. A pre-flatten
+export carried `primary_mechanism`, `primary_justification`,
+`secondary_mechanisms` and `secondary_justifications`; those columns are gone,
+and `scripts/migrate_flatten_mechanisms.py` is what folds old stored answers
+into the flat scheme names.
 
 Annotators can leave an argument part-answered and come back to it, so a draft
 reaches this script like anything else. `incomplete_sensible_test` is what
@@ -58,9 +65,10 @@ MECHANISMS = [
     "Spurious Legitimacy Signaling",
 ]
 
-# scheme name <- mechanism label
-SECONDARY_JUSTIFICATION = {
-    m: "secondary_justification_" + m.lower().replace(" ", "_") for m in MECHANISMS
+# scheme name <- mechanism label. One justification per mechanism, gated in
+# config.yaml on that mechanism being ticked.
+JUSTIFICATION = {
+    m: "justification_" + m.lower().replace(" ", "_") for m in MECHANISMS
 }
 
 # A justification that is present but says nothing. Compared case-folded, with
@@ -200,11 +208,10 @@ def collect(task_dir: Path, items: dict) -> tuple[list[dict], list[dict]]:
 
             failed = single(labels, "sensible_test_failed")
             verdict = derive_sensible_test(failed)
-            primary = single(labels, "primary_mechanism")
-            secondaries = multi(labels, "secondary_mechanisms")
-            secondary_justifications = {
-                m: text(labels, SECONDARY_JUSTIFICATION[m]) for m in MECHANISMS
-                if text(labels, SECONDARY_JUSTIFICATION[m]) is not None
+            mechanisms = multi(labels, "mechanisms")
+            justifications = {
+                m: text(labels, JUSTIFICATION[m]) for m in MECHANISMS
+                if text(labels, JUSTIFICATION[m]) is not None
             }
 
             record = {
@@ -222,10 +229,8 @@ def collect(task_dir: Path, items: dict) -> tuple[list[dict], list[dict]]:
                 "item_number": item.get("item_number"),
                 "annotator_id": annotator,
                 "sensible_test": verdict,
-                "primary_mechanism": primary,
-                "primary_justification": text(labels, "primary_justification"),
-                "secondary_mechanisms": secondaries,
-                "secondary_justifications": secondary_justifications,
+                "mechanisms": mechanisms,
+                "justifications": justifications,
                 "notes": text(labels, "notes"),
                 "flag_for_discussion": bool(multi(labels, "flag_for_discussion")),
                 **timestamps(behavioral, instance_id),
@@ -245,11 +250,15 @@ def collect(task_dir: Path, items: dict) -> tuple[list[dict], list[dict]]:
 
 def validate(r: dict) -> list[dict]:
     """
-    The three constraints from the brief, plus the ones that follow from them.
+    The constraints from the brief, plus the ones that follow from them.
 
-    Potato enforces NONE of these three. What it does enforce is that a hidden
-    scheme records nothing, which is why the third one has never been violated
-    in practice -- the absence is structural, not checked here.
+    Potato enforces NONE of these. What it does enforce is that a hidden scheme
+    records nothing, which is why the last one has never been violated in
+    practice -- the absence is structural, not checked here.
+
+    Flattening the mechanisms retired one check outright: the same mechanism
+    could once be recorded as both the primary and a secondary, and a single
+    list of checkboxes cannot hold a label twice.
     """
     out = []
     where = {"instance_id": r["instance_id"], "annotator": r["annotator_id"]}
@@ -261,59 +270,52 @@ def validate(r: dict) -> list[dict]:
         problem("incomplete_sensible_test",
                 "the Sensible Test question was not answered")
 
-    # Constraint 1 — the same mechanism cannot be both primary and secondary.
-    if r["primary_mechanism"] and r["primary_mechanism"] in r["secondary_mechanisms"]:
-        problem("primary_repeated_as_secondary",
-                f"{r['primary_mechanism']!r} is recorded as both primary and secondary")
-
-    # Constraint 2 — a justification cannot be empty or a placeholder.
-    if r["primary_mechanism"]:
-        if is_empty_in_spirit(r["primary_justification"]):
-            problem("empty_primary_justification",
-                    f"primary_justification is {r['primary_justification']!r}")
-        elif len(r["primary_justification"]) < MIN_JUSTIFICATION_CHARS:
-            problem("short_primary_justification",
-                    f"{len(r['primary_justification'])} chars, under "
+    # Constraint 1 — every ticked mechanism carries a justification, and that
+    # justification says something. The floor is the same one config.yaml's
+    # `min_chars` draws on screen and scripts/serve.py holds Submit against, so
+    # a justification that got past the page gets past this too.
+    for mechanism in r["mechanisms"]:
+        justification = r["justifications"].get(mechanism)
+        if is_empty_in_spirit(justification):
+            problem("empty_justification",
+                    f"{mechanism!r} selected with justification {justification!r}")
+        elif len(justification) < MIN_JUSTIFICATION_CHARS:
+            problem("short_justification",
+                    f"{mechanism!r}: {len(justification)} chars, under "
                     f"{MIN_JUSTIFICATION_CHARS}")
 
-    for mechanism in r["secondary_mechanisms"]:
-        justification = r["secondary_justifications"].get(mechanism)
-        if is_empty_in_spirit(justification):
-            problem("empty_secondary_justification",
-                    f"{mechanism!r} selected with justification {justification!r}")
-
     # A justification left behind by a mechanism that was later un-ticked.
-    # `display_logic` is not transitive: a secondary justification's own gate
-    # reads only its multiselect, so un-ticking the mechanism hides the box but
+    # `display_logic` is not transitive: a justification's own gate reads only
+    # the mechanisms multiselect, so un-ticking the mechanism hides the box but
     # keeps the text that was in it.
-    for mechanism, justification in r["secondary_justifications"].items():
-        if mechanism not in r["secondary_mechanisms"] and not is_empty_in_spirit(justification):
-            problem("orphaned_secondary_justification",
-                    f"{mechanism!r} is not selected but its justification holds "
+    for mechanism, justification in r["justifications"].items():
+        if mechanism not in r["mechanisms"] and not is_empty_in_spirit(justification):
+            problem("orphaned_justification",
+                    f"{mechanism!r} is not ticked but its justification holds "
                     f"{justification[:60]!r}")
 
-    # Constraint 3 — a pass carries no mechanism; a fail carries one.
-    if r["sensible_test"] == "Pass":
-        leaked = [k for k in ("primary_mechanism", "primary_justification") if r[k]]
-        if leaked or r["secondary_mechanisms"]:
-            problem("mechanism_on_a_passing_item",
-                    f"Sensible Test passed but {leaked + (['secondary_mechanisms'] if r['secondary_mechanisms'] else [])} are filled")
-    if r["sensible_test"] == "Fail" and not r["primary_mechanism"]:
+    # Constraint 2 — a pass carries no mechanism; a fail carries at least one.
+    if r["sensible_test"] == "Pass" and r["mechanisms"]:
+        problem("mechanism_on_a_passing_item",
+                f"Sensible Test passed but {r['mechanisms']} are ticked")
+    if r["sensible_test"] == "Fail" and not r["mechanisms"]:
         problem("no_mechanism_on_a_failing_item",
-                "the Sensible Test came back failed but no primary mechanism "
-                "was recorded")
+                "the Sensible Test came back failed but no mechanism was ticked")
 
     return out
 
 
+# One `mechanisms` column holding the whole set, pipe-joined in codebook order,
+# and one justification column per mechanism beside it. A row with two
+# mechanisms is one row with two justifications filled in -- not two rows, and
+# not a ranking.
 CSV_COLUMNS = [
     "instance_id", "item_number", "source_index", "meme_id", "image_file",
     "relation", "claim_id",
     "annotator_id",
     "sensible_test",
-    "primary_mechanism", "primary_justification",
-    "secondary_mechanisms",
-    *[SECONDARY_JUSTIFICATION[m] for m in MECHANISMS],
+    "mechanisms",
+    *[JUSTIFICATION[m] for m in MECHANISMS],
     "notes", "flag_for_discussion",
     "first_seen_utc", "last_saved_utc", "time_on_item_ms",
 ]
@@ -321,47 +323,50 @@ CSV_COLUMNS = [
 
 def csv_row(r: dict) -> dict:
     row = {k: r.get(k) for k in CSV_COLUMNS if k in r}
-    row["secondary_mechanisms"] = "|".join(r["secondary_mechanisms"])
+    row["mechanisms"] = "|".join(r["mechanisms"])
     for mechanism in MECHANISMS:
-        row[SECONDARY_JUSTIFICATION[mechanism]] = r["secondary_justifications"].get(mechanism)
+        row[JUSTIFICATION[mechanism]] = r["justifications"].get(mechanism)
     row["flag_for_discussion"] = "true" if r["flag_for_discussion"] else "false"
     return row
 
 
 SELF_TEST_CASES = [
-    ("a clean fail", "primary_repeated_as_secondary", False, {
-        "sensible_test": "Fail", "primary_mechanism": "Affective Hijacking",
-        "primary_justification": "Child #5's described expression carries the claim.",
-        "secondary_mechanisms": ["Esoteric Code Activation"],
-        "secondary_justifications": {"Esoteric Code Activation": "Only lands for a reader holding the prior in #14."}}),
-    ("primary repeated as secondary", "primary_repeated_as_secondary", True, {
-        "sensible_test": "Fail", "primary_mechanism": "Affective Hijacking",
-        "primary_justification": "Child #5's described expression carries the claim.",
-        "secondary_mechanisms": ["Affective Hijacking"],
-        "secondary_justifications": {"Affective Hijacking": "The same thing again, at length."}}),
-    ("justification says None", "empty_primary_justification", True, {
-        "sensible_test": "Fail", "primary_mechanism": "Affective Hijacking",
-        "primary_justification": "None"}),
-    ("justification says NONE.", "empty_primary_justification", True, {
-        "sensible_test": "Fail", "primary_mechanism": "Affective Hijacking",
-        "primary_justification": "NONE."}),
-    ("justification is a dash", "empty_primary_justification", True, {
-        "sensible_test": "Fail", "primary_mechanism": "Affective Hijacking",
-        "primary_justification": "-"}),
-    ("justification too short", "short_primary_justification", True, {
-        "sensible_test": "Fail", "primary_mechanism": "Affective Hijacking",
-        "primary_justification": "emotive appeal"}),
-    ("secondary with no justification", "empty_secondary_justification", True, {
-        "sensible_test": "Fail", "primary_mechanism": "Affective Hijacking",
-        "primary_justification": "Child #5's described expression carries the claim.",
-        "secondary_mechanisms": ["Satirical Trivialization"]}),
-    ("orphaned secondary justification", "orphaned_secondary_justification", True, {
-        "sensible_test": "Fail", "primary_mechanism": "Affective Hijacking",
-        "primary_justification": "Child #5's described expression carries the claim.",
-        "secondary_justifications": {"Satirical Trivialization": "Text left behind after un-ticking it."}}),
+    ("a clean fail, one mechanism", "empty_justification", False, {
+        "sensible_test": "Fail", "mechanisms": ["Affective Hijacking"],
+        "justifications": {"Affective Hijacking": "Child #5's described expression carries the claim."}}),
+    ("a clean fail, two mechanisms", "empty_justification", False, {
+        "sensible_test": "Fail",
+        "mechanisms": ["Affective Hijacking", "Esoteric Code Activation"],
+        "justifications": {
+            "Affective Hijacking": "Child #5's described expression carries the claim.",
+            "Esoteric Code Activation": "Only lands for a reader holding the prior in #14."}}),
+    ("justification says None", "empty_justification", True, {
+        "sensible_test": "Fail", "mechanisms": ["Affective Hijacking"],
+        "justifications": {"Affective Hijacking": "None"}}),
+    ("justification says NONE.", "empty_justification", True, {
+        "sensible_test": "Fail", "mechanisms": ["Affective Hijacking"],
+        "justifications": {"Affective Hijacking": "NONE."}}),
+    ("justification is a dash", "empty_justification", True, {
+        "sensible_test": "Fail", "mechanisms": ["Affective Hijacking"],
+        "justifications": {"Affective Hijacking": "-"}}),
+    ("justification too short", "short_justification", True, {
+        "sensible_test": "Fail", "mechanisms": ["Affective Hijacking"],
+        "justifications": {"Affective Hijacking": "emotive appeal"}}),
+    ("mechanism with no justification", "empty_justification", True, {
+        "sensible_test": "Fail", "mechanisms": ["Satirical Trivialization"]}),
+    ("second mechanism with no justification", "empty_justification", True, {
+        "sensible_test": "Fail",
+        "mechanisms": ["Affective Hijacking", "Satirical Trivialization"],
+        "justifications": {
+            "Affective Hijacking": "Child #5's described expression carries the claim."}}),
+    ("orphaned justification", "orphaned_justification", True, {
+        "sensible_test": "Fail", "mechanisms": ["Affective Hijacking"],
+        "justifications": {
+            "Affective Hijacking": "Child #5's described expression carries the claim.",
+            "Satirical Trivialization": "Text left behind after un-ticking it."}}),
     ("mechanism on a passing item", "mechanism_on_a_passing_item", True, {
-        "sensible_test": "Pass", "primary_mechanism": "Affective Hijacking",
-        "primary_justification": "Child #5's described expression carries the claim."}),
+        "sensible_test": "Pass", "mechanisms": ["Affective Hijacking"],
+        "justifications": {"Affective Hijacking": "Child #5's described expression carries the claim."}}),
     ("failing item with no mechanism", "no_mechanism_on_a_failing_item", True, {
         "sensible_test": "Fail"}),
     ("a clean pass", "mechanism_on_a_passing_item", False, {"sensible_test": "Pass"}),
@@ -378,8 +383,7 @@ def self_test() -> int:
     base = {
         "instance_id": "selftest::0", "annotator_id": "selftest",
         "sensible_test": "Pass",
-        "primary_mechanism": None, "primary_justification": None,
-        "secondary_mechanisms": [], "secondary_justifications": {},
+        "mechanisms": [], "justifications": {},
         "notes": None, "flag_for_discussion": False,
     }
     failures = 0

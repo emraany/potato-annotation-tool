@@ -33,6 +33,7 @@ guidelines.md            Annotator guidelines, rendered into the interface
 args_0911.json           Source corpus
 data/                    Built corpus: instances.json, manifest.json
 static/                  Stylesheet and client script (inlined at serve time)
+tests/                   Agreement tests and the Week 2 fixtures they check against
 layouts/                 Generated form cache; regenerated on a config change
 annotation_output/       Annotation store, one directory per annotator
   assignments.json       Who was given which stretch of the corpus
@@ -48,7 +49,9 @@ scripts/                 See below
 | `accounts.py` | NetID validation; closes the unused password endpoints |
 | `assignments.py` | The assignment overlay: reads and writes `assignments.json` |
 | `export_annotations.py` | CSV, JSONL and validation report. `--strict`, `--self-test` |
-| `agreement.py` | Agreement coefficients and confusion tables |
+| `migrate_flatten_mechanisms.py` | One-off: folds pre-flatten primary/secondary answers into `mechanisms`. `--dry-run`, `--self-test` |
+| `import_annotations.py` | Loads annotations done outside the study into `annotation_output/`. `--dry-run`, `--overwrite`, `--no-infer` |
+| `agreement.py` | The agreement report: pure functions, one pair and one argument range |
 | `annotation_backend.py` | Admin console. `--port`, `--host` |
 | `mirror_to_postgres.py` | One mirroring pass. `--verify`, `--dry-run` |
 | `mirror_loop.py` | Runs the mirror every 15 minutes |
@@ -87,9 +90,29 @@ Writes `annotations.csv`, `annotations.jsonl` and `validation_report.json` to
 this before handing anything downstream. Potato's own auto-export in
 `annotation_output/exports/` is a safety net, not the deliverable.
 
-Agreement is on the console's Agreement tab, and in `agreement.json` from its
-Download tab. Potato's `/admin/iaa` returns null for this study and is expected
-to; the console computes over the overlap actually on disk.
+Agreement is on the console's **Agreement** tab: one pair of annotators over
+one stretch of argument numbers, with Cohen's κ on the Sensible Test, the five
+ways two mechanism sets can differ, and findings in sentences. Both selections
+are in the URL, so the view is a link you can send to the two people it is
+about — and `agreement.json` from the Download tab takes the same query string,
+so the file and the screen are one computation.
+
+Potato's `/admin/iaa` returns null for this study and is expected to; the
+console works off the overlap actually on disk.
+
+## Tests
+
+```bash
+python -m unittest discover tests
+```
+
+`tests/test_agreement.py` checks the agreement report against the two Week 2
+pairs in `tests/fixtures/` — every count, every coefficient, every
+per-mechanism number and the findings in order — plus the edges the fixtures
+do not have. `export_annotations.py --self-test` and
+`migrate_flatten_mechanisms.py --self-test` cover the export's constraints and
+the flatten migration; `walk_study.py` drives the real interface end to end
+against a running server.
 
 ## Deployment
 
@@ -129,6 +152,12 @@ The mirror holds annotation records, not annotator state files — the assigned
 ordering and each annotator's position are not in Postgres. It recovers the
 data, not a running study. Volume backups cover the rest.
 
+The mirrored row is whatever `export_annotations.collect` returns, as `jsonb`,
+so a change to the export schema changes the mirror with it. Flattening the
+mechanisms was one: every row's content hash changed, so the first pass after
+it rewrites every row and appends one history row each. That is the flatten
+being recorded, not a fault.
+
 ## Notes
 
 - **One replica.** Potato keeps annotator state in process memory; a second
@@ -139,6 +168,9 @@ data, not a running study. Volume backups cover the rest.
   every conditional question permanently on screen, silently.
 - **Never rename a scheme after annotation starts.** Old answers become
   invisible to the admin view, the agreement report and the export, silently.
+  Flattening the mechanisms renamed seven schemes and removed two, which is why
+  `migrate_flatten_mechanisms.py` exists: run it once, with the study server
+  stopped, against any store that holds pre-flatten answers.
 - **A rebuild does not reorder anyone already annotating.** Run
   `resync_order.py` with the server stopped. Argument numbers that moved take
   their assignments' meaning with them — `assignments.json` holds numbers, not

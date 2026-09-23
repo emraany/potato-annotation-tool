@@ -18,28 +18,58 @@ of it. That is a decision with consequences — see *Assumptions*, first entry.
 
 Names are storage keys. Renaming one after annotation starts splits the data
 across the admin view, the agreement report and the export, silently, so these
-are frozen.
+are frozen — and have been broken once, on purpose, when the mechanisms were
+flattened. `scripts/migrate_flatten_mechanisms.py` is what that cost, and it is
+the shape of what any further rename would cost.
 
 | Scheme | Type | Required | Shown |
 |---|---|---|---|
 | `section_sensible_test` | pure_display | no | always |
 | `sensible_test_failed` | radio Yes/No | **yes** | always |
 | `section_mechanism` | pure_display | no | gated |
-| `primary_mechanism` | radio, 6 labels | **yes** | gated |
-| `primary_justification` | text, multiline | **yes** | gated |
-| `secondary_mechanisms` | multiselect, 6 labels | no | gated |
-| `secondary_justification_affective_hijacking` | text | **yes** | when that mechanism is ticked |
-| `secondary_justification_episodic_overgeneralization` | text | **yes** | ″ |
-| `secondary_justification_spurious_causal_correlation` | text | **yes** | ″ |
-| `secondary_justification_satirical_trivialization` | text | **yes** | ″ |
-| `secondary_justification_esoteric_code_activation` | text | **yes** | ″ |
-| `secondary_justification_spurious_legitimacy_signaling` | text | **yes** | ″ |
-| `section_record` | pure_display | no | always |
+| `mechanisms` | multiselect, 6 labels | **yes** | gated |
+| `justification_affective_hijacking` | text | **yes** | when that mechanism is ticked |
+| `justification_episodic_overgeneralization` | text | **yes** | ″ |
+| `justification_spurious_causal_correlation` | text | **yes** | ″ |
+| `justification_satirical_trivialization` | text | **yes** | ″ |
+| `justification_esoteric_code_activation` | text | **yes** | ″ |
+| `justification_spurious_legitimacy_signaling` | text | **yes** | ″ |
 | `notes` | text, multiline | no | always |
 | `flag_for_discussion` | multiselect, 1 label | no | always |
 
 *gated* = `display_logic` on `sensible_test_failed` equalling **Yes**, so the
 block appears the moment the Sensible Test comes back failed.
+
+**The mechanisms are flat.** One multiselect, every mechanism at work in the
+argument ticked in it, one justification box per tick, and nothing ranking
+them. There is no primary and no secondary — the task used to ask for a
+`primary_mechanism` radio plus a `secondary_mechanisms` multiselect, and that
+distinction is gone from the config, the export, the agreement report, the
+console and the guidelines. `mechanisms` is `required: true`, which is what
+makes "the Sensible Test failed, so at least one mechanism is present" a thing
+the page enforces rather than a sentence in the guidelines.
+
+Three things followed from flattening, and they are the reason it is cheap:
+
+* **A whole class of error disappeared.** The same mechanism could be recorded
+  as both the primary and a secondary; a list of checkboxes cannot hold a label
+  twice, so `primary_repeated_as_secondary` is gone from the export's
+  validator rather than reimplemented.
+* **The mechanism question is now scored as a set.** See the table below.
+* **Answers stored under the old scheme names have to be moved.** Potato keys
+  by scheme name, so they would be on disk and invisible.
+  `scripts/migrate_flatten_mechanisms.py` folds them in, keeps a backup, and
+  reports the two cases it cannot decide mechanically. What it cannot carry
+  over is which mechanism was the primary one: the flat scheme has nowhere to
+  put it. The backups are the only record of it afterwards.
+
+**Notes and the flag carry no heading.** A `section_record` pure_display
+reading *Step 3 — Anything else* sat over them and rendered in the wrong place:
+with no `layout` block the forms flow in a grid, a heading is a form like any
+other, and it landed in a column beside the last justification box rather than
+above Notes. Steps 1 and 2 keep theirs because Step 2's heading carries the
+same gate as the questions under it and so appears and disappears with them.
+Notes and the flag are always on screen and are labelled in their own right.
 
 **The three checks are read, not answered.** They live as prose inside the
 `section_sensible_test` heading — word for word from `guidelines.md`, which
@@ -49,10 +79,10 @@ export's `sensible_test` column is that verdict read the other way round: Yes
 is a `Fail`, No is a `Pass`, unanswered is a draft.
 
 **Names likely to need changing: none, with one caveat.** The six
-`secondary_justification_*` names are derived from the mechanism labels. If a
-mechanism is ever **renamed**, its scheme name must not be — rename the label,
-leave the key. `scripts/export_annotations.py` maps label → scheme name in one
-dictionary (`SECONDARY_JUSTIFICATION`); change it there and nowhere else.
+`justification_*` names are derived from the mechanism labels. If a mechanism
+is ever **renamed**, its scheme name must not be — rename the label, leave the
+key. `scripts/export_annotations.py` maps label → scheme name in one dictionary
+(`JUSTIFICATION`); change it there and nowhere else.
 
 There is no overall Pass/Fail question. It is derived in the export: three No is
 a Pass, any Yes is a Fail. The spreadsheet's single Pass/Fail column is the
@@ -61,22 +91,39 @@ it and no annotator can record it the wrong way round.
 
 ## Response formats and the agreement metric
 
-Potato picks the agreement metric from the scheme type, so the type is a
-measurement decision:
-
-| Scheme | Kind Potato infers | What it computes |
+| Scheme | Kind | What the report does with it |
 |---|---|---|
-| `sensible_test_failed`, `primary_mechanism` | nominal | Cohen's κ, Fleiss' κ, nominal α |
-| `secondary_mechanisms`, `flag_for_discussion` | multilabel | mean Jaccard, MASI α |
-| every justification, `notes` | free text | **nothing** — absent from the report |
+| `sensible_test_failed` | nominal yes/no | Cohen's κ, and the 2×2 behind it |
+| `mechanisms` | a set per annotator | five ways two sets can differ; positive specific agreement per mechanism |
+| every justification, `notes`, `flag_for_discussion` | free text / optional | **nothing** — not scored |
 
-The Sensible Test is a genuinely unordered yes/no, and the mechanisms are a nominal set,
-so nominal is right here. Nothing in this task is an ordered rating, so no
-scheme is at risk of the "1–5 stored as a radio" mis-scoring.
+The Sensible Test is a genuinely unordered yes/no, so a nominal coefficient is
+right there. Nothing in this task is an ordered rating, so no scheme is at risk
+of the "1–5 stored as a radio" mis-scoring.
 
-The justifications carry no metric by design. They are the audit trail for a
-mechanism choice, read by a human during adjudication, and
-`scripts/export_annotations.py` is what checks they exist and say something.
+**The mechanism question has no single coefficient, on purpose.** Potato would
+infer `multilabel` from the scheme type and compute α-MASI and mean Jaccard,
+and an earlier version of this report printed both. They were dropped with
+Krippendorff's α, Fleiss' κ and the Landis & Koch bands, because a set-valued
+answer collapsed to one number between 0 and 1 cannot say *what* two people
+disagree about, and that is the only thing anybody opened the page to find out.
+
+What replaced them is a partition. Every shared argument falls in exactly one
+of five categories — identical sets, overlap with one having extra, overlap
+with both having extras, one said None, no shared mechanism — and those five
+counts are the report. They are mutually exclusive, they add up to the number
+of shared arguments, and each one implies a different fix: extras are a
+threshold problem, *no shared mechanism* is a definitions problem, and *one
+said None* is really a Sensible Test problem wearing a mechanism's clothes.
+
+Per mechanism the number is **positive specific agreement**, `2 × both ÷ (A +
+B)`, and not a κ. The question is "when one of them reaches for this label,
+does the other agree", and the arguments where neither used it — the
+overwhelming majority — say nothing about that. A κ counts them as agreement
+and reads high for a label nobody uses.
+
+Cohen's κ survives on the Sensible Test alone, where there is one answer each
+out of two, which is the shape κ was built for.
 
 ## Assignment
 
@@ -360,8 +407,7 @@ conflicts.
 | | |
 |---|---|
 | Sensible Test | `Q` Yes / `A` No |
-| Primary mechanism | `1`–`6`, in the order listed |
-| Secondary mechanisms | `Z X C V B N`, same order |
+| Mechanisms | `1`–`6`, in the order listed |
 | Flag for discussion | `F` |
 
 Explicit `key_value` throughout rather than `sequential_key_binding`, which
@@ -399,12 +445,14 @@ push back.
    write a guidelines page whose mechanism names disagree with the config's
    labels, so the two cannot drift apart silently.
 
-   What the drafts had and `guidelines.md` does not is a **tie-break rule** for
-   two mechanisms that both fit. Section 6 says the primary is the one the
-   argument depends on more, which restates the question for a genuine tie.
-   Expect that to be the main source of primary-mechanism disagreement, and a
-   sentence in section 5 (*Common Misconceptions*, currently empty) is the
-   cheapest place to fix it after the pilot.
+   What the drafts had and `guidelines.md` did not is a **tie-break rule** for
+   two mechanisms that both fit. That question is now moot: the mechanisms are
+   flat, so two mechanisms that both fit are both ticked and there is nothing
+   to break a tie between. What replaced it is a different judgement — *is this
+   second mechanism doing work, or am I reading the whole meme?* — and section
+   6 of `guidelines.md` is where that is answered. Section 5 (*Common
+   Misconceptions*, currently empty) is still the cheapest place to sharpen it
+   after the pilot.
 
 3. **`attack` arguments read in the opposite direction.** 19 of 1,621 have
    `relation: attack`, where the children are used to make the reader *reject*
@@ -460,29 +508,48 @@ behavioural and integrity reports — is still there and is not duplicated here.
 | Assign | the form that hands a stretch out, optionally widened to whole memes, and who has which stretch, with what they have done, what is left and what fell outside it. The one thing on the page that writes — see below |
 | Progress | the corpus three ways: how much of it is finished and by how many people (finished by two is what agreement has to work with), how much of it is assigned and how much doubly assigned, and what the work itself came to — annotations, verdicts, drafts, flags, export problems |
 | Download | `annotations.csv`, `annotations.jsonl`, `validation_report.json`, `flags.csv`, `agreement.json`, a zip of `annotation_output/`; and **Who is where** — per annotator, what they have finished as ranges, what they were assigned, what is left, and how many drafts and flags |
-| Annotations | every annotation, grouped under the argument it is about, two annotators side by side, filterable by annotator, verdict, mechanism, argument number or free text, and downloadable as the filter leaves it |
-| Agreement | Krippendorff's α, Fleiss' and Cohen's κ, α-MASI and observed agreement, per question and per pair, with the confusion between each pair — see below |
-| Flags | every flagged or noted argument, with the argument itself, the verdict, the mechanism and the justification |
+| Annotations | every annotation, grouped under the argument it is about, two annotators side by side, filterable by annotator, verdict, a mechanism ticked, argument number or free text, and downloadable as the filter leaves it. Two annotators *differ* when their verdicts differ or the sets of mechanisms they ticked are not the same |
+| Agreement | one pair over one stretch of argument numbers: Cohen's κ on the Sensible Test, the five disagreement categories, findings in sentences, a map of the range, per-mechanism agreement, the commonest swaps, and every non-identical argument — see below |
+| Flags | every flagged argument, with the argument itself, the verdict, the mechanisms ticked and their justifications |
 
 ### Why agreement is computed here and not read off `/admin/iaa`
 
-Potato computes the same coefficients, from the same code — this imports them
-from `potato.server_utils.iaa` rather than reimplementing them, so a number
-here and a number there mean the same thing. What it does not share is which
-items they are computed over. `/admin/iaa` is restricted to items whose
+`/admin/iaa` is restricted to items whose
 per-item annotator cap is 2 or more, and **this study sets no cap**: work is
 handed out by argument number, between people (see *Nobody's shift is
 bounded*). So that page reports `null` for every coefficient however much two
 annotators have actually read the same arguments. `scripts/agreement.py`
-computes them over the overlap that is genuinely on disk — any argument two or
-more people have annotated — which is the only overlap this study can have.
+computes over the overlap that is genuinely on disk — any argument two or more
+people have annotated — which is the only overlap this study can have. It
+shares no code with Potato's version: a 2×2 Cohen's κ is six lines, and the
+dependency bought nothing once the coefficients it supplied were dropped.
 
-Two consequences are deliberate. Each question is scored only on the arguments
-where at least two people *answered that question*: an unanswered question is
-not a category, or two annotators who have both not got there yet would agree
-perfectly. And a coefficient that comes out undefined says why — no overlap
-yet, or one category used throughout — rather than printing a null, which is
-the whole difference between this page and the one it replaces.
+Two consequences are deliberate. Scope is per question, not per page: an
+argument both annotated but only one of them answered the Sensible Test on
+drops out of the Pass/Fail numbers and stays in the mechanism numbers, because
+they did answer the mechanism question. And κ is `—` where it is undefined —
+no arguments, or one verdict being all either of them ever used — because
+there is nothing there for a chance correction to correct.
+
+**The page is one pair at a time.** The old one put every annotator's
+coefficients in one table, which reads as a scoreboard and answers nothing: two
+people are either reading the codebook the same way or they are not, and which
+two is the whole question. The pair and the argument range are both in the URL,
+so the view is a link you can send to the two people it is about.
+
+**The findings are templates, not prose.** Six rules in priority order, the
+first four that fire are shown, each a fixed lead sentence and a fixed sentence
+of numbers. Nothing is generated and no model is involved: a rule either clears
+its threshold on this pair and this range or it prints nothing. The thresholds
+live in `findings()` in `scripts/agreement.py` and nowhere else, and under 20
+shared arguments the block is hidden outright — a rule that fires on three
+arguments is a coincidence with a sentence round it.
+
+`tests/test_agreement.py` is what holds all of this still. The two Week 2 pairs
+in `tests/fixtures/` are checked end to end — every count, every coefficient,
+every per-mechanism number and the findings in order — against the numbers the
+research team read off their own report, so the tests are a specification and
+not a snapshot. Run them with `python -m unittest discover tests`.
 
 **It changes one file, and only that one.** No config is rewritten and nothing
 is sent to the study server: the Assign tab writes
@@ -519,12 +586,16 @@ The brief asked whether any cases still have no home. Three:
   A third option was considered and not taken: the check is the researchers'
   three-way Sensible Test and stays yes/no. The flags queue in the study
   console is where these surface.
-- **A failing argument where two mechanisms are exactly equally load-bearing.**
-  `guidelines.md` §6 says the primary is the one the argument depends on more,
-  which for a genuine tie restates the question; the annotator picks one and
-  the other goes in secondaries. Expect this to be
-  the main source of primary-mechanism disagreement, and expect the agreement
-  number to understate real agreement because of it.
+- ~~**A failing argument where two mechanisms are exactly equally
+  load-bearing.**~~ **Settled by flattening.** This had no home while the task
+  asked which mechanism was the primary one: for a genuine tie the rule
+  restated the question, the annotator picked one, and two annotators who saw
+  the argument identically could still be recorded as disagreeing. Both are
+  ticked now and the question is not asked. What is left is the softer call of
+  whether a second mechanism is doing work at all, which `guidelines.md` §6
+  addresses and which the agreement report separates out: it lands in *overlap,
+  one has extra* rather than in *no shared mechanism*, and those are two
+  different problems with two different fixes.
 - **An argument whose children plainly belong to a different claim** — an
   upstream extraction error. There is no "this data is wrong" answer. Flag plus
   a note is the only route, and somebody has to read the flags.
@@ -598,7 +669,7 @@ Each was found by driving the page, and each passes `validate --strict`,
 
 2. **`require_fully_annotated: true` requires things that cannot be answered.**
    It stamps `label_requirement: {required: true}` onto every scheme lacking
-   one, including `pure_display` headings. The client renders no input for them
+   one, including `pure_display` headings (measured while there were three). The client renders no input for them
    so Next stays enabled; the server then refuses every save with `Required
    annotation(s) not completed: section_sensible_test, section_record` in a
    corner toast naming internal scheme names. The annotator is stuck on item one
@@ -615,9 +686,9 @@ Each was found by driving the page, and each passes `validate --strict`,
    annotation one, all schemes present. Not relevant now that training is gone,
    but worth knowing before anyone adds one back.
 
-5. **`display_logic` is not transitive.** A secondary justification's gate reads
-   only its own multiselect, so un-ticking the mechanism after typing leaves the
-   text stored. `orphaned_secondary_justification` in the export catches it.
+5. **`display_logic` is not transitive.** A justification's gate reads only the
+   `mechanisms` multiselect, so un-ticking the mechanism after typing leaves the
+   text stored. `orphaned_justification` in the export catches it.
 
 6. **`potato preview --screenshot` reports FAILED on a healthy task.** It waits
    for `.annotation_schema`; the form renders as `.annotation-form`. The PNG is
@@ -625,8 +696,8 @@ Each was found by driving the page, and each passes `validate --strict`,
 
 7. **The skill's `estimate_effort.py` and `walk_task.py` both break here** —
    the first on the mapping form of `num_annotators_per_item`, the second
-   because it answers every radio with its first option and `primary_mechanism`
-   is gated, so it fills the mechanism before the gate has opened and never
+   because it answers every radio with its first option and `mechanisms` is
+   gated, so it fills the mechanism before the gate has opened and never
    exercises the branch. `scripts/walk_study.py` replaces the second.
 
 8. **The `annotation_instructions` sanitizer strips `class` from an `<a>` and

@@ -8,16 +8,17 @@ own admin dashboard does not do, or does not do readably.
 
   Annotations every annotation there is, grouped by argument and shown side by
               side per annotator, with the argument itself. Filter it by
-              annotator, verdict, mechanism, argument number or free text, and
+              annotator, verdict, mechanism ticked, argument number or free text, and
               take the selection away as a CSV. Where two people annotated the
               same argument it says whether they agree.
-  Agreement   the inter-annotator agreement coefficients -- Krippendorff's
-              alpha, Fleiss' and Cohen's kappa, alpha-MASI -- per question,
-              per pair of annotators, with the confusion between them. Potato
-              computes the same coefficients at /admin/iaa but only over items
+  Agreement   two annotators over one stretch of argument numbers: Cohen's
+              kappa on the Sensible Test, the five ways their mechanism sets
+              can differ, and what that adds up to, said in sentences. The pair
+              and the range are in the URL, so a view can be sent to the two
+              people it is about. Potato's own /admin/iaa only looks at items
               carrying an annotator cap of 2 or more, and this study sets no
               cap, so that page is all nulls however much overlap there is.
-              This computes them over the overlap that is actually on disk.
+              This works off the overlap that is actually on disk.
   Download    the downstream CSV/JSONL and the validation report, generated on
               the click -- not Potato's sparse scheme-and-label export, which
               carries no item fields and no timestamps. Plus a zip of the raw
@@ -269,8 +270,7 @@ def matches(record: dict, f: dict) -> bool:
         return False
     if f["verdict"] and (record["sensible_test"] or "draft") != f["verdict"]:
         return False
-    if f["mechanism"] and f["mechanism"] != record["primary_mechanism"] \
-            and f["mechanism"] not in record["secondary_mechanisms"]:
+    if f["mechanism"] and f["mechanism"] not in record["mechanisms"]:
         return False
     if f["flagged"] and not record["flag_for_discussion"]:
         return False
@@ -282,10 +282,9 @@ def matches(record: dict, f: dict) -> bool:
     if f["q"]:
         hay = " ".join(str(v) for v in (
             record["instance_id"], record["meme_id"], record["relation"],
-            record["annotator_id"], record["primary_mechanism"],
-            record["primary_justification"], record["notes"],
-            *record["secondary_mechanisms"],
-            *record["secondary_justifications"].values()) if v).casefold()
+            record["annotator_id"], record["notes"],
+            *record["mechanisms"],
+            *record["justifications"].values()) if v).casefold()
         if f["q"] not in hay:
             return False
     return True
@@ -331,11 +330,14 @@ def group_arguments(records: list[dict], f: dict) -> list[dict]:
         group["annotations"] = annotations
         group["n_annotators"] = len(annotations)
         group["flagged"] = any(r["flag_for_discussion"] for r in annotations)
-        group["differs"] = [
-            field for field in ("sensible_test", "primary_mechanism")
-            if len({json.dumps(r[field]) for r in annotations}) > 1
-        ] + (["secondary_mechanisms"] if len(
-            {tuple(r["secondary_mechanisms"]) for r in annotations}) > 1 else [])
+        # The mechanisms are a set, so two annotators differ on them when the
+        # sets are not the same -- there is no primary to differ on separately
+        # any more, and one person ticking a second mechanism IS a difference.
+        group["differs"] = (
+            (["sensible_test"]
+             if len({r["sensible_test"] for r in annotations}) > 1 else [])
+            + (["mechanisms"]
+               if len({tuple(r["mechanisms"]) for r in annotations}) > 1 else []))
         group["last_saved_utc"] = max(
             (r["last_saved_utc"] for r in annotations if r["last_saved_utc"]), default=None)
         if f["overlap"] == "shared" and group["n_annotators"] < 2:
@@ -368,9 +370,11 @@ def flag_rows(records: list[dict], items: dict) -> list[dict]:
         rows.append({
             **{k: record[k] for k in (
                 "instance_id", "item_number", "annotator_id", "meme_id", "relation",
-                "sensible_test", "primary_mechanism", "primary_justification",
-                "flag_for_discussion", "last_saved_utc")},
-            "secondary_mechanisms": "|".join(record["secondary_mechanisms"]),
+                "sensible_test", "flag_for_discussion", "last_saved_utc")},
+            "mechanisms": "|".join(record["mechanisms"]),
+            "justifications": " · ".join(
+                f"{m}: {record['justifications'][m]}" for m in record["mechanisms"]
+                if record["justifications"].get(m)),
             "argument_html": item.get("argument_html", ""),
         })
     rows.sort(key=lambda r: (r["item_number"] is None, r["item_number"]))
@@ -455,8 +459,6 @@ details.arg .arg { margin-top:8px; }
 .mech { margin:7px 0 0; font-size:0.9rem; }
 .mech b { font-weight:650; }
 .mech .why { color:#3a3a52; }
-.mech.secondary { color:#4a4a68; font-size:0.86rem; padding-left:11px;
-  border-left:2px solid #e2e2ec; }
 .pill-pass { background:#e8f1ea; color:#23503a; }
 .pill-fail { background:#fbeaea; color:#6d2020; }
 .pill-draft { background:#fdf0e0; color:#7a4508; }
@@ -468,26 +470,16 @@ details.arg .arg { margin-top:8px; }
 .pager button:disabled { opacity:0.4; cursor:default; }
 
 /* --- the Agreement pane ----------------------------------------------------
- * A coefficient on its own is unreadable: the same 0.61 is a finding on four
- * hundred arguments and noise on four. So every number is shown beside what it
- * was computed on, and an undefined one says why it is undefined instead of
- * printing null. */
-table.iaa td { border-bottom:none; padding-top:11px; padding-bottom:2px; }
-table.iaa tr.scope td { padding:0 9px 11px; border-bottom:1px solid #eeeef4;
-  color:#6a6a80; font-size:0.82rem; }
-table.iaa tr.scope td b { color:#4a4a68; font-weight:600; }
-table.iaa .q { font-weight:650; }
-.headline { display:flex; align-items:baseline; gap:7px; justify-content:flex-end; }
-.headline .v { font-size:1.15rem; font-weight:650; font-variant-numeric:tabular-nums; }
-.headline .v.none { color:#a0a0b4; font-weight:500; font-size:1rem; }
-.band { font-size:0.62rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase;
-  padding:2px 6px; border-radius:3px; white-space:nowrap; }
-.band-poor, .band-slight { background:#fbeaea; color:#6d2020; }
-.band-fair { background:#fdf0e0; color:#7a4508; }
-.band-moderate { background:#fdf8e0; color:#6b5906; }
-.band-substantial, .band-almost.perfect, .band-almost-perfect { background:#e8f1ea; color:#23503a; }
-.metric-head { font-weight:600; color:#4a4a68; }
-th.raw, .tile .k.raw { text-transform:none; letter-spacing:0.02em; font-size:0.78rem; }
+ * One pair, one stretch of argument numbers, and the five ways two mechanism
+ * sets can differ. A coefficient on its own is unreadable -- the same 0.61 is
+ * a finding on four hundred arguments and noise on four -- so the counts it
+ * was computed over sit beside it, and the findings say what the numbers mean
+ * in sentences. */
+.tile .k.raw { text-transform:none; letter-spacing:0.02em; font-size:0.78rem; }
+.tile .sub { font-size:0.72rem; color:#8a8a9e; margin-top:2px; }
+.g-head { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin:2px 0 3px; }
+.g-head h2 { font-size:1.08rem; margin:0; }
+.g-thin { color:#7a4508; font-size:0.85rem; margin:0 0 12px; }
 .matrix { border-collapse:collapse; margin-top:11px; font-size:0.86rem; }
 .matrix th, .matrix td { border:1px solid #e8e8f0; padding:6px 10px; text-align:center;
   font-variant-numeric:tabular-nums; }
@@ -497,11 +489,69 @@ th.raw, .tile .k.raw { text-transform:none; letter-spacing:0.02em; font-size:0.7
 .matrix td.same { background:#eef5f0; color:#23503a; font-weight:650; }
 .matrix td.differ { background:#fdf0e0; color:#7a4508; font-weight:650; }
 .matrix td.zero { color:#c4c4d4; }
-.matrix caption { caption-side:top; text-align:left; color:#6a6a80; font-size:0.82rem;
-  padding-bottom:4px; }
 .axis { color:#6a6a80; font-size:0.8rem; margin:10px 0 0; }
 .empty { text-align:center; padding:26px 18px; color:#5a5a72; }
 .empty .big { font-size:1.05rem; font-weight:600; color:#33334d; margin-bottom:6px; }
+
+/* The findings. A bold lead sentence somebody can repeat in a meeting, and one
+ * sentence of numbers under it that shows where it came from. */
+.finding { border-left:3px solid #c3c3dc; padding:2px 0 2px 12px; margin:0 0 13px; }
+.finding:last-child { margin-bottom:0; }
+.finding .lead { font-weight:650; margin:0 0 2px; }
+.finding .why { color:#4a4a68; font-size:0.89rem; margin:0; }
+
+/* The map: one block per argument, in argument order, grouped by meme. The
+ * colour IS the category, so a stretch that goes wrong is visible as a stretch
+ * rather than as a row in a table. */
+.g-legend { display:flex; gap:7px; flex-wrap:wrap; margin:0 0 12px; }
+.g-legend button { font:inherit; font-size:0.8rem; padding:4px 9px; border-radius:20px;
+  border:1px solid #dcdce8; background:#fff; color:#4a4a68; cursor:pointer;
+  display:inline-flex; align-items:center; gap:6px; }
+.g-legend button.off { opacity:0.4; }
+.g-legend i { width:9px; height:9px; border-radius:2px; display:inline-block; }
+.g-legend b { font-variant-numeric:tabular-nums; }
+.g-map { display:flex; gap:7px 14px; flex-wrap:wrap; align-items:flex-start; }
+.g-meme { margin:0; }
+.g-meme .who { font-size:0.62rem; letter-spacing:0.04em; color:#a0a0b4;
+  margin-bottom:2px; white-space:nowrap; }
+.g-blocks { display:flex; gap:3px; }
+.g-blocks button { width:26px; height:26px; border-radius:3px; border:1px solid transparent;
+  cursor:pointer; font:inherit; font-size:0.62rem; color:#3a3a52; padding:0;
+  font-variant-numeric:tabular-nums; }
+.g-blocks button.hide { display:none; }
+.g-blocks button.on { outline:2px solid #33336b; outline-offset:1px; }
+.cat-identical { background:#d8e9de; }
+.cat-one_extra { background:#fbe3c2; }
+.cat-both_extra { background:#f6e6a8; }
+.cat-one_none { background:#dcd9f4; }
+.cat-no_shared { background:#f5c9c9; }
+
+/* One argument, opened: both annotators side by side, what they share picked
+ * out. The same block is used under the map and in the list below it, so a
+ * disagreement reads the same way wherever it is met. */
+.g-detail { border:1px solid #e4e4ee; border-radius:5px; background:#fcfcfe;
+  padding:11px 13px; margin-top:11px; }
+.g-detail .claim { font-size:0.92rem; margin:0 0 9px; }
+.g-detail .sides { display:grid; gap:11px; grid-template-columns:repeat(auto-fit, minmax(16rem, 1fr)); }
+.g-detail .who { font-weight:650; margin-bottom:4px; }
+.g-detail ul { margin:4px 0 0; padding-left:1.1rem; font-size:0.89rem; }
+.g-detail li.shared { color:#23503a; font-weight:600; }
+.g-detail li.only { color:#6d2020; }
+.g-detail .none { color:#8a8a9e; font-size:0.89rem; }
+
+/* Positive specific agreement per mechanism, weakest first, with the bar the
+ * eye actually reads. Under 0.65 is marked -- not a standard, just the line
+ * this codebook's adjudication uses. */
+.g-mech td.bar-cell { width:34%; }
+.g-bar { display:block; background:#f0f0f7; border-radius:3px; height:9px;
+  overflow:hidden; }
+.g-bar i { display:block; height:100%; background:#8a8ac0; }
+.g-bar i.low { background:#d98f8f; }
+td.weak { color:#6d2020; font-weight:650; }
+.g-swap { font-variant-numeric:tabular-nums; }
+.g-swap td.n { font-weight:650; }
+details.g-list summary { cursor:pointer; color:#4a4a7a; font-size:0.9rem; font-weight:600; }
+details.g-list .g-detail { margin-top:9px; }
 
 /* --- the Progress pane -----------------------------------------------------
  * Label, number, and a note where a number needs one. The label column is
@@ -604,7 +654,7 @@ table.stat td.n { width: 5rem; padding-right: 18px; }
     <h2>Annotations by argument</h2>
     <p class="hint">Every annotation there is, under the argument it is about. Where two
     people annotated the same argument they sit side by side and the argument is marked
-    <b>differ</b> if their verdict or their mechanisms are not the same. A filter picks
+    <b>differ</b> if their verdict, or the set of mechanisms they ticked, is not the same. A filter picks
     <i>annotations</i>: an argument is listed when one of its annotations matches, showing
     those. <b>Shared / disagreements</b> then narrows that to arguments more than one
     person is in.</p>
@@ -638,47 +688,16 @@ table.stat td.n { width: 5rem; padding-right: 18px; }
 </section>
 
 <section id="agreement">
-  <div id="iaa-empty"></div>
-  <div id="iaa-body" hidden>
-    <div class="tiles" id="iaa-tiles"></div>
-    <div class="card">
-      <h2>Agreement by question</h2>
-      <p class="hint">Over the arguments two or more people annotated. <b>&alpha;</b> is the
-      headline; <b>observed</b> is the raw match rate. Read both against <b>arguments</b> &mdash;
-      a coefficient over a handful is not a finding. Bands are Landis &amp; Koch.</p>
-      <table class="iaa"><thead><tr><th>Question</th><th class="n">Arguments</th>
-        <th class="n">Differ</th><th class="n">Observed</th>
-        <th class="n raw">Krippendorff &alpha;</th><th class="n raw">Fleiss &kappa;</th>
-        <th class="n raw">Cohen &kappa;</th></tr></thead><tbody id="iaa-nominal"></tbody></table>
-    </div>
-    <div class="card">
-      <h2>Secondary mechanisms</h2>
-      <p class="hint">Scored as sets, not single choices. <b>&alpha;-MASI</b> counts a subset
-      as closer than an unrelated set; <b>Jaccard</b> is mean overlap; <b>exact match</b> is
-      identical sets.</p>
-      <table class="iaa"><thead><tr><th>Question</th><th class="n">Arguments</th>
-        <th class="n">Differ</th><th class="n">Exact match</th><th class="n raw">&alpha;-MASI</th>
-        <th class="n">Mean Jaccard</th></tr></thead><tbody id="iaa-multi"></tbody></table>
-    </div>
-    <div class="card">
-      <h2>Between each pair</h2>
-      <p class="hint">Observed agreement per pair, on what that pair both answered &mdash;
-      where one person being the odd one out shows up.</p>
-      <div style="overflow-x:auto"><table id="iaa-pairs"></table></div>
-    </div>
-    <div class="card">
-      <h2>Where they part company</h2>
-      <p class="hint">First annotator down the side, second across the top. The diagonal is
-      agreement; off it is which two mechanisms are being confused.</p>
-      <div class="filters">
-        <label>Pair<select id="iaa-pair"></select></label>
-        <label>Question<select id="iaa-question"></select></label>
-      </div>
-      <div id="iaa-matrix"></div>
-      <p class="axis"><a class="btn" href="#" id="iaa-to-disagreements">read the disagreements
-        in Annotations</a></p>
+  <div class="card">
+    <div class="filters">
+      <label>Pair<select id="g-pair"></select></label>
+      <label>Arguments from<input class="n" id="g-from" type="number" min="1"></label>
+      <label>to<input class="n" id="g-to" type="number" min="1"></label>
+      <button id="g-all" type="button">Whole range</button>
+      <span class="check muted" id="g-count"></span>
     </div>
   </div>
+  <div id="g-body"></div>
 </section>
 
 <section id="flags">
@@ -894,9 +913,12 @@ const verdictPill = v =>
   `<span class="pill pill-${v ? v.toLowerCase() : 'draft'}">${esc(v ?? 'draft')}</span>`;
 
 function annotation(a) {
-  const secondaries = (a.secondary_mechanisms || []).map(m =>
-    `<p class="mech secondary"><b>${esc(m)}</b> &mdash;
-       <span class="why">${esc(a.secondary_justifications[m] ?? '')}</span></p>`).join('');
+  // One flat list. Every mechanism ticked reads the same way as every other --
+  // nothing here is indented or dimmed behind a first one, because nothing in
+  // the task ranks them any more.
+  const mechs = (a.mechanisms || []).map(m =>
+    `<p class="mech"><b>${esc(m)}</b> &mdash;
+       <span class="why">${esc(a.justifications[m] ?? '')}</span></p>`).join('');
   return `<div class="ann">
     <div class="ann-head">
       <span class="ann-who">${esc(a.annotator_id)}</span>
@@ -905,17 +927,12 @@ function annotation(a) {
       <span class="muted">${esc(a.last_saved_utc ?? '—')}${
         a.time_on_item_ms ? ' &middot; ' + duration(a.time_on_item_ms) : ''}</span>
     </div>
-    ${a.primary_mechanism
-      ? `<p class="mech"><b>${esc(a.primary_mechanism)}</b> &mdash;
-           <span class="why">${esc(a.primary_justification ?? '')}</span></p>`
-      : '<p class="mech muted">no mechanism</p>'}
-    ${secondaries}
+    ${mechs || '<p class="mech muted">no mechanism</p>'}
     ${a.notes ? `<p class="mech note-text"><b>Notes:</b> ${esc(a.notes)}</p>` : ''}
   </div>`;
 }
 
-const FIELD_NAMES = {sensible_test:'verdict', primary_mechanism:'primary mechanism',
-  secondary_mechanisms:'secondary mechanisms'};
+const FIELD_NAMES = {sensible_test:'verdict', mechanisms:'mechanisms'};
 
 function argumentGroup(g) {
   const differ = g.n_annotators > 1
@@ -995,149 +1012,277 @@ document.getElementById('f-clear').onclick = () => {
 };
 
 // --- Agreement ----------------------------------------------------------------
+//
+// One pair of annotators, one stretch of argument numbers. Both selections live
+// in the URL, so a view can be pasted to the person it is about and survives a
+// reload -- which is the whole reason this page is worth opening twice.
+//
+// Everything below is drawn from one /api/agreement response. No number is
+// computed here: the page renders what scripts/agreement.py worked out, so the
+// figure on screen and the figure in agreement.json cannot differ.
 
-const SHORT = {sensible_test:'Verdict', primary_mechanism:'Primary',
-  secondary_mechanisms:'Secondary', flag_for_discussion:'Flag'};
+let iaa = null, catFilter = null, picked = null;
 
-let iaa = null;
+const CATS = [
+  ['identical',  'Identical sets'],
+  ['one_extra',  'Overlap, one has extra'],
+  ['both_extra', 'Overlap, both have extras'],
+  ['one_none',   'One said None'],
+  ['no_shared',  'No shared mechanism']
+];
 
+const pct = v => (v === null || v === undefined) ? '&mdash;' : (v * 100).toFixed(1) + '%';
+
+// Like tile(), with a second line under the label: a corrected coefficient is
+// unreadable without the raw number it corrected, and the count a percentage
+// came from is what says whether to believe it.
+const gtile = (n, k, sub, cls) =>
+  `<div class="tile"><div class="n">${n}</div><div class="k ${cls || ''}">${k}</div>
+   <div class="sub">${sub}</div></div>`;
 const coef = v => (v === null || v === undefined) ? '&mdash;' : v.toFixed(2);
-const pct = v => (v === null || v === undefined) ? '&mdash;' : Math.round(v * 100) + '%';
 
-function headline(q) {
-  if (q.headline === null || q.headline === undefined)
-    return '<div class="headline"><span class="v none">&mdash;</span></div>';
-  return `<div class="headline"><span class="v">${q.headline.toFixed(2)}</span>
-    <span class="band band-${esc(q.band).replace(/ /g, '-')}">${esc(q.band)}</span></div>`;
+// The two selections, kept in the address bar. Every other query parameter is
+// left alone -- `key` is what gets this console past the guard when it is
+// exposed, and dropping it would log the reader out on the first click.
+function setQuery(pair, from, to) {
+  const q = new URLSearchParams(location.search);
+  q.set('pair', pair); q.set('from', from); q.set('to', to);
+  history.replaceState(null, '', location.pathname + '?' + q + location.hash);
 }
 
-function scopeRow(q, span) {
-  const why = q.undefined_because
-    ? ` <b>Undefined:</b> ${esc(q.undefined_because)}.` : '';
-  return `<tr class="scope"><td colspan="${span}"><b>Scored on</b> ${esc(q.scope)}.${why}</td></tr>`;
+async function loadAgreement(pair, from, to) {
+  const q = new URLSearchParams(location.search);
+  pair = pair ?? q.get('pair') ?? '';
+  from = from ?? q.get('from') ?? '';
+  to   = to   ?? q.get('to')   ?? '';
+  const ask = new URLSearchParams();
+  if (pair) ask.set('pair', pair);
+  if (from !== '') ask.set('from', from);
+  if (to !== '') ask.set('to', to);
+  iaa = await get('/api/agreement' + (ask.toString() ? '?' + ask : ''));
+  catFilter = null; picked = null;
+  drawSelectors();
+  drawReport();
 }
 
-function questionRow(q) {
-  const m = q.metrics;
-  return `<tr><td class="q">${esc(q.title)}</td>
-    <td class="n">${q.n_arguments}</td><td class="n">${q.n_differ}</td>
-    <td class="n">${pct(m.observed_agreement)}</td>
-    <td class="n">${headline(q)}</td>
-    <td class="n">${coef(m.fleiss_kappa)}</td>
-    <td class="n">${coef(m.mean_cohen_kappa)}</td></tr>` + scopeRow(q, 7);
+function drawSelectors() {
+  const select = document.getElementById('g-pair');
+  select.innerHTML = iaa.pairs.map(p =>
+    `<option value="${esc(p.annotators.join('|'))}">${esc(p.annotators[0])} &middot; ${
+      esc(p.annotators[1])} — ${p.n_shared} shared</option>`).join('');
+  if (!iaa.pair) { document.getElementById('g-count').textContent = ''; return; }
+  select.value = iaa.pair.join('|');
+  const range = iaa.range;
+  document.getElementById('g-from').value = range.from ?? '';
+  document.getElementById('g-to').value = range.to ?? '';
+  document.getElementById('g-count').textContent =
+    `${range.n_in_range} of ${range.n_shared} shared arguments in range`;
+  setQuery(iaa.pair.join('|'), range.from ?? '', range.to ?? '');
 }
 
-function multiRow(q) {
-  const m = q.metrics;
-  return `<tr><td class="q">${esc(q.title)}</td>
-    <td class="n">${q.n_arguments}</td><td class="n">${q.n_differ}</td>
-    <td class="n">${pct(m.exact_match)}</td>
-    <td class="n">${headline(q)}</td>
-    <td class="n">${coef(m.mean_jaccard)}</td></tr>` + scopeRow(q, 6);
-}
-
-function pairsTable(d) {
-  const names = d.questions.map(q => q.name);
-  const head = `<thead><tr><th>Pair</th><th class="n">Shared arguments</th>` +
-    names.map(n => `<th class="n">${esc(SHORT[n] || n)}</th>`).join('') + `</tr></thead>`;
-  const body = d.pairs.map(p => `<tr>
-    <td>${esc(p.annotators[0])} &middot; ${esc(p.annotators[1])}</td>
-    <td class="n">${p.n_shared}</td>` +
-    names.map(n => {
-      const cell = p.questions[n];
-      return cell
-        ? `<td class="n">${pct(cell.observed_agreement)}<br>
-             <span class="muted num">${cell.agree}/${cell.n}</span></td>`
-        : '<td class="n muted">&mdash;</td>';
-    }).join('') + '</tr>').join('');
-  return head + '<tbody>' + body + '</tbody>';
-}
-
-function renderMatrix() {
-  const box = document.getElementById('iaa-matrix');
-  const pairKey = document.getElementById('iaa-pair').value;
-  const question = document.getElementById('iaa-question').value;
-  const table = ((iaa.confusions[pairKey] || {})[question]);
-  if (!table) { box.innerHTML = '<p class="muted">Nothing shared on this question yet.</p>'; return; }
-  const [first, second] = pairKey.split('|');
-  const title = (iaa.questions.find(q => q.name === question) || {}).title || question;
-  box.innerHTML = `<table class="matrix">
-    <caption>${esc(title)} &mdash; ${table.n} shared answer(s), ${table.n_agree} the same.
-      Rows: <b>${esc(first)}</b>. Columns: <b>${esc(second)}</b>.</caption>
-    <tr><th></th>${table.labels.map(l => `<th>${esc(l)}</th>`).join('')}</tr>
-    ${table.rows.map((row, i) => `<tr><th class="side">${esc(table.labels[i])}</th>` +
-      row.map((n, j) => `<td class="${n === 0 ? 'zero' : (i === j ? 'same' : 'differ')}">${n}</td>`)
-        .join('') + '</tr>').join('')}
-  </table>`;
-}
-
-async function loadAgreement() {
-  // Recomputed on every visit, like the other panes: somebody is annotating
-  // while this is open. The two dropdowns are the only state worth keeping,
-  // so they are put back if the pair and the question are still there.
-  const was = {pair: (document.getElementById('iaa-pair') || {}).value,
-               question: (document.getElementById('iaa-question') || {}).value};
-  iaa = await get('/api/agreement');
-  const body = document.getElementById('iaa-body');
-  const empty = document.getElementById('iaa-empty');
-
-  if (!iaa.n_shared_arguments) {
-    body.hidden = true;
-    empty.innerHTML = `<div class="card empty">
-      <div class="big">Nothing to compare yet.</div>
-      <p>${iaa.n_annotators} annotator(s), ${iaa.n_arguments_annotated.toLocaleString()}
-      argument(s), none of them annotated twice. Assign the same stretch to a second
-      annotator and this page fills in.</p></div>`;
+function drawReport() {
+  const box = document.getElementById('g-body');
+  if (iaa.empty) {
+    box.innerHTML = `<div class="card empty"><div class="big">Nothing to compare.</div>
+      <p>${esc(iaa.empty)}</p></div>`;
     return;
   }
-  empty.innerHTML = '';
-  body.hidden = false;
-
-  const verdict = iaa.questions.find(q => q.name === 'sensible_test') || {};
-  const primary = iaa.questions.find(q => q.name === 'primary_mechanism') || {};
-  document.getElementById('iaa-tiles').innerHTML =
-    tile(iaa.n_shared_arguments.toLocaleString(), 'shared arguments')
-    + tile(iaa.n_differ.toLocaleString(), 'read differently')
-    + tile(iaa.n_annotators, 'annotators')
-    + tile(iaa.pairs.length, 'pairs')
-    + tile(coef(verdict.headline), 'verdict &alpha;', 'raw')
-    + tile(coef(primary.headline), 'mechanism &alpha;', 'raw');
-
-  document.getElementById('iaa-nominal').innerHTML =
-    iaa.questions.filter(q => q.kind === 'nominal').map(questionRow).join('');
-  document.getElementById('iaa-multi').innerHTML =
-    iaa.questions.filter(q => q.kind === 'multilabel').map(multiRow).join('');
-  document.getElementById('iaa-pairs').innerHTML = pairsTable(iaa);
-
-  const pairSelect = document.getElementById('iaa-pair');
-  const questionSelect = document.getElementById('iaa-question');
-  const keys = Object.keys(iaa.confusions);
-  pairSelect.innerHTML = keys.map(k =>
-    `<option value="${esc(k)}">${esc(k.replace('|', ' \u00b7 '))}</option>`).join('');
-  if (keys.includes(was.pair)) pairSelect.value = was.pair;
-  const fillQuestions = () => {
-    // Codebook order, not whatever order the JSON came back in, and opened on
-    // the mechanism: which one got picked instead of which is the question
-    // this table exists to answer.
-    const available = iaa.questions.filter(q => (iaa.confusions[pairSelect.value] || {})[q.name]);
-    questionSelect.innerHTML = available.map(q =>
-      `<option value="${esc(q.name)}">${esc(q.title)}</option>`).join('');
-    const names = available.map(q => q.name);
-    const want = names.includes(was.question) ? was.question
-      : (names.includes('primary_mechanism') ? 'primary_mechanism' : names[0]);
-    if (want) questionSelect.value = want;
-  };
-  fillQuestions();
-  pairSelect.onchange = () => { fillQuestions(); renderMatrix(); };
-  questionSelect.onchange = renderMatrix;
-  if (keys.length) renderMatrix();
-
-  document.getElementById('iaa-to-disagreements').onclick = ev => {
-    ev.preventDefault();
-    document.getElementById('f-overlap').value = 'differ';
-    document.querySelector('nav button[data-pane="annotations"]').click();
-  };
+  const [a, b] = iaa.pair, r = iaa.range;
+  box.innerHTML = `
+    <div class="card">
+      <div class="g-head"><h2>Agreement: ${esc(a)} vs ${esc(b)}, arguments ${
+        r.from}&ndash;${r.to}</h2></div>
+      ${iaa.thin ? `<p class="g-thin">Only ${iaa.n_mechanism_arguments} shared argument${
+        iaa.n_mechanism_arguments === 1 ? '' : 's'} in this range. Treat these numbers
+        as rough.</p>` : ''}
+      <div class="tiles" style="margin:12px 0 0">
+        ${gtile(coef(iaa.passfail.kappa), 'Pass/Fail Cohen &kappa;',
+                pct(iaa.passfail.observed) + ' raw match', 'raw')}
+        ${gtile(pct(iaa.identical_share), 'identical sets',
+                iaa.categories.identical + ' of ' + iaa.n_mechanism_arguments)}
+        ${gtile(pct(iaa.share_one_share), 'share a mechanism',
+                'of ' + iaa.n_mechanism_arguments + ' arguments')}
+      </div>
+      <p class="hint" style="margin-top:9px">Mechanism sets compared over ${
+        iaa.n_mechanism_arguments} arguments both annotated; Pass/Fail over the ${
+        iaa.n_passfail_arguments} where both answered it.</p>
+    </div>
+    ${findingsCard()}
+    ${sensibleCard()}
+    ${mapCard()}
+    ${mechanismCard()}
+    ${swapCard()}
+    ${listCard()}`;
+  wireMap();
 }
+
+function findingsCard() {
+  if (!iaa.findings.length) return '';
+  return `<div class="card">${iaa.findings.map(f =>
+    `<div class="finding"><p class="lead">${esc(f.lead)}</p>
+       <p class="why">${esc(f.numbers)}</p></div>`).join('')}</div>`;
+}
+
+function sensibleCard() {
+  const [a, b] = iaa.pair, p = iaa.passfail;
+  if (!p.n) return `<div class="card"><h2>Sensible Test</h2>
+    <p class="hint">Neither annotator has answered the Sensible Test on a shared
+    argument in this range.</p></div>`;
+  const cell = (n, same) =>
+    `<td class="${n === 0 ? 'zero' : (same ? 'same' : 'differ')}">${n}</td>`;
+  return `<div class="card">
+    <h2>Sensible Test</h2>
+    <table class="matrix">
+      <tr><th></th><th>${esc(b)} Pass</th><th>${esc(b)} Fail</th></tr>
+      <tr><th class="side">${esc(a)} Pass</th>${cell(p.matrix[0][0], true)}${
+        cell(p.matrix[0][1], false)}</tr>
+      <tr><th class="side">${esc(a)} Fail</th>${cell(p.matrix[1][0], false)}${
+        cell(p.matrix[1][1], true)}</tr>
+    </table>
+    <p class="axis">${p.matches} of ${p.n} matched &middot; ${esc(a)} fails ${
+      pct(p.fail_rate[0])} &middot; ${esc(b)} fails ${pct(p.fail_rate[1])}
+      &middot; chance ${pct(p.chance)} &middot; &kappa; ${coef(p.kappa)}</p>
+  </div>`;
+}
+
+// The map. Grouped by meme because a meme is read bottom up as a unit, so a
+// meme where the two of them fell out is the thing worth opening -- not an
+// argument number in isolation.
+function mapCard() {
+  const counts = iaa.categories;
+  const legend = CATS.filter(([k]) => counts[k] || k !== 'both_extra').map(([k, label]) =>
+    `<button data-cat="${k}"><i class="cat-${k}"></i>${esc(label)} <b>${counts[k]}</b></button>`
+  ).join('');
+
+  const memes = [];
+  iaa.arguments.forEach(arg => {
+    const last = memes[memes.length - 1];
+    if (last && last.meme === arg.meme_id) last.args.push(arg);
+    else memes.push({meme: arg.meme_id, args: [arg]});
+  });
+
+  return `<div class="card">
+    <h2>Mechanism map</h2>
+    <p class="hint">One block per argument, in argument order, grouped by meme.
+    Click a block for both answers; click the legend to filter.</p>
+    <div class="g-legend">${legend}</div>
+    <div class="g-map">${memes.map(m => `<div class="g-meme">
+        <div class="who">${esc(m.meme ?? '—')}</div>
+        <div class="g-blocks">${m.args.map(arg =>
+          `<button class="cat-${arg.category}" data-id="${esc(arg.instance_id)}"
+             title="Argument ${arg.number ?? '—'}">${arg.number ?? ''}</button>`).join('')}</div>
+      </div>`).join('')}</div>
+    <div id="g-picked"></div>
+  </div>`;
+}
+
+function detail(arg) {
+  const [a, b] = iaa.pair;
+  const side = (who, one) => {
+    const list = one.mechanisms.length
+      ? `<ul>${one.mechanisms.map(m =>
+          `<li class="${arg.shared.includes(m) ? 'shared' : 'only'}">${esc(m)}</li>`).join('')}</ul>`
+      : '<p class="none">None</p>';
+    return `<div><div class="who">${esc(who)} ${verdictPill(one.verdict)}</div>${list}</div>`;
+  };
+  return `<div class="g-detail">
+    <p class="claim"><span class="num">Argument ${arg.number ?? '—'}</span>
+      ${esc(arg.claim ?? '')}</p>
+    <div class="sides">${side(a, arg.a)}${side(b, arg.b)}</div>
+  </div>`;
+}
+
+function wireMap() {
+  document.querySelectorAll('.g-legend button').forEach(button => {
+    button.classList.toggle('off', catFilter !== null && catFilter !== button.dataset.cat);
+    button.onclick = () => {
+      catFilter = (catFilter === button.dataset.cat) ? null : button.dataset.cat;
+      drawReport();
+    };
+  });
+  document.querySelectorAll('.g-blocks button').forEach(button => {
+    const arg = iaa.arguments.find(x => x.instance_id === button.dataset.id);
+    button.classList.toggle('hide', catFilter !== null && arg.category !== catFilter);
+    button.classList.toggle('on', picked === button.dataset.id);
+    button.onclick = () => {
+      picked = (picked === button.dataset.id) ? null : button.dataset.id;
+      document.getElementById('g-picked').innerHTML = picked ? detail(arg) : '';
+      document.querySelectorAll('.g-blocks button').forEach(other =>
+        other.classList.toggle('on', picked === other.dataset.id));
+    };
+  });
+  const open = picked && iaa.arguments.find(x => x.instance_id === picked);
+  document.getElementById('g-picked').innerHTML = open ? detail(open) : '';
+}
+
+function mechanismCard() {
+  const [a, b] = iaa.pair;
+  const rows = iaa.mechanisms.map(m => {
+    const weak = m.agreement !== null && m.agreement < 0.65;
+    const width = m.agreement === null ? 0 : Math.round(m.agreement * 100);
+    return `<tr>
+      <td>${esc(m.mechanism)}</td>
+      <td class="n">${m.a}</td><td class="n">${m.b}</td><td class="n">${m.both}</td>
+      <td class="n ${weak ? 'weak' : ''}">${
+        m.agreement === null ? '&mdash;' : m.agreement.toFixed(2)}</td>
+      <td class="bar-cell"><span class="g-bar"><i class="${weak ? 'low' : ''}"
+        style="width:${width}%"></i></span></td></tr>`;
+  }).join('');
+  return `<div class="card">
+    <h2>Agreement by mechanism</h2>
+    <p class="hint">Positive specific agreement &mdash; 2 &times; both &divide; (${esc(a)} +
+    ${esc(b)}). Weakest first; under 0.65 is marked. The arguments where neither used a
+    mechanism say nothing about it and are not counted.</p>
+    <table class="g-mech"><thead><tr><th>Mechanism</th><th class="n">${esc(a)}</th>
+      <th class="n">${esc(b)}</th><th class="n">Both</th><th class="n">Agreement</th>
+      <th></th></tr></thead><tbody>${rows}</tbody></table>
+  </div>`;
+}
+
+function swapCard() {
+  const [a, b] = iaa.pair;
+  const top = iaa.swaps.slice(0, 5);
+  if (!top.length) return `<div class="card"><h2>Most common swaps</h2>
+    <p class="hint">No argument in this range has the two of them flagging mechanisms
+    with nothing in common.</p></div>`;
+  return `<div class="card">
+    <h2>Most common swaps</h2>
+    <p class="hint">Over the arguments with no mechanism in common: what ${esc(a)} chose
+    where ${esc(b)} chose something else. Every cross pair counts, so one annotator's two
+    labels against the other's one is two pairs.</p>
+    <table class="g-swap"><thead><tr><th>${esc(a)} chose</th><th>${esc(b)} chose</th>
+      <th class="n">Times</th></tr></thead><tbody>${top.map(s =>
+      `<tr><td>${esc(s.a)}</td><td>${esc(s.b)}</td><td class="n">${s.n}</td></tr>`).join('')}
+    </tbody></table>
+  </div>`;
+}
+
+function listCard() {
+  const rows = iaa.arguments.filter(arg => arg.category !== 'identical');
+  if (!rows.length) return `<div class="card"><h2>Non-identical arguments</h2>
+    <p class="hint">Every shared argument in this range has the same set on both sides.</p>
+  </div>`;
+  return `<div class="card"><details class="g-list">
+    <summary>Non-identical arguments (${rows.length})</summary>
+    ${rows.map(detail).join('')}
+  </details></div>`;
+}
+
+// The two controls. The range is read back off the response rather than off the
+// boxes, because the server clamps it to the pair's span -- so what is in the
+// boxes after a change is what was actually computed.
+document.getElementById('g-pair').onchange = ev =>
+  loadAgreement(ev.target.value, '', '');      // a new pair resets the range
+document.getElementById('g-all').onclick = () =>
+  loadAgreement(document.getElementById('g-pair').value, '', '');
+['g-from', 'g-to'].forEach(id => {
+  const el = document.getElementById(id);
+  let timer;
+  const rerun = () => loadAgreement(document.getElementById('g-pair').value,
+    document.getElementById('g-from').value, document.getElementById('g-to').value);
+  el.addEventListener('change', rerun);
+  el.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(rerun, 400); });
+});
 
 async function loadFlags() {
   const d = await get('/api/flags');
@@ -1148,8 +1293,8 @@ async function loadFlags() {
       <span class="pill pill-flag">flag</span>
       <span class="muted">${esc(r.instance_id)} &middot; ${esc(r.annotator_id)}
       &middot; ${esc(r.relation)} &middot; ${esc(r.sensible_test ?? 'draft')}</span></div>
-    ${r.primary_mechanism ? `<p><b>${esc(r.primary_mechanism)}</b>${r.secondary_mechanisms ? ' + ' + esc(r.secondary_mechanisms) : ''}<br>
-      ${esc(r.primary_justification)}</p>` : ''}
+    ${r.mechanisms ? `<p><b>${esc(r.mechanisms.split('|').join(' + '))}</b><br>
+      ${esc(r.justifications)}</p>` : ''}
     <details class="arg"><summary>the argument</summary>${r.argument_html}</details>
   </div>`).join('');
 }
@@ -1243,10 +1388,39 @@ def create_app() -> Flask:
             "mechanisms": export.MECHANISMS,
         })
 
+    def agreement_report():
+        """The report for the pair and range in the query string.
+
+        `pair` is the two annotator ids joined by a pipe, `from` and `to` are
+        argument numbers. All three are optional: the default is the pair that
+        shares the most arguments, over the whole of what they share. Anything
+        unparseable falls back to that default rather than erroring, because
+        these arrive from a URL somebody pasted.
+        """
+        records, _, items = load_records()
+        raw = (request.args.get("pair") or "").strip()
+        pair = tuple(raw.split("|", 1)) if "|" in raw else None
+
+        def number(name):
+            try:
+                return int((request.args.get(name) or "").strip())
+            except ValueError:
+                return None
+
+        data = iaa.report(records, pair, number("from"), number("to"))
+        # The claim itself is not in an annotation record -- it is item data --
+        # so it is attached here rather than making agreement.py read the
+        # corpus. That keeps `report` pure over annotations, which is what the
+        # tests exercise.
+        for argument in data.get("arguments", []):
+            item = items.get(argument["instance_id"], {})
+            argument["claim"] = item.get("claim_content")
+            argument["meme_id"] = argument.get("meme_id") or item.get("meme_id")
+        return data
+
     @app.route("/api/agreement")
     def api_agreement():
-        records, _, _ = load_records()
-        return jsonify(iaa.report(records))
+        return jsonify(agreement_report())
 
     @app.route("/api/flags")
     def api_flags():
@@ -1333,13 +1507,15 @@ def create_app() -> Flask:
 
     @app.route("/download/agreement.json")
     def download_agreement():
-        """Every coefficient, every pair and every confusion table, as the page
-        shows them -- so the number that goes in the write-up and the number on
-        screen came out of the same computation."""
-        records, _, _ = load_records()
+        """The agreement page as JSON, for the same pair and range.
+
+        Takes the same query string the page does, so the file and the screen
+        are one computation -- the number that goes in the write-up is the
+        number that was read off the page.
+        """
         report = {
             "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-            **iaa.report(records),
+            **agreement_report(),
         }
         return attachment(json.dumps(report, indent=1, ensure_ascii=False),
                           "agreement.json", "application/json")
@@ -1349,8 +1525,8 @@ def create_app() -> Flask:
         records, _, items = load_records()
         rows = flag_rows(records, items)
         columns = ["item_number", "instance_id", "meme_id", "relation", "annotator_id",
-                   "sensible_test", "primary_mechanism", "primary_justification",
-                   "secondary_mechanisms", "flag_for_discussion", "last_saved_utc"]
+                   "sensible_test", "mechanisms", "justifications",
+                   "flag_for_discussion", "last_saved_utc"]
         buffer = io.StringIO()
         writer = csv.DictWriter(buffer, fieldnames=columns, extrasaction="ignore")
         writer.writeheader()

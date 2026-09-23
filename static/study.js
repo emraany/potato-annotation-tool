@@ -75,14 +75,15 @@
     var text = (legend ? legend.textContent : form.dataset.schemaName || "").trim();
     text = text.replace(/\s+/g, " ");
 
-    /* The questions are whole sentences and the message names three of them at
-       once, so each one is cut back to the part that identifies it. A colon or
-       a question mark ends the naming part when there is one near the front --
-       "Secondary — Affective Hijacking:", "Why that one?" -- and otherwise the
-       em-dash does, which is what separates "1. Manipulation Check" and
-       "Primary mechanism" from the question they introduce. Taking the em-dash
-       first would cut "Secondary — Affective Hijacking" down to "Secondary",
-       which is three questions' worth of ambiguity. */
+    /* The questions are whole sentences and the message can name several of
+       them at once, so each one is cut back to the part that identifies it. A
+       colon or a question mark ends the naming part when there is one near the
+       front -- "Affective Hijacking: what is being used…" -- and otherwise the
+       em-dash does, which is what separates "Mechanisms" and "Does this
+       argument fail the Sensible Test" from the rest of their sentence. The
+       colon is taken first because every justification box is named by its
+       mechanism before one, and cutting at the em-dash there would leave six
+       boxes all reading the same thing. */
     var near = text.search(/[:?]/);
     var cut = (near > 8 && near < 70) ? near : text.search(/[—–]/);
     if (cut > 8) { text = text.slice(0, cut).trim(); }
@@ -179,12 +180,12 @@
   //
   // annotation.js's handleInputChange() ends the UNCHECKED branch with its own
   // `return`, several lines above the `displayLogicManager.evaluateForSchema()`
-  // call every other branch reaches. So ticking a secondary mechanism opened
-  // its justification box and un-ticking it left the box on screen: the answer
-  // was gone from currentAnnotations, but nothing asked the gate about it
-  // again. Submit then refused an argument over a question that should not
-  // have been there, and the only ways out were to re-tick the mechanism and
-  // write a justification nobody wanted, or to Save draft.
+  // call every other branch reaches. So ticking a mechanism opened its
+  // justification box and un-ticking it left the box on screen: the answer was
+  // gone from currentAnnotations, but nothing asked the gate about it again.
+  // Submit then refused an argument over a question that should not have been
+  // there, and the only ways out were to re-tick the mechanism and write a
+  // justification nobody wanted, or to Save draft.
   //
   // `change` listeners bound on the input itself run before one bound here on
   // the document, so by this point currentAnnotations has already had the

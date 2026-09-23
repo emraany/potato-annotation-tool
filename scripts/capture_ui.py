@@ -15,8 +15,8 @@ without opening anything:
     01-login-and-register
     02-guidelines                           the guidelines banner, opened
     04-annotation-gate-shut                 the Sensible Test alone
-    05-annotation-gate-open                 one check Yes, mechanism revealed
-    06-annotation-one-secondary-ticked      one secondary, its justification open
+    05-annotation-gate-open                 the test failed, the mechanisms revealed
+    06-annotation-two-mechanisms-ticked     two ticked, both justification boxes open
     07-submit-refused                       Submit on an unfinished argument
 
 It registers a throwaway account, which is a real annotator holding real
@@ -82,18 +82,27 @@ def main() -> int:
         page.wait_for_timeout(700)
         shot("05-annotation-gate-open")
 
-        page.click("[data-schema-name='primary_mechanism'] input[value='Spurious Causal Correlation']")
-        box = page.query_selector("[name='primary_justification:::text_box']")
+        # Two mechanisms, because one flat list with two ticked and two
+        # justification boxes open under it is the shape of the task now.
+        page.click("[data-schema-name='mechanisms'] input[value='Spurious Causal Correlation']")
+        page.click("[data-schema-name='mechanisms'] input[value='Affective Hijacking']")
+        page.wait_for_timeout(700)
+        box = page.query_selector("[name='justification_spurious_causal_correlation:::text_box']")
         box.fill("Children #2 and #5 are only set beside each other; neither asserts the causal link.")
         box.dispatch_event("input")
-        page.click("[data-schema-name='secondary_mechanisms'] input[value='Affective Hijacking']")
-        page.wait_for_timeout(700)
-        shot("06-annotation-one-secondary-ticked")
+        box = page.query_selector("[name='justification_affective_hijacking:::text_box']")
+        box.fill("Child #5's described expression is what carries the reader over the gap.")
+        box.dispatch_event("input")
+        page.wait_for_timeout(500)
+        shot("06-annotation-two-mechanisms-ticked")
 
         # Submit on an argument that is not finished: it refuses, marks every
         # question that has no answer, and points at Save draft. This is the
         # state the two buttons exist for, so it is the one worth a picture.
-        page.click("[data-schema-name='secondary_mechanisms'] input[value='Affective Hijacking']")
+        # Un-ticking a mechanism with a justification already typed is how an
+        # argument gets there in one click.
+        page.click("[data-schema-name='mechanisms'] input[value='Spurious Causal Correlation']")
+        page.click("[data-schema-name='mechanisms'] input[value='Affective Hijacking']")
         page.wait_for_timeout(500)
         page.click("#next-btn")
         page.wait_for_timeout(900)

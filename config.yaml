@@ -8,6 +8,11 @@
 #
 # Scheme names are frozen. Renaming one after annotation starts splits the data
 # across the admin view, the agreement report and the export, with no error.
+# They have been broken once, deliberately: the mechanisms were flattened from
+# `primary_mechanism` + `secondary_mechanisms` into one `mechanisms`
+# multiselect, and scripts/migrate_flatten_mechanisms.py is what moves answers
+# already stored under the old names. Any further rename needs the same
+# treatment.
 
 annotation_task_name: VLMD Subtask 1 — Cognitive Mechanism Classification
 task_dir: .
@@ -110,28 +115,35 @@ annotation_schemes:
     label_requirement: {required: true}
     horizontal: true
 
-  # --- 2. Mechanism. Shown only when the Sensible Test came back failed. ------
+  # --- 2. Mechanisms. Shown only when the Sensible Test came back failed. ----
   # One condition, so the default `logic: all` is the whole of it; there is no
   # `logic: any` here any more, and adding a second condition without one would
   # silently AND the two.
+  #
+  # FLAT, not primary-and-secondary. There is one list of mechanisms and every
+  # one at work in the argument is ticked in it; nothing ranks them. A failed
+  # Sensible Test means at least one is present, which is why the multiselect
+  # is `required: true` -- the only scheme of its type in this config that is.
 
   - annotation_type: pure_display
     name: section_mechanism
     allow_html: true
     description: >-
-      <h4 class="step-head">Step 2 &mdash; Mechanism</h4>
-      <p class="step-sub">The argument failed the Sensible Test, so a mechanism
-      is present. Pick the one that does the most work.</p>
+      <h4 class="step-head">Step 2 &mdash; Mechanisms</h4>
+      <p class="step-sub">The argument failed the Sensible Test, so at least one
+      mechanism is present. Tick every mechanism at work, and say for each one
+      how it works. There is no ranking between them.</p>
     label_requirement: {required: false}
     display_logic:
       show_when:
         - {schema: sensible_test_failed, operator: equals, value: 'Yes'}
 
-  - annotation_type: radio
-    name: primary_mechanism
+  - annotation_type: multiselect
+    name: mechanisms
     description: >-
-      Primary mechanism — which one does most of the work in getting a reader
-      from these children to this claim?
+      Mechanisms — tick every one at work in getting a reader from these
+      children to this claim. At least one, since the Sensible Test came back
+      failed.
     labels:
       - {name: 'Affective Hijacking', key_value: '1'}
       - {name: 'Episodic Overgeneralization', key_value: '2'}
@@ -145,116 +157,92 @@ annotation_schemes:
       show_when:
         - {schema: sensible_test_failed, operator: equals, value: 'Yes'}
 
-  - annotation_type: text
-    name: primary_justification
-    description: >-
-      Why that one? Name what in the children is being used and what move it
-      makes toward the claim. Do not restate the label.
-    multiline: true
-    rows: 3
-    min_chars: 15
-    # Kept short: the box is one column of a three-column grid, and a long
-    # placeholder is clipped mid-sentence there.
-    placeholder: 'What is used, and what move does it make?' 
-    label_requirement: {required: true}
-    display_logic:
-      show_when:
-        - {schema: sensible_test_failed, operator: equals, value: 'Yes'}
-
-  - annotation_type: multiselect
-    name: secondary_mechanisms
-    description: >-
-      Secondary mechanisms — any others also at work in this argument. Optional.
-      Do not repeat the primary.
-    label_requirement: {required: false}   # explicit; see the note near require_fully_annotated below
-    labels:
-      - {name: 'Affective Hijacking', key_value: 'z'}
-      - {name: 'Episodic Overgeneralization', key_value: 'x'}
-      - {name: 'Spurious Causal Correlation', key_value: 'c'}
-      - {name: 'Satirical Trivialization', key_value: 'v'}
-      - {name: 'Esoteric Code Activation', key_value: 'b'}
-      - {name: 'Spurious Legitimacy Signaling', key_value: 'n'}
-    humanize_labels: false
-    display_logic:
-      show_when:
-        - {schema: sensible_test_failed, operator: equals, value: 'Yes'}
-
-  # One justification per secondary mechanism, gated on that mechanism being
-  # ticked. `contains` tests membership of the multiselect's stored list.
+  # One justification per mechanism, gated on that mechanism being ticked.
+  # `contains` tests membership of the multiselect's stored list.
+  #
+  # Kept short: the box is one column of a three-column grid, and a long
+  # placeholder is clipped mid-sentence there.
 
   - annotation_type: text
-    name: secondary_justification_affective_hijacking
-    description: 'Secondary — Affective Hijacking: what is being used, and what move does it make?'
+    name: justification_affective_hijacking
+    description: 'Affective Hijacking: what is being used, and what move does it make?'
     multiline: true
     rows: 2
     min_chars: 15
+    placeholder: 'What is used, and what move does it make?'
     label_requirement: {required: true}
     display_logic:
       show_when:
-        - {schema: secondary_mechanisms, operator: contains, value: 'Affective Hijacking'}
+        - {schema: mechanisms, operator: contains, value: 'Affective Hijacking'}
 
   - annotation_type: text
-    name: secondary_justification_episodic_overgeneralization
-    description: 'Secondary — Episodic Overgeneralization: what is being used, and what move does it make?'
+    name: justification_episodic_overgeneralization
+    description: 'Episodic Overgeneralization: what is being used, and what move does it make?'
     multiline: true
     rows: 2
     min_chars: 15
+    placeholder: 'What is used, and what move does it make?'
     label_requirement: {required: true}
     display_logic:
       show_when:
-        - {schema: secondary_mechanisms, operator: contains, value: 'Episodic Overgeneralization'}
+        - {schema: mechanisms, operator: contains, value: 'Episodic Overgeneralization'}
 
   - annotation_type: text
-    name: secondary_justification_spurious_causal_correlation
-    description: 'Secondary — Spurious Causal Correlation: what is being used, and what move does it make?'
+    name: justification_spurious_causal_correlation
+    description: 'Spurious Causal Correlation: what is being used, and what move does it make?'
     multiline: true
     rows: 2
     min_chars: 15
+    placeholder: 'What is used, and what move does it make?'
     label_requirement: {required: true}
     display_logic:
       show_when:
-        - {schema: secondary_mechanisms, operator: contains, value: 'Spurious Causal Correlation'}
+        - {schema: mechanisms, operator: contains, value: 'Spurious Causal Correlation'}
 
   - annotation_type: text
-    name: secondary_justification_satirical_trivialization
-    description: 'Secondary — Satirical Trivialization: what is being used, and what move does it make?'
+    name: justification_satirical_trivialization
+    description: 'Satirical Trivialization: what is being used, and what move does it make?'
     multiline: true
     rows: 2
     min_chars: 15
+    placeholder: 'What is used, and what move does it make?'
     label_requirement: {required: true}
     display_logic:
       show_when:
-        - {schema: secondary_mechanisms, operator: contains, value: 'Satirical Trivialization'}
+        - {schema: mechanisms, operator: contains, value: 'Satirical Trivialization'}
 
   - annotation_type: text
-    name: secondary_justification_esoteric_code_activation
-    description: 'Secondary — Esoteric Code Activation: what is being used, and what move does it make?'
+    name: justification_esoteric_code_activation
+    description: 'Esoteric Code Activation: what is being used, and what move does it make?'
     multiline: true
     rows: 2
     min_chars: 15
+    placeholder: 'What is used, and what move does it make?'
     label_requirement: {required: true}
     display_logic:
       show_when:
-        - {schema: secondary_mechanisms, operator: contains, value: 'Esoteric Code Activation'}
+        - {schema: mechanisms, operator: contains, value: 'Esoteric Code Activation'}
 
   - annotation_type: text
-    name: secondary_justification_spurious_legitimacy_signaling
-    description: 'Secondary — Spurious Legitimacy Signaling: what is being used, and what move does it make?'
+    name: justification_spurious_legitimacy_signaling
+    description: 'Spurious Legitimacy Signaling: what is being used, and what move does it make?'
     multiline: true
     rows: 2
     min_chars: 15
+    placeholder: 'What is used, and what move does it make?'
     label_requirement: {required: true}
     display_logic:
       show_when:
-        - {schema: secondary_mechanisms, operator: contains, value: 'Spurious Legitimacy Signaling'}
+        - {schema: mechanisms, operator: contains, value: 'Spurious Legitimacy Signaling'}
 
   # --- 3. Always shown -------------------------------------------------------
-
-  - annotation_type: pure_display
-    name: section_record
-    allow_html: true
-    description: '<h4 class="step-head">Step 3 &mdash; Anything else</h4>'
-    label_requirement: {required: false}
+  # NO HEADING over these two. There was a `section_record` pure_display here
+  # reading "Step 3 -- Anything else", and it rendered wrong: with no `layout`
+  # block the forms flow in a grid, and a heading is a form like any other, so
+  # it landed in a column BESIDE the last justification box instead of above
+  # Notes. Steps 1 and 2 are headings over a gate -- Step 2's appears and
+  # disappears with the questions under it, which is what earns them. Notes and
+  # the flag are always on screen and say what they are in their own labels.
 
   - annotation_type: text
     name: notes
@@ -315,10 +303,10 @@ assignment_strategy: fixed_order
 # NOT SET: `require_fully_annotated: true`.
 #
 # It stamps `label_requirement: {required: true}` onto every scheme that does
-# not declare one, and it reaches schemes that cannot be answered. Measured:
-# with it on, the three `pure_display` section headings became required; the
-# CLIENT renders no input for them so Next stayed enabled, and the SERVER
-# refused every save with `Required annotation(s) not completed:
+# not declare one, and it reaches schemes that cannot be answered. Measured
+# while there were three `pure_display` section headings: with it on, all three
+# became required; the CLIENT renders no input for them so Next stayed enabled,
+# and the SERVER refused every save with `Required annotation(s) not completed:
 # section_sensible_test, section_record` in a corner toast naming internal
 # scheme names. The annotator is stuck on item one with no visible question to
 # answer. It also silently made Notes and the discussion flag mandatory.
