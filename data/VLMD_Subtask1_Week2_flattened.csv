@@ -1,0 +1,1274 @@
+annotator,meme_number,image,claim_seq,claim_key,claim_id,claim,children,annotated,sensible_test,mechanisms,mechanism_count,affective_hijacking,episodic_overgeneralization,esoteric_code_activation,satirical_trivialization,spurious_causal_correlation,spurious_legitimacy_signaling,primary_mechanism,primary_justification,secondary_mechanisms,secondary_justification,notes,source_row
+Denny,1,149_image.png,1,m01_c01,1,"1. Trump attempted to secure exclusive, for-profit control over a coronavirus vaccine","- Trump reportedly offered a German firm $1,000,000,000 for exclusive rights to any coronavirus vaccine
+
+- ""Trump wanted not only to control any new vaccine but also to make sure that it would only be available on a for-profit basis,"" reported Common Dreams.
+
+- Donald Trump is wearing a smug or satisfied facial expression.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,3
+Denny,1,149_image.png,2,m01_c02,C0,C0. Trump's attempt to profit off of COVID is depraved,"- 1. Trump attempted to secure exclusive, for-profit control over a coronavirus vaccine
+
+- What could be more depraved than trying to profit off of the suffering of the entire world? Spread his shame.
+
+- Donald Trump is wearing a smug or satisfied facial expression.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,Donald Trump's expression creates negative feelings towards him which further contributes to the depravity argument. The second child is also using emotions to argue for this rather than any evidence.,,,,4
+Denny,2,148_image.png,1,m02_c01,4,4. Trump endangered the public during the pandemic,"- Donald Trump wearing a 'Keep America Great' hat and gesturing while speaking with an open-mouthed expression.
+
+- ""HE OVERRULED HIS SCIENTISTS. HE HAS FAILED. HE HAS ENDANGERED EVERY ONE OF US.""
+
+- Alex Azar and Robert Redfield standing behind Donald Trump.",1,Fail,Affective Hijacking;Spurious Legitimacy Signaling,2,1,0,0,0,0,1,Spurious Legitimacy Signaling,The argument uses Alex Azar and Robert Redfiled who are health officials to add credibility to the claim,Affective Hijacking,The second child is written in full caps and an unflattering expression of Trump is loading the argument with negative emotions rather than providing evidence for the claim.,,8
+Denny,2,148_image.png,2,m02_c02,1,1. Trump lied about the COVID-19 pandemic,"- Donald Trump wearing a 'Keep America Great' hat and gesturing while speaking with an open-mouthed expression.
+
+- ""HE SAID IT WASN'T REAL. HE SAID IT'S CONTAINED. HE SAID IT WOULD DISAPPEAR. HE BLAMED DEMOCRATS. HE SHARED HIS HUNCHES.""",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,This is the same as the claim before where full caps and an unflattering expression of Trump is being used to justify the claim rather than evidence.,NONE,,,9
+Denny,2,148_image.png,3,m02_c03,C0,C0. Trump should be voted out of office.,"- 1. Trump lied about the COVID-19 pandemic
+
+- 4. Trump endangered the public during the pandemic",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,10
+Denny,3,151_image.png,1,m03_c01,1,1. Donald Trump is a nightmare for the country,"- Donald Trump with a stern expression
+
+- ""On Tuesday, November 3, 2020. We make America great again by voting this nightmare out of office!""
+
+- A dark, shadowy forest background behind Donald Trump",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,Trump's stern expression and the dark background invokes negatives feeling which invokes the feeling that Trump is a nightmare for the country.,,,,14
+Denny,3,151_image.png,2,m03_c02,C0,C0. Donald Trump must be voted out of office to make America great again,"- 1. Donald Trump is a nightmare for the country
+
+- ""On Tuesday, November 3, 2020. We make America great again by voting this nightmare out of office!""
+
+- Donald Trump with a stern expression",1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,There is no evidence that voting Trump out will make America great again being provided.,NONE,,,15
+Denny,4,92_image.png,1,m04_c01,4,4. Obama's policies prioritize those who rely on government assistance over productive citizens,"- Barack Obama with a smiling expression on a U.S. Department of Agriculture food coupon
+
+- At last, the illegals and economic deadbeats and parasites have a president on their money
+
+- U.S. DEPARTMENT OF AGRICULTURE FOOD COUPON VALUE 1 DOLLAR",1,Fail,Affective Hijacking;Satirical Trivialization,2,1,0,0,1,0,0,Affective Hijacking,"Strong words like deadbeats, parasites and an argument in full caps is using negative emotions to justify the claim rather than any evidence.",Satirical Trivialization,There is are mocking Obama by putting his face onto this coupon like money bills to further justify the claim.,,19
+Denny,4,92_image.png,2,m04_c02,1,1. Obama is the president of illegal immigrants and economic deadbeats,"- At last, the illegals and economic deadbeats and parasites have a president on their money
+
+- Barack Obama with a smiling expression on a U.S. Department of Agriculture food coupon
+
+- U.S. DEPARTMENT OF AGRICULTURE FOOD COUPON VALUE 1 DOLLAR",1,Fail,Affective Hijacking;Satirical Trivialization,2,1,0,0,1,0,0,Affective Hijacking,Similar to the first claim strong words and full caps are used to create negative emotions to justify the claim instead of any evidence.,Satirical Trivialization,There is are mocking Obama by putting his face onto this coupon like money bills to further justify the claim.,,20
+Denny,4,92_image.png,3,m04_c03,C0,C0. Obama only supports deadbeats and illegal immigrants,"- 1. Obama is the president of illegal immigrants and economic deadbeats
+
+- 4. Obama's policies prioritize those who rely on government assistance over productive citizens",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,21
+Denny,5,77_image_batch_2.png,1,m05_c01,4,4. Obama shifts blame for economic failure to others while absolving himself,"- 2016 ""I've tried to fix the economy for 8 years. Nothing can fix it. Trump can't fix it.""
+
+- 2020 ""Corona didn't tank the economy; Trump did. Nothing can fix it now. Trump can't fix this.""
+
+- Barack Obama is shown in three panels with a speaking expression.",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,An instance of Obama speaking of economic failures is being streched to saying he is blaming others,,,,25
+Denny,5,77_image_batch_2.png,2,m05_c02,1,1. Obama takes credit for economic success while denying others' contributions,"- 2019 ""Trump didn't fix the economy; I did. It was my work that fixed the economy, like I planned.""
+
+- Barack Obama is shown in three panels with a speaking expression.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,26
+Denny,5,77_image_batch_2.png,3,m05_c03,C0,C0. Obama takes credit for all the good things that happen to America and shifts blame whenever something bad happens,"- 1. Obama takes credit for economic success while denying others' contributions
+
+- 4. Obama shifts blame for economic failure to others while absolving himself",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Instances of Obama taking credit and shifting blame is being used to argue that this is true for all cases,,,,27
+Denny,6,85_image_batch_2.png,1,m06_c01,7,"7. Obama is gay and his wife is a man
+[independent argument 1 of 2]","- ""It's nice to have a president with balls and a 1st lady who doesn't""
+
+- Donald Trump and Melania Trump wearing leather flight jackets with patches and looking serious while on a motorcycle in front of an American flag",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,Mocking words are used to justify the claim rather than any evidence.,,,,31
+Denny,6,85_image_batch_2.png,2,m06_c02,7,"7. Obama is gay and his wife is a man
+[independent argument 2 of 2]",- (background knowledge only),1,Fail,Esoteric Code Activation,1,0,0,1,0,0,0,Esoteric Code Activation,I assume this would be an ongoing conspiracy that some people recognize so it is targeted at an audience.,,,,32
+Denny,6,85_image_batch_2.png,3,m06_c03,6,6. Obama is not a masculine president,"- 7. Obama is gay and his wife is a man
+
+- ""It's nice to have a president with balls and a 1st lady who doesn't""
+
+- Donald Trump and Melania Trump wearing leather flight jackets with patches and looking serious while on a motorcycle in front of an American flag",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,Mocking words are being used here to dismiss Obama and his masculinity,,,,33
+Denny,6,85_image_batch_2.png,4,m06_c04,2,2. Trump is a masculine president,"- ""It's nice to have a president with balls and a 1st lady who doesn't""
+
+- Donald Trump and Melania Trump wearing leather flight jackets with patches and looking serious while on a motorcycle in front of an American flag
+
+- Melania Trump has her hand resting on Donald Trump's shoulder.",1,Fail,Affective Hijacking;Episodic Overgeneralization,2,1,1,0,0,0,0,Affective Hijacking,There visual elements added to give the feeling that trump is Masculine rather than any actual evidence,Episodic Overgeneralization,An instance of Trump appearing masculine is being used to argue that he is a masculine president,,34
+Denny,6,85_image_batch_2.png,5,m06_c05,1,1. Trump is more masculine than Obama,"- 2. Trump is a masculine president
+
+- 6. Obama is not a masculine president",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,35
+Denny,6,85_image_batch_2.png,6,m06_c06,C0,C0. Trump is cooler than Obama,- 1. Trump is more masculine than Obama,1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,There is no correlation of masculinity and coolness so there is no connection to establish,,,,36
+Denny,7,188_image_batch_2.png,1,m07_c01,1,"1. Trump supporters are a large, visible group known as the silent majority.","- A long line of pickup trucks driving down a highway, carrying American flags, Trump flags, and a 'Thin Blue Line' flag.
+
+- It's not that the Majority are silent",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,An instance of a lot of Trump Supporters is being used to argue that they are large and visible in general,,,,40
+Denny,7,188_image_batch_2.png,2,m07_c02,C0,C0. the media silence Trump supporters,"- 1. Trump supporters are a large, visible group known as the silent majority.
+
+- It's that the media are silent about the Majority.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,41
+Denny,8,107_image_batch_2.png,1,m08_c01,C0,"C0. Supporting Donald Trump is a reflection of a lack of morals, ethics, and humanity.","- If you support this man, I won't judge you for your choice of political parties. I will judge you for your lack of morals, ethics and humanity. So will others. So will history.
+
+- Donald Trump with a serious expression",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,There is no actual evidence provided for the claim except negative emotions,,,,45
+Denny,9,70_image_batch_2.png,1,m09_c01,2,2. Democrats blame Trump for natural disasters like storms.,"- STORM FORMING IN GULF BLAME TRUMP. Expect Dems to castigate Trump for this, too.",1,Fail,Episodic Overgeneralization;Satirical Trivialization,2,0,1,0,1,0,0,Episodic Overgeneralization,Democrats blaming Trump for storms is being used to stretch that they blame Trump for natural disasters in general,Satirical Trivialization,The first sentence has mocking elements involved in place of actual evidence.,,49
+Denny,9,70_image_batch_2.png,2,m09_c02,1,1. Blaming Trump for storms is irrational because humans cannot control the weather.,- 2. Democrats blame Trump for natural disasters like storms.,1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,50
+Denny,9,70_image_batch_2.png,3,m09_c03,C0,C0. Democrats blame Trump for everything.,"- 1. Blaming Trump for storms is irrational because humans cannot control the weather.
+
+- 2. Democrats blame Trump for natural disasters like storms.",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Democrats blaming Trump for natural disasters is being used to argue that they blame Trump for everything,,,,51
+Denny,10,130_image_batch_2.png,1,m10_c01,1,1. Donald Trump has blood on his hands,"- The text ""TRUMP""
+
+- hands covered in blood",1,Fail,Affective Hijacking;Spurious Causal Correlation,2,1,0,0,0,1,0,Spurious Causal Correlation,These 2 children are placed next to each other and assumed to have a relationship,Affective Hijacking,TRUMP in full caps is using emotions to further suggest a relationship between the 2 children,,55
+Denny,10,130_image_batch_2.png,2,m10_c02,C0,C0. Donald Trump is responsible for deaths due to COVID-19,- 1. Donald Trump has blood on his hands,1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Donald Trump having blood on his hands is being overgeneralized to saying he is responsible for deaths in COVID,,,,56
+Denny,11,75_image_batch_2.png,1,m11_c01,6,6. The Democratic National Convention is a gathering of criminals,"- ""Special Edition Democratic National Convention 2020 where all the crooks come out""",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,Humor and mokery is being used to address these people as criminals rather than any actual evidence,,,,60
+Denny,11,75_image_batch_2.png,2,m11_c02,1,"1. Trump is a law enforcement figure who catches criminals
+[independent argument 1 of 2]",- (background knowledge only),1,Fail,Esoteric Code Activation,1,0,0,1,0,0,0,Esoteric Code Activation,I assume that there is some target audience that will be able to draw this conclusion,,,,61
+Denny,11,75_image_batch_2.png,3,m11_c03,1,"1. Trump is a law enforcement figure who catches criminals
+[independent argument 2 of 2]",- Donald Trump with a stern expression next to an America's Most Wanted logo.,1,Fail,Spurious Causal Correlation;Spurious Legitimacy Signaling,2,0,0,0,0,1,1,Spurious Causal Correlation,These 2 objects are being placed next to each other to force the audience to draw a relationship without evidence,Spurious Legitimacy Signaling,America's Most Wanted logo is being used as credibility of Trumps ability to catch criminals,,62
+Denny,11,75_image_batch_2.png,4,m11_c04,C0,C0. Trump catches Democrat crooks,"- 1. Trump is a law enforcement figure who catches criminals
+
+- 6. The Democratic National Convention is a gathering of criminals",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,63
+Denny,12,123_image_batch_2.png,1,m12_c01,3,3. Donald Trump's anger masks his failure,"- Behind all that anger was a sad little failure of a man who turned everything he touched into shit
+
+- Donald Trump is cowering in a corner",1,Fail,Affective Hijacking;Satirical Trivialization,2,1,0,0,1,0,0,Affective Hijacking,Strong words are being used to argue for the claim rather than any actual evidence,Satirical Trivialization,Trump cowering in a corner is also a mocking depiction to strengthen this argument,,67
+Denny,12,123_image_batch_2.png,2,m12_c02,7,7. Donald Trump's true nature is exposed to the world,"- THE JIG IS UP The entire world knows the truth Donnie.
+
+- Donald Trump is cowering in a corner",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,Trump cowering in a corner and the humor depicted in the first child are being used to argue for the claim without anything showing Trumps true nature to the world.,,,,68
+Denny,12,123_image_batch_2.png,3,m12_c03,6,6. Donald Trump is a failure,- 3. Donald Trump's anger masks his failure,1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,69
+Denny,12,123_image_batch_2.png,4,m12_c04,1,"1. Donald Trump is weak
+[independent argument 1 of 2]",- 3. Donald Trump's anger masks his failure,1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,"One instance of Trump being ""weak"" is being used to argue that he is like that in general",,,,70
+Denny,12,123_image_batch_2.png,5,m12_c05,1,"1. Donald Trump is weak
+[independent argument 2 of 2]",- Donald Trump is cowering in a corner,1,Fail,Episodic Overgeneralization;Satirical Trivialization,2,0,1,0,1,0,0,Episodic Overgeneralization,An instance of Trump cowering in the corner is being used to argue that he is weak in general,Satirical Trivialization,Trump cowering in a corner is also a mocking depiction to strengthen this argument,,71
+Denny,12,123_image_batch_2.png,6,m12_c06,C0,"C0. Donald Trump is weak and a failure
+[independent argument 1 of 2]",- 7. Donald Trump's true nature is exposed to the world,1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,There is nothing implying that Trump's true nature being exposed makes him weak and a failure,,,,72
+Denny,12,123_image_batch_2.png,7,m12_c07,C0,"C0. Donald Trump is weak and a failure
+[independent argument 2 of 2]","- 1. Donald Trump is weak
+
+- 6. Donald Trump is a failure",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,73
+Denny,13,200_image_batch_2.png,1,m13_c01,1,1. Trump supporters do not know what losing is like,"- a father talking to his son
+
+- ""Dad what's losing like? I don't know son, I'm a Trump supporter""",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,An instance of a Trump supporter not losing is being generalized to everyone,NONE,,,77
+Denny,13,200_image_batch_2.png,2,m13_c02,C0,C0. Trump and Trump supporters will win the presidential election,- 1. Trump supporters do not know what losing is like,1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Trumps supporters not losing does not generalize to Trump winning,,,,78
+Denny,14,140_image_batch_2.png,1,m14_c01,1,1. Mitch McConnell established a principle in 2016 that Supreme Court vacancies should not be filled during an election year,"- Mitch McConnell-2016 'The American people should have a voice in the selection of their next supreme court justice. This vacancy should not be filled until we have a new president.'
+
+- Mitch McConnell looking at the camera",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,82
+Denny,14,140_image_batch_2.png,2,m14_c02,4,4. Mitch McConnell abandoned his own stated principle when the political situation changed,"- If you think McConnell will follow his own advice you must be a special kind of stupid
+
+- Sam Elliott wearing a cowboy hat with a knowing expression
+
+- Mitch McConnell looking at the camera
+
+- 1. Mitch McConnell established a principle in 2016 that Supreme Court vacancies should not be filled during an election year",1,Fail,Affective Hijacking;Spurious Legitimacy Signaling,2,1,0,0,0,0,1,Affective Hijacking,The word stupid is being used in place of any evidence that Mitch McConnell abandoned his pricipals,Spurious Legitimacy Signaling,Sam Elliotts credibility is being used to contribute to the argument,,83
+Denny,14,140_image_batch_2.png,3,m14_c03,C0,C0. Mitch McConnell is a hypocrite for reversing his stance on filling Supreme Court seats based on which party controlled the presidency,"- 1. Mitch McConnell established a principle in 2016 that Supreme Court vacancies should not be filled during an election year
+
+- 4. Mitch McConnell abandoned his own stated principle when the political situation changed",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,84
+Denny,15,120_image_batch_2.png,1,m15_c01,1,1. Donald Trump is a failed businessman,"- Reportedly Donald Trump lost $1.17 Billion from his businesses over 10 years from 1985 to 1994 !!!
+
+- Donald Trump pointing and yelling",1,Fail,Affective Hijacking;Episodic Overgeneralization,2,1,1,0,0,0,0,Episodic Overgeneralization,A period where Trump lost money is being used to generalize that he is a failed businessman,Affective Hijacking,An aggressive image is using negative emotions to further this sentiment,,88
+Denny,15,120_image_batch_2.png,2,m15_c02,C0,C0. Donald Trump's public image as a successful businessman is false,"- 1. Donald Trump is a failed businessman
+
+- So basically, Trump isn't actually a successful businessman -- but he played one recently on TV!
+
+- ""You're Fired!!!""
+
+- Donald Trump pointing and yelling",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,89
+Denny,16,131_image_batch_2.png,1,m16_c01,1,1. The vault containing Donald Trump's healthcare plan is empty,"- BREAKING: Tonight on FOX, Geraldo opens the vault where Trump keeps his healthcare plan. Spoiler: It's empty.
+
+- Geraldo Rivera shrugging in a cave with two cave workers in the background digging",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,They are presenting it in a humorous and mocking way and also jumping conclusions instead of providing any evidence,,,,93
+Denny,16,131_image_batch_2.png,2,m16_c02,C0,C0. Donald Trump has no healthcare plan for America,- 1. The vault containing Donald Trump's healthcare plan is empty,1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,The claim seems to somewhat forced because there is not enough to justify it just based on the child,,,,94
+Denny,17,94_image_batch_2.png,1,m17_c01,1,1. Trump's stupidity is uncontainable and cannot be fixed,"- ""They say you can't fix stupid turns out you can't quarantine it either""
+
+- Donald Trump wearing a stern expression against a background of SARS-CoV-2 virus particles.",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,Mockery is being used through strong words like quarantine to argue that it cannot be contained,,,,98
+Denny,17,94_image_batch_2.png,2,m17_c02,3,3. Trump's behavior during the COVID-19 pandemic was foolish and dangerous,- Donald Trump wearing a stern expression against a background of SARS-CoV-2 virus particles.,1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,These 2 are being placed next to each other to force the connection,,,,99
+Denny,17,94_image_batch_2.png,3,m17_c03,C0,C0. Donald Trump is stupid,"- 1. Trump's stupidity is uncontainable and cannot be fixed
+
+- 3. Trump's behavior during the COVID-19 pandemic was foolish and dangerous",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,100
+Denny,18,127_image_batch_2.png,1,m18_c01,C0,C0. Trump was responsible for COVID-19 deaths,"- Donald Trump with a stern and weary facial expression
+
+- THIS IS THE LEADING CAUSE OF DEATH IN THE UNITED STATES.",1,Fail,Affective Hijacking;Spurious Causal Correlation,2,1,0,0,0,1,0,Spurious Causal Correlation,Placing those words with an image of Trump is trying to force this connection,Affective Hijacking,Full caps is being used to add emotions in place of evidence to argue,,104
+Denny,19,51_image_batch_2.png,1,m19_c01,2,2. Trump is comparable to Mike Tyson in terms of fighting prowess,"- ""One of the hardest most ferocious fighters the world has ever seen, and Mike Tyson""
+
+- Donald Trump and Mike Tyson standing together",1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,Placing Trump next to Tyson does not mean that he will have power comparable.,,,,108
+Denny,19,51_image_batch_2.png,2,m19_c02,1,1. Trump is one of the hardest and most ferocious fighters the world has ever seen,- 2. Trump is comparable to Mike Tyson in terms of fighting prowess,1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,109
+Denny,19,51_image_batch_2.png,3,m19_c03,C0,C0. Trump is a tough and formidable fighter,- 1. Trump is one of the hardest and most ferocious fighters the world has ever seen,1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,110
+Denny,20,103_image_batch_2.png,1,m20_c01,1,1. Trump's behavior is unacceptable for even basic service industry employment,"- ""Forget about the Presidency for a moment. Trump's behavior would get him fired from Applebee's.""
+
+- Donald Trump wearing a paper Burger King crown with a stern expression",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,The burger king crown adds feelings of mockery to add on to the first child in place of any actual evidence,,,,114
+Denny,20,103_image_batch_2.png,2,m20_c02,C0,C0. Trump is not fit to hold the office of president,- 1. Trump's behavior is unacceptable for even basic service industry employment,1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,115
+Denny,21,99_image_batch_2.png,1,m21_c01,1,1. Donald Trump is an irresponsible president,"- An Irresponsible President !
+
+- Two separate photographs show Donald Trump and Hope Hicks leaning toward each other for a kiss on the cheek.",1,Fail,Episodic Overgeneralization;Satirical Trivialization,2,0,1,0,1,0,0,Satirical Trivialization,The 2 men's position are being placed in an exaggerated way rather than any actual evidence,Episodic Overgeneralization,An instance of Trump being irresponsible is being used to argue for in general,,119
+Denny,21,99_image_batch_2.png,2,m21_c02,3,3. Donald Trump is an irresponsible man,"- An Irresponsible Man !!!
+
+- Two separate photographs show Donald Trump and Hope Hicks leaning toward each other for a kiss on the cheek.",1,Fail,Episodic Overgeneralization;Satirical Trivialization,2,0,1,0,1,0,0,Satirical Trivialization,The 2 men's position are being placed in an exaggerated way rather than any actual evidence,Episodic Overgeneralization,An instance of Trump being irresponsible is being used to argue for in general,,120
+Denny,21,99_image_batch_2.png,3,m21_c03,C0,C0. Donald Trump is a bad leader and man,"- 1. Donald Trump is an irresponsible president
+
+- 3. Donald Trump is an irresponsible man",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,121
+Denny,22,139_image.png,1,m22_c01,4,4. The Democratic party is associated with the ultimate evil of Nazism.,"- A collage of several prominent politicians, including Barack Obama, Hillary Clinton, Nancy Pelosi, and Mitt Romney, standing in front of a large Nazi swastika.",1,Fail,Affective Hijacking;Episodic Overgeneralization,2,1,1,0,0,0,0,Episodic Overgeneralization,An instance of prominant figures in the Democrat party standing in front of the swastika is being generalized to the whole party,Affective Hijacking,The swastika is being used to invoke negative emotions to further push this agenda,,125
+Denny,22,139_image.png,2,m22_c02,2,2. The Democratic party is a malicious and dangerous entity that must be stopped.,"- The Democratic Party IS THE PARTY OF CRIME & EVIL... A TERRORIST ORGANIZATION WHO HATES AMERICA & AMERICANS
+
+- 4. The Democratic party is associated with the ultimate evil of Nazism.
+
+- TRAITORS TO AMERICA THE COMMUNIST PARTY
+
+- A collage of several prominent politicians, including Barack Obama, Hillary Clinton, Nancy Pelosi, and Mitt Romney, standing in front of a large Nazi swastika.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,126
+Denny,22,139_image.png,3,m22_c03,C0,C0. voters should vote for Trump because he will stop the actions of the Democratic party.,"- SAVE AMERICA SUPPORT TRUMP
+
+- 2. The Democratic party is a malicious and dangerous entity that must be stopped.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,Full caps is being used to argue that voting for Trump will save America instead of any evidence,,,,127
+Denny,23,177_image.png,1,m23_c01,5,5. The Democratic Party prioritized a 'sham impeachment' over the public health crisis,"- DON'T FORGET THAT IN JANUARY: THE DEMS WERE WASTING TIME ON A SHAM IMPEACHMENT
+
+- Adam Schiff and Jerrold Nadler walking through a hallway",1,Fail,Affective Hijacking;Episodic Overgeneralization,2,1,1,0,0,0,0,Episodic Overgeneralization,Two party members walking through the hallway is being generalized into the Democratic party prioritizing in general,Affective Hijacking,Full caps are used to create negative emotions to replace evidence,,131
+Denny,23,177_image.png,2,m23_c02,1,1. Trump was actively addressing the major public health crisis of Coronavirus,"- DON'T FORGET THAT IN JANUARY: TRUMP FORMED THE CORONAVIRUS TASK FORCE
+
+- Trump leading an official meeting",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,An instance of Trump leading a meeting is being used to argue that he was actively addressing the issue,NONE,,,132
+Denny,23,177_image.png,3,m23_c03,C0,C0. Trump is more beneficial to Americans than the Democratic Party,"- 1. Trump was actively addressing the major public health crisis of Coronavirus
+
+- 5. The Democratic Party prioritized a 'sham impeachment' over the public health crisis",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,An instance where Trump was doing good and the Democrat party doing bad cannot be generalized to saying he is more beneficial in general,,,,133
+Denny,24,134_image.png,1,m24_c01,C0,C0. Trump haters are stupid.,"- A woman wearing a dark coat and shouting while holding a protest sign that reads ""If Trump isn't Hitler, Then I'm a Moron"".
+
+- ""Self-awareness.""",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,"The word ""Self-awareness"" is placed in a very mocking manner to argue that the person is stupid rather than any evidence",,,,137
+Denny,25,196_image.png,1,m25_c01,5,"5. A satirical analogy of pregnancy highlights the absurdity of the 'no test, no problem' logic","- A woman with a large, protruding pregnant belly, holding it with both hands.
+
+- I'm not pregnant, I haven't been tested. I think it's gas...
+
+- But the President says if it's not tested it's not real.",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,Absurdity and mockery is being used to argue against the no test no problem logic,,,,141
+Denny,25,196_image.png,2,m25_c02,4,"4. The 'no test, no problem' logic is fundamentally unreasonable and absurd when applied to reality","- 5. A satirical analogy of pregnancy highlights the absurdity of the 'no test, no problem' logic",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,A satrical instance is being generalized to reality,NONE,,,142
+Denny,25,196_image.png,3,m25_c03,1,"1. Trump's logic suggests that a lack of testing means a problem doesn't exist, which he used to downplay the pandemic",- But the President says if it's not tested it's not real.,1,Fail,Esoteric Code Activation,1,0,0,1,0,0,0,Esoteric Code Activation,I assume this was a quote Trump said in the pandemic so it has a target audience,,,,143
+Denny,25,196_image.png,4,m25_c04,C0,C0. Trump talks unreasonable nonsense about Covid,"- 1. Trump's logic suggests that a lack of testing means a problem doesn't exist, which he used to downplay the pandemic
+
+- 4. The 'no test, no problem' logic is fundamentally unreasonable and absurd when applied to reality",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,144
+Denny,26,159_image.png,1,m26_c01,5,5. Trump mismanaged the COVID pandemic leading to significant national disruption and social instability,"- Do you remember when: Swine Flu, Ebola Virus, and Zika virus caused mass cancellations? Crashed our stock market? Caused confusion from misinformation? Drove people to stockpile toilet paper? Of course not...Because Obama HANDLED that SHIT!
+
+- Donald Trump is swinging a golf club on a golf course.
+
+- Barack Obama is gesturing while speaking at a table in a meeting with several other people, including a man in a military uniform.",1,Fail,Affective Hijacking;Episodic Overgeneralization,2,1,1,0,0,0,0,Episodic Overgeneralization,We have an instance of Trump swinging a golf club being stretched into him mismanaging the COVID pandemic,Affective Hijacking,They is strong language in the first child to further put Trump down,,148
+Denny,26,159_image.png,2,m26_c02,1,"1. Obama effectively managed health crises like Swine Flu, Ebola, and Zika, preventing national disruption","- Do you remember when: Swine Flu, Ebola Virus, and Zika virus caused mass cancellations? Crashed our stock market? Caused confusion from misinformation? Drove people to stockpile toilet paper? Of course not...Because Obama HANDLED that SHIT!
+
+- Barack Obama is gesturing while speaking at a table in a meeting with several other people, including a man in a military uniform.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,There is no actual evidence that Obama actually managed the crises but rather just strong language,,,,149
+Denny,26,159_image.png,3,m26_c03,C0,"C0. Obama protected the nation from disease and disruption, proving he is a better president than Trump who mismanaged the COVID pandemic","- 1. Obama effectively managed health crises like Swine Flu, Ebola, and Zika, preventing national disruption
+
+- 5. Trump mismanaged the COVID pandemic leading to significant national disruption and social instability",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,An instance of managing pandemics is being stretched into the overall presidents ability,,,,150
+Denny,27,123_image.png,1,m27_c01,C0,C0. Obama should be impeached.,"- IMPEACH OBAMA!
+
+- Former Presidents can be IMPEACHED!
+
+- Barack Obama with a frowning expression.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,"There is no evidence that Obama should be impeached, there are only full caps and an image to give negative thoughts about Obama",,,,154
+Denny,28,93_image.png,1,m28_c01,C0,C0. Pelosi and Sanders are actively destroying the well-being of America through their political actions.,"- ""The real virus threatening America.""
+
+- Bernie Sanders with a coronavirus cell on his suit, standing behind Nancy Pelosi speaking behind a podium.
+
+- The US Capitol dome is visible in the background.",1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,Putting a coronavirus cell on his suit is trying to imply that the individuals are destructive rather than providing any actual evidence,,,,158
+Denny,29,181_image.png,1,m29_c01,C0,C0. Donald Trump is unintelligent and demonstrated inability to handle the issue of COVID.,"- 'People are dying who have never died before.' -Donald J. Trump, March 18, 2020.
+
+- Donald Trump smiling",1,Fail,Episodic Overgeneralization;Satirical Trivialization,2,0,1,0,1,0,0,Satirical Trivialization,A very mocking and ridiculous quote is being used to argue that Donald Trump is stupid,Episodic Overgeneralization,A single instance of Trump saying something unintelligible is being generalized to him in general,,162
+Denny,30,113_image.png,1,m30_c01,C0,C0. Obama lies to Americans and Trump is honest,"- ""Elegant at lying.""
+
+- Barack Obama is speaking into a microphone with a composed expression.
+
+- ""Brutal with the truth.""
+
+- Donald Trump is speaking at a podium with an aggressive expression.",1,Fail,Episodic Overgeneralization;Spurious Causal Correlation,2,0,1,0,0,1,0,Spurious Causal Correlation,The phrases are placed to imply the actions of each president in place of any evidence,Episodic Overgeneralization,An instance of Trump and Obama is being generalized,,166
+Denny,31,17_image.png,1,m31_c01,C0,C0. Trump works harder and creates better economic results than Obama,"- Barack Obama laughing while leaning back with his legs up on the desk
+
+- Donald Trump with a serious expression while talking on the phone
+
+- BETWEEN 1.4% GDP
+
+- AND 4.1% GDP
+
+- THIS IS THE DIFFERENCE",1,Fail,Episodic Overgeneralization;Spurious Causal Correlation,2,0,1,0,0,1,0,Spurious Causal Correlation,The presidents are not the full cause for the GDPs which is what is being hinted at here,Episodic Overgeneralization,An instance of difference in economy is being generalized that Trump works harder,,170
+Denny,32,136_image.png,1,m32_c01,4,4. Trump is the best president ever,- The text 'BEST EVER' is positioned below Donald Trump.,1,Pass,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,Best ever is trying to push positive feelings onto Trump in place of evidence,,,,174
+Denny,32,136_image.png,2,m32_c02,2,2. Obama is the worst president ever,- The text 'WORST EVER' is positioned below Barack Obama.,1,Pass,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,Worst ever is pushing negative narratives onto Obama instead of evidence,,,,175
+Denny,32,136_image.png,3,m32_c03,C0,C0. Trump is a much better president than Obama,"- ""What a contrast from worst ever to best ever.""
+
+- 2. Obama is the worst president ever
+
+- 4. Trump is the best president ever
+
+- Barack Obama and Donald Trump are shown in a side-by-side comparison.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,176
+Denny,33,91_image.png,1,m33_c01,2,2. Ronald Reagan is a credible authority on the failure of socialism,"- Ronald Reagan is speaking at a podium.
+
+- The signature ""Ronald Reagan"".",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Ronald Reagan speaking at a podium is being stretched to argue he is a credible authority on the failure of socialism,,,,180
+Denny,33,91_image.png,2,m33_c02,C0,C0. socialism is bad like hell,"- Socialism only works in two places: Heaven where they don't need it, and hell where they already have it.
+
+- 2. Ronald Reagan is a credible authority on the failure of socialism",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,The places where socialism works is being exaggerated to make it seem very bad in place of actual evidence,,,,181
+Denny,34,12_image.png,1,m34_c01,5,"5. The Republican Party is a Russian collaborator
+[independent argument 1 of 2]",- 1. Mitch McConnell and Donald Trump are subordinates of the Russian government,1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,2 republicans being subordinates are being generalized to the entire party,,,,185
+Denny,34,12_image.png,2,m34_c02,5,"5. The Republican Party is a Russian collaborator
+[independent argument 2 of 2]","- Mitch McConnell on the left and Donald Trump on the right, both wearing hammer and sickle pins on their lapels.
+
+- The text 'TRAITORS', 'MOSCOW MITCH', and 'MOSCOW'S BITCH'.",1,Fail,Affective Hijacking;Episodic Overgeneralization,2,1,1,0,0,0,0,Episodic Overgeneralization,2 republicans being subordinates are being generalized to the entire party,Affective Hijacking,Strong emotions are being put in fullcaps to add negative emotions to the arguments instead of evidence,,186
+Denny,34,12_image.png,3,m34_c03,1,1. Mitch McConnell and Donald Trump are subordinates of the Russian government,"- Mitch McConnell on the left and Donald Trump on the right, both wearing hammer and sickle pins on their lapels.
+
+- The text 'TRAITORS', 'MOSCOW MITCH', and 'MOSCOW'S BITCH'.",1,Fail,Affective Hijacking;Satirical Trivialization,2,1,0,0,1,0,0,Affective Hijacking,Strong emotions are put in full caps to support the argument instead of evidence,Satirical Trivialization,,,187
+Denny,34,12_image.png,4,m34_c04,C0,"C0. McConnell, Trump, and the Republican Party are Russian collaborators","- 1. Mitch McConnell and Donald Trump are subordinates of the Russian government
+
+- 5. The Republican Party is a Russian collaborator",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,188
+Denny,35,125_image_batch_2.png,1,m35_c01,C0,C0. Trump loses America's money,"- Donald Trump with a smug expression is throwing a poker chip toward a royal flush hand.
+
+- I like presidents that don't lose money.",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,The claim is trying to use humor to justify itself through the pokwer analogy rather than any evidence,,,,192
+Denny,36,126_image_batch_2.png,1,m36_c01,4,"4. America is currently suffering from a pandemic, recession, mass unemployment, and riots","- PANDEMIC, RECESSION, MASS UNEMPLOYMENT, and RIOTS
+
+- Body bags in a hospital hallway, a 'Sorry We're Closed' sign, an unemployment benefits application form, and buildings on fire in a street.",1,Fail,Affective Hijacking;Episodic Overgeneralization,2,1,1,0,0,0,0,Episodic Overgeneralization,Instances are being used to generalize america suffering in general,Affective Hijacking,Full caps are being used to emphasize the claim rather than any actual evidence,,196
+Denny,36,126_image_batch_2.png,2,m36_c02,C0,C0. Trump failed to fulfill his promise to make America great again,"- 4. America is currently suffering from a pandemic, recession, mass unemployment, and riots
+
+- Trump promised to make America great again. Four years later...
+
+- Donald Trump with an angry, shouting expression
+
+- WINNING
+
+- A speech bubble pointing from Donald Trump to the word 'WINNING'.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,197
+Denny,37,196_image_batch_2.png,1,m37_c01,C0,C0. voting for Trump will prevent America from becoming socialist,"- It is better to wait in a long line to vote for Trump now than to wait in long lines for food in a socialist America
+
+- A line of dogs sitting on a path, each holding a bowl in its mouth.",1,Fail,Satirical Trivialization;Spurious Causal Correlation,2,0,0,0,1,1,0,Spurious Causal Correlation,There is not enough correlation to draw that voting for Trump will prevent this,Satirical Trivialization,The depictions of dogs is a mocking to describe waiting in line which furthers the argument being made,,201
+Denny,38,104_image_batch_2.png,1,m38_c01,C0,C0. Trump does not deserve empathy for his COVID diagnosis.,"- ""All the squawking about nobody on the left showing empathy for trump's Covid diagnosis. Tell you what, when he shows an ounce of concern for these kids, we'll think about it!""
+
+- A uniformed guard stands among the children in the fenced area.
+
+- Children are sitting and lying on mats on the floor inside a fenced enclosure, covered with silver Mylar blankets.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,A lot of emotions are being used to convey the claim rather than any actual arguments,,,,205
+Denny,39,1_image.png,1,m39_c01,5,5. Trump's performance of gaining 5.1 million jobs and having positive GDP growth indicates he was a good president,"- 2.5 years under Trump: 5.1 million jobs gained, unemployment fell to 3.6%, GDP up 3.2%
+
+- Donald Trump is smiling
+
+- Donald Trump is depicted in a bright, well-lit setting.",1,Fail,Affective Hijacking;Episodic Overgeneralization,2,1,1,0,0,0,0,Episodic Overgeneralization,Trump achieving good results in economy is being stretched to say he is a good president,Affective Hijacking,Trump is presented in a visually appealing way to further this argument,,209
+Denny,39,1_image.png,2,m39_c02,1,1. Obama's performance of losing 4 million jobs and having negative GDP growth indicates he was a bad president,"- 8 years under Obama: 4 million jobs lost, Unemployment peaked to 9.9%, GDP down 2.8%.
+
+- Barack Obama with a grim expression
+
+- Barack Obama is depicted in a dark, shadowy setting.",1,Fail,Affective Hijacking;Episodic Overgeneralization,2,1,1,0,0,0,0,Episodic Overgeneralization,Obama achieving bad results economically is being stretched to say he is a bad president,Affective Hijacking,Obama is presented unappelingly to create negative emotions in place of arguments,,210
+Denny,39,1_image.png,3,m39_c03,C0,"C0. Obama presided over high unemployment and negative GDP growth, making him a bad president, while Trump oversaw significant job creation and positive GDP growth, making him a good president","- 1. Obama's performance of losing 4 million jobs and having negative GDP growth indicates he was a bad president
+
+- 5. Trump's performance of gaining 5.1 million jobs and having positive GDP growth indicates he was a good president",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,211
+Denny,40,152_image.png,1,m40_c01,C0,"C0. America's greatness was lost upon Trump's election, and his leadership is detrimental to the nation's well-being.","- ""Yes, Mr. Trump, let's make America great again. But first, get one thing straight: America was great — before you were elected."" Barbra Streisand
+
+- Donald Trump gesturing with a serious expression and Barbra Streisand smiling calmly.",1,Fail,Spurious Legitimacy Signaling,1,0,0,0,0,0,1,Spurious Legitimacy Signaling,We are using the authority of Barbra Streisand to establish the claim,,,,215
+Denny,41,16_image.png,1,m41_c01,6,6. Trump's reputation as a warmonger is contradicted by his choice to avoid unnecessary casualties.,"- Donald Trump with his hand raised in a stop gesture
+
+- Decided not to retaliate and kill 150 people over an unmanned drone
+
+- Called a Warmonger",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,219
+Denny,41,16_image.png,2,m41_c02,5,5. Trump has done more for world peace but is constantly misrepresented by the media,"- 6. Trump's reputation as a warmonger is contradicted by his choice to avoid unnecessary casualties.
+
+- 1. Obama is evil despite receiving the Nobel Peace prize",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Trumps choice to avoid casualties is being generalized to him doing more for world peace,,,,220
+Denny,41,16_image.png,3,m41_c03,1,1. Obama is evil despite receiving the Nobel Peace prize,"- Barack Obama with a serious expression
+
+- Received a Nobel Peace
+
+- Killed thousands of innocents with drone strikes",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,An instance of Obama killing is being generalized to him being evil,,,,221
+Denny,41,16_image.png,4,m41_c04,C0,"C0. Trump has done more for world peace but is constantly misrepresented by the media, while Obama is evil despite receiving the Nobel Peace prize","- 1. Obama is evil despite receiving the Nobel Peace prize
+
+- 5. Trump has done more for world peace but is constantly misrepresented by the media",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,222
+Ritvik,1,149_image.png,1,m01_c01,1,"1. Trump attempted to secure exclusive, for-profit control over a coronavirus vaccine","- Trump reportedly offered a German firm $1,000,000,000 for exclusive rights to any coronavirus vaccine
+
+- ""Trump wanted not only to control any new vaccine but also to make sure that it would only be available on a for-profit basis,"" reported Common Dreams.
+
+- Donald Trump is wearing a smug or satisfied facial expression.",1,Pass,None,0,0,0,0,0,0,0,None,,,,,3
+Ritvik,1,149_image.png,2,m01_c02,C0,C0. Trump's attempt to profit off of COVID is depraved,"- 1. Trump attempted to secure exclusive, for-profit control over a coronavirus vaccine
+
+- What could be more depraved than trying to profit off of the suffering of the entire world? Spread his shame.
+
+- Donald Trump is wearing a smug or satisfied facial expression.",1,Pass,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,"There is no evidence to explicity prove that the attempted control of the vaccine is depraved, so feelings of anger towards Trump are evoked in place of evidence through the use of ""suffering of the entire world"" and ""shame"".",,,,4
+Ritvik,2,148_image.png,1,m02_c01,4,4. Trump endangered the public during the pandemic,"- Donald Trump wearing a 'Keep America Great' hat and gesturing while speaking with an open-mouthed expression.
+
+- ""HE OVERRULED HIS SCIENTISTS. HE HAS FAILED. HE HAS ENDANGERED EVERY ONE OF US.""
+
+- Alex Azar and Robert Redfield standing behind Donald Trump.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,"Fear through words such as ""failed"" and ""endangered us"" is used instead of specific evidence to suggest that trump endangered the public during the pandemic.",,,,8
+Ritvik,2,148_image.png,2,m02_c02,1,1. Trump lied about the COVID-19 pandemic,"- Donald Trump wearing a 'Keep America Great' hat and gesturing while speaking with an open-mouthed expression.
+
+- ""HE SAID IT WASN'T REAL. HE SAID IT'S CONTAINED. HE SAID IT WOULD DISAPPEAR. HE BLAMED DEMOCRATS. HE SHARED HIS HUNCHES.""",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,"No specific evidence of Trump lying about the COVID 19 pandemic is given, so accusatory framing is used as evidence to prove that Trump lied about the COVID-19 pandemic instead.",,,,9
+Ritvik,2,148_image.png,3,m02_c03,C0,C0. Trump should be voted out of office.,"- 1. Trump lied about the COVID-19 pandemic
+
+- 4. Trump endangered the public during the pandemic",1,Pass,None,0,0,0,0,0,0,0,None,,,,,10
+Ritvik,3,151_image.png,1,m03_c01,1,1. Donald Trump is a nightmare for the country,"- Donald Trump with a stern expression
+
+- ""On Tuesday, November 3, 2020. We make America great again by voting this nightmare out of office!""
+
+- A dark, shadowy forest background behind Donald Trump",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,"Fear is used as evidence through the ""shadowy forest background"" and ""nightmare"" rather than specfic evidence that proves Trump is a nightmare for the country.",,,,14
+Ritvik,3,151_image.png,2,m03_c02,C0,C0. Donald Trump must be voted out of office to make America great again,"- 1. Donald Trump is a nightmare for the country
+
+- ""On Tuesday, November 3, 2020. We make America great again by voting this nightmare out of office!""
+
+- Donald Trump with a stern expression",1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,There is no evidence to suggest that Trump being voted out of office would make America great again and there is no direct link between the two.,,,,15
+Ritvik,4,92_image.png,1,m04_c01,4,4. Obama's policies prioritize those who rely on government assistance over productive citizens,"- Barack Obama with a smiling expression on a U.S. Department of Agriculture food coupon
+
+- At last, the illegals and economic deadbeats and parasites have a president on their money
+
+- U.S. DEPARTMENT OF AGRICULTURE FOOD COUPON VALUE 1 DOLLAR",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,One of Obamas policies which helps those who rely on governmental assistance is stretched to a broader conclusion that all of his policies prioritize those who rely on governmental assistance over productive citizens..,,,,19
+Ritvik,4,92_image.png,2,m04_c02,1,1. Obama is the president of illegal immigrants and economic deadbeats,"- At last, the illegals and economic deadbeats and parasites have a president on their money
+
+- Barack Obama with a smiling expression on a U.S. Department of Agriculture food coupon
+
+- U.S. DEPARTMENT OF AGRICULTURE FOOD COUPON VALUE 1 DOLLAR",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,"Obamas image on the USDA food coupon is used as mockery to charactarize him as representing illegal immigrants and economic deadbeats, and there is no supporting evidence that proves that characterization.",,,,20
+Ritvik,4,92_image.png,3,m04_c03,C0,C0. Obama only supports deadbeats and illegal immigrants,"- 1. Obama is the president of illegal immigrants and economic deadbeats
+
+- 4. Obama's policies prioritize those who rely on government assistance over productive citizens",1,Pass,None,0,0,0,0,0,0,0,None,,,,,21
+Ritvik,5,77_image_batch_2.png,1,m05_c01,4,4. Obama shifts blame for economic failure to others while absolving himself,"- 2016 ""I've tried to fix the economy for 8 years. Nothing can fix it. Trump can't fix it.""
+
+- 2020 ""Corona didn't tank the economy; Trump did. Nothing can fix it now. Trump can't fix this.""
+
+- Barack Obama is shown in three panels with a speaking expression.",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Two accounts of Obama shifting blame for economic failures while absolving himself is used to establish a broader conclusion that he always does this.,,,,25
+Ritvik,5,77_image_batch_2.png,2,m05_c02,1,1. Obama takes credit for economic success while denying others' contributions,"- 2019 ""Trump didn't fix the economy; I did. It was my work that fixed the economy, like I planned.""
+
+- Barack Obama is shown in three panels with a speaking expression.",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,"One account of Obama saying ""Trump didnt fix the economy, I did"" is stretched to a broader conclusion that  Obama takes credit for economic success while denying others' contributions.",,,,26
+Ritvik,5,77_image_batch_2.png,3,m05_c03,C0,C0. Obama takes credit for all the good things that happen to America and shifts blame whenever something bad happens,"- 1. Obama takes credit for economic success while denying others' contributions
+
+- 4. Obama shifts blame for economic failure to others while absolving himself",1,Pass,None,0,0,0,0,0,0,0,None,,,,,27
+Ritvik,6,85_image_batch_2.png,1,m06_c01,7,"7. Obama is gay and his wife is a man
+[independent argument 1 of 2]","- ""It's nice to have a president with balls and a 1st lady who doesn't""
+
+- Donald Trump and Melania Trump wearing leather flight jackets with patches and looking serious while on a motorcycle in front of an American flag",1,,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,There is no evidence to suggest that Obama is gay and his wife is a man. A mocking statement that its nice to have a president with balls and a 1st lady who doesnt is used as evidence instead.,,,,31
+Ritvik,6,85_image_batch_2.png,2,m06_c02,7,"7. Obama is gay and his wife is a man
+[independent argument 2 of 2]",- (background knowledge only),1,Fail,Esoteric Code Activation,1,0,0,1,0,0,0,Esoteric Code Activation,Obama is theorized to be gay and his wife is a man by a certain group of people(conspiracy theorists).,,,,32
+Ritvik,6,85_image_batch_2.png,3,m06_c03,6,6. Obama is not a masculine president,"- 7. Obama is gay and his wife is a man
+
+- ""It's nice to have a president with balls and a 1st lady who doesn't""
+
+- Donald Trump and Melania Trump wearing leather flight jackets with patches and looking serious while on a motorcycle in front of an American flag",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,There is no evidence to prove that Obama is not a masucline president. Obama is being mocked through the claim that he is gay and his wife is a man as evidence instead.,,,,33
+Ritvik,6,85_image_batch_2.png,4,m06_c04,2,2. Trump is a masculine president,"- ""It's nice to have a president with balls and a 1st lady who doesn't""
+
+- Donald Trump and Melania Trump wearing leather flight jackets with patches and looking serious while on a motorcycle in front of an American flag
+
+- Melania Trump has her hand resting on Donald Trump's shoulder.",1,,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,"There is no evidence to prove that Trump is a masculine president. Instead, a humorous exaggerated depicition of Trump riding a motorcyle with leather flight jackets and patches infront of an American flag is used as evidence to prove that Trump is a masculine president.",,,,34
+Ritvik,6,85_image_batch_2.png,5,m06_c05,1,1. Trump is more masculine than Obama,"- 2. Trump is a masculine president
+
+- 6. Obama is not a masculine president",1,Pass,None,0,0,0,0,0,0,0,None,,,,,35
+Ritvik,6,85_image_batch_2.png,6,m06_c06,C0,C0. Trump is cooler than Obama,- 1. Trump is more masculine than Obama,1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,"There is no direct connection between masculinity and being cool, so Trump being more masculine than Obama cannot prove that Trump is cooler than Obama.",,,,36
+Ritvik,7,188_image_batch_2.png,1,m07_c01,1,"1. Trump supporters are a large, visible group known as the silent majority.","- A long line of pickup trucks driving down a highway, carrying American flags, Trump flags, and a 'Thin Blue Line' flag.
+
+- It's not that the Majority are silent",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,"A line of pickup trucks of trump supporters is stretched to a broader conclusion that all trump supporters are a large, visible group known as the silent majority.",,,,40
+Ritvik,7,188_image_batch_2.png,2,m07_c02,C0,C0. the media silence Trump supporters,"- 1. Trump supporters are a large, visible group known as the silent majority.
+
+- It's that the media are silent about the Majority.",1,Pass,None,0,0,0,0,0,0,0,None,,,,,41
+Ritvik,8,107_image_batch_2.png,1,m08_c01,C0,"C0. Supporting Donald Trump is a reflection of a lack of morals, ethics, and humanity.","- If you support this man, I won't judge you for your choice of political parties. I will judge you for your lack of morals, ethics and humanity. So will others. So will history.
+
+- Donald Trump with a serious expression",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,"Negative emotion such as shaming is used through""lack of morals, ethics, and humanity"" in place of evidence.",,,,45
+Ritvik,9,70_image_batch_2.png,1,m09_c01,2,2. Democrats blame Trump for natural disasters like storms.,"- STORM FORMING IN GULF BLAME TRUMP. Expect Dems to castigate Trump for this, too.",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Democrats blaming Trump for the storm forming in the Gulf is stretched to a broader conclusion that all Democrats blame Trump for natural disasters like storms.,,,,49
+Ritvik,9,70_image_batch_2.png,2,m09_c02,1,1. Blaming Trump for storms is irrational because humans cannot control the weather.,- 2. Democrats blame Trump for natural disasters like storms.,1,Pass,None,0,0,0,0,0,0,0,None,,,,,50
+Ritvik,9,70_image_batch_2.png,3,m09_c03,C0,C0. Democrats blame Trump for everything.,"- 1. Blaming Trump for storms is irrational because humans cannot control the weather.
+
+- 2. Democrats blame Trump for natural disasters like storms.",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Democrats blaming Trump for the storm forming in the Gulf is stretched to a broader conclusion that all Democrats blame Trump for everything.,,,,51
+Ritvik,10,130_image_batch_2.png,1,m10_c01,1,1. Donald Trump has blood on his hands,"- The text ""TRUMP""
+
+- hands covered in blood",1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,There is no direct correlation between the text Trump and the hands covered in blood which does not prove that Donald Trump has blood on his hands.,,,,55
+Ritvik,10,130_image_batch_2.png,2,m10_c02,C0,C0. Donald Trump is responsible for deaths due to COVID-19,- 1. Donald Trump has blood on his hands,1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,"Donald Trump having blood on his hands is not directly correlated to the claim that Trump is responsible for deaths due to COVID-19, which does not prove that Trump is responsible for daeaths due to COVID-19.",,,,56
+Ritvik,11,75_image_batch_2.png,1,m11_c01,6,6. The Democratic National Convention is a gathering of criminals,"- ""Special Edition Democratic National Convention 2020 where all the crooks come out""",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,"Mockery through the use of ""crooks"" is being used instead of direct evidence to prove that The Democratic National Convention is a gathering of criminals.",,,,60
+Ritvik,11,75_image_batch_2.png,2,m11_c02,1,"1. Trump is a law enforcement figure who catches criminals
+[independent argument 1 of 2]",- (background knowledge only),1,Fail,Esoteric Code Activation,1,0,0,1,0,0,0,Esoteric Code Activation,The claim is tailored to a specific group of people who would understand it.,,,,61
+Ritvik,11,75_image_batch_2.png,3,m11_c03,1,"1. Trump is a law enforcement figure who catches criminals
+[independent argument 2 of 2]",- Donald Trump with a stern expression next to an America's Most Wanted logo.,1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,"There is no direct correlation between Trump with a stern expression next to an Americas MOst Wanted Logo and Trump is a law enforcement figure who catches criminals
+which does not prove that Trump is a law enforcenemnt figure who catches criminals.",,,,62
+Ritvik,11,75_image_batch_2.png,4,m11_c04,C0,C0. Trump catches Democrat crooks,"- 1. Trump is a law enforcement figure who catches criminals
+
+- 6. The Democratic National Convention is a gathering of criminals",1,Pass,None,0,0,0,0,0,0,0,None,,,,,63
+Ritvik,12,123_image_batch_2.png,1,m12_c01,3,3. Donald Trump's anger masks his failure,"- Behind all that anger was a sad little failure of a man who turned everything he touched into shit
+
+- Donald Trump is cowering in a corner",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,"Mockery through the use of ""sad little failure of a man"" and trump cowering in a corner is being used instead of direct evidence to prove that Donald Trump's anger masks his failure.",,,,67
+Ritvik,12,123_image_batch_2.png,2,m12_c02,7,7. Donald Trump's true nature is exposed to the world,"- THE JIG IS UP The entire world knows the truth Donnie.
+
+- Donald Trump is cowering in a corner",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,"Mockery through the use of ""THE JIG IS UP"" and trump cowering in a corner is being used instead of direct evidence to prove that Donald Trump's true nature is exposed to the world.",,,,68
+Ritvik,12,123_image_batch_2.png,3,m12_c03,6,6. Donald Trump is a failure,- 3. Donald Trump's anger masks his failure,1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Trumps anger masking his failure is being stretched to a broader conclusion that he is a failure in general.,,,,69
+Ritvik,12,123_image_batch_2.png,4,m12_c04,1,"1. Donald Trump is weak
+[independent argument 1 of 2]",- 3. Donald Trump's anger masks his failure,1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Trumps anger masking his failure is being stretched to a broader conclusion that he is weak in general.,,,,70
+Ritvik,12,123_image_batch_2.png,5,m12_c05,1,"1. Donald Trump is weak
+[independent argument 2 of 2]",- Donald Trump is cowering in a corner,1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Trumps cowering in a corner is being stretched to a broader conclusion that he is weak in general.,,,,71
+Ritvik,12,123_image_batch_2.png,6,m12_c06,C0,"C0. Donald Trump is weak and a failure
+[independent argument 1 of 2]",- 7. Donald Trump's true nature is exposed to the world,1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,"There is no direct correlation between Donald Trump's true nature is exposed to the world and Donald Trump is weak and a failure, which does not prove that Donald Trump is weak and a failure.",,,,72
+Ritvik,12,123_image_batch_2.png,7,m12_c07,C0,"C0. Donald Trump is weak and a failure
+[independent argument 2 of 2]","- 1. Donald Trump is weak
+
+- 6. Donald Trump is a failure",1,Pass,None,0,0,0,0,0,0,0,None,,,,,73
+Ritvik,13,200_image_batch_2.png,1,m13_c01,1,1. Trump supporters do not know what losing is like,"- a father talking to his son
+
+- ""Dad what's losing like? I don't know son, I'm a Trump supporter""",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,One instance of a Trump supporter not knowing what losing is like is stretched a broader conclusion that all Trump supports dont know what losing is like.,,,,77
+Ritvik,13,200_image_batch_2.png,2,m13_c02,C0,C0. Trump and Trump supporters will win the presidential election,- 1. Trump supporters do not know what losing is like,1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,"There is no direct correlation between Trump supporters not knowing what losing is like to Trump and Trump supports will win the presidential election, so it can not be used as evidence to prove that Trump and his supporters will win the election.",,,,78
+Ritvik,14,140_image_batch_2.png,1,m14_c01,1,1. Mitch McConnell established a principle in 2016 that Supreme Court vacancies should not be filled during an election year,"- Mitch McConnell-2016 'The American people should have a voice in the selection of their next supreme court justice. This vacancy should not be filled until we have a new president.'
+
+- Mitch McConnell looking at the camera",1,Pass,None,0,0,0,0,0,0,0,None,,,,,82
+Ritvik,14,140_image_batch_2.png,2,m14_c02,4,4. Mitch McConnell abandoned his own stated principle when the political situation changed,"- If you think McConnell will follow his own advice you must be a special kind of stupid
+
+- Sam Elliott wearing a cowboy hat with a knowing expression
+
+- Mitch McConnell looking at the camera
+
+- 1. Mitch McConnell established a principle in 2016 that Supreme Court vacancies should not be filled during an election year",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,"Someone believing that McConnell will follow his own advice is referred to as ""stupid"" and that is used in place of  real evidence.",,,,83
+Ritvik,14,140_image_batch_2.png,3,m14_c03,C0,C0. Mitch McConnell is a hypocrite for reversing his stance on filling Supreme Court seats based on which party controlled the presidency,"- 1. Mitch McConnell established a principle in 2016 that Supreme Court vacancies should not be filled during an election year
+
+- 4. Mitch McConnell abandoned his own stated principle when the political situation changed",1,Pass,None,0,0,0,0,0,0,0,None,,,,,84
+Ritvik,15,120_image_batch_2.png,1,m15_c01,1,1. Donald Trump is a failed businessman,"- Reportedly Donald Trump lost $1.17 Billion from his businesses over 10 years from 1985 to 1994 !!!
+
+- Donald Trump pointing and yelling",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Trump losing $1.17 Billion from his businesses over 10 years is stretched to a broader conclusion that he is a failed businessman overall.,,,,88
+Ritvik,15,120_image_batch_2.png,2,m15_c02,C0,C0. Donald Trump's public image as a successful businessman is false,"- 1. Donald Trump is a failed businessman
+
+- So basically, Trump isn't actually a successful businessman -- but he played one recently on TV!
+
+- ""You're Fired!!!""
+
+- Donald Trump pointing and yelling",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,Mockery is being used in place of evidence to prove that Donald Trump's public image as a successful businessman is false.,,,,89
+Ritvik,16,131_image_batch_2.png,1,m16_c01,1,1. The vault containing Donald Trump's healthcare plan is empty,"- BREAKING: Tonight on FOX, Geraldo opens the vault where Trump keeps his healthcare plan. Spoiler: It's empty.
+
+- Geraldo Rivera shrugging in a cave with two cave workers in the background digging",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,Humor and mockery is used to prove the satirical claim that the vault containing Donald Trumps healthcare plan is emtpy,,,,93
+Ritvik,16,131_image_batch_2.png,2,m16_c02,C0,C0. Donald Trump has no healthcare plan for America,- 1. The vault containing Donald Trump's healthcare plan is empty,1,Pass,None,0,0,0,0,0,0,0,None,,,,,94
+Ritvik,17,94_image_batch_2.png,1,m17_c01,1,1. Trump's stupidity is uncontainable and cannot be fixed,"- ""They say you can't fix stupid turns out you can't quarantine it either""
+
+- Donald Trump wearing a stern expression against a background of SARS-CoV-2 virus particles.",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,Mockery and humiliation is used to prove that Trump's stupidity is uncontainable and cannot be fixed,,,,98
+Ritvik,17,94_image_batch_2.png,2,m17_c02,3,3. Trump's behavior during the COVID-19 pandemic was foolish and dangerous,- Donald Trump wearing a stern expression against a background of SARS-CoV-2 virus particles.,1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,"There is no direct correlation between Trump being placed againast a background of SARS COV 2  virus particles and Trumps behavior during the COVID 19 pandemic was foolish and dangerous, so enough evidence is not provided",,,,99
+Ritvik,17,94_image_batch_2.png,3,m17_c03,C0,C0. Donald Trump is stupid,"- 1. Trump's stupidity is uncontainable and cannot be fixed
+
+- 3. Trump's behavior during the COVID-19 pandemic was foolish and dangerous",1,Pass,None,0,0,0,0,0,0,0,None,,,,,100
+Ritvik,18,127_image_batch_2.png,1,m18_c01,C0,C0. Trump was responsible for COVID-19 deaths,"- Donald Trump with a stern and weary facial expression
+
+- THIS IS THE LEADING CAUSE OF DEATH IN THE UNITED STATES.",1,Pass,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,There is no direct evidence to prove that Trump was responsible for COVID 19 deaths as A text label placed on a picture of trump is not sufficient evidence to prove that he was responsible for COVID 19 deaths.,,,,104
+Ritvik,19,51_image_batch_2.png,1,m19_c01,2,2. Trump is comparable to Mike Tyson in terms of fighting prowess,"- ""One of the hardest most ferocious fighters the world has ever seen, and Mike Tyson""
+
+- Donald Trump and Mike Tyson standing together",1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,"There is no direct correlation between Trump and Tyson being placed next to eachother, so there is not enough evidence to prove that Trump is comparable to Tyson in terms of fighting prowess.",,,,108
+Ritvik,19,51_image_batch_2.png,2,m19_c02,1,1. Trump is one of the hardest and most ferocious fighters the world has ever seen,- 2. Trump is comparable to Mike Tyson in terms of fighting prowess,1,Pass,None,0,0,0,0,0,0,0,None,,,,,109
+Ritvik,19,51_image_batch_2.png,3,m19_c03,C0,C0. Trump is a tough and formidable fighter,- 1. Trump is one of the hardest and most ferocious fighters the world has ever seen,1,Pass,None,0,0,0,0,0,0,0,None,,,,,110
+Ritvik,20,103_image_batch_2.png,1,m20_c01,1,1. Trump's behavior is unacceptable for even basic service industry employment,"- ""Forget about the Presidency for a moment. Trump's behavior would get him fired from Applebee's.""
+
+- Donald Trump wearing a paper Burger King crown with a stern expression",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,"Trumps behavior is being mocked by comparing it to being fired from Applebees and of him  wearing a burger king crown, which is being used in place of evidence to prove that Trumps behavior is unacceptable for even basic service industry employment.",,,,114
+Ritvik,20,103_image_batch_2.png,2,m20_c02,C0,C0. Trump is not fit to hold the office of president,- 1. Trump's behavior is unacceptable for even basic service industry employment,1,Pass,None,0,0,0,0,0,0,0,None,,,,,115
+Ritvik,21,99_image_batch_2.png,1,m21_c01,1,1. Donald Trump is an irresponsible president,"- An Irresponsible President !
+
+- Two separate photographs show Donald Trump and Hope Hicks leaning toward each other for a kiss on the cheek.",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,A mocking depiction of Trump and Hope Hicks about to kiss is in place of evidence to prove that Trump is an irresponsible president.,,,,119
+Ritvik,21,99_image_batch_2.png,2,m21_c02,3,3. Donald Trump is an irresponsible man,"- An Irresponsible Man !!!
+
+- Two separate photographs show Donald Trump and Hope Hicks leaning toward each other for a kiss on the cheek.",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,A mocking depiction of Trump and Hope Hicks about to kiss is in place of evidence to prove that Trump is an irresponsible man.,,,,120
+Ritvik,21,99_image_batch_2.png,3,m21_c03,C0,C0. Donald Trump is a bad leader and man,"- 1. Donald Trump is an irresponsible president
+
+- 3. Donald Trump is an irresponsible man",1,Pass,None,0,0,0,0,0,0,0,None,,,,,121
+Ritvik,22,139_image.png,1,m22_c01,4,4. The Democratic party is associated with the ultimate evil of Nazism.,"- A collage of several prominent politicians, including Barack Obama, Hillary Clinton, Nancy Pelosi, and Mitt Romney, standing in front of a large Nazi swastika.",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,A mocking exaggeration of democrats standing infront of a swastika is being used in place of evidence to prove that The Democratic party is associated with the ultimate evil of Nazism.,,,,125
+Ritvik,22,139_image.png,2,m22_c02,2,2. The Democratic party is a malicious and dangerous entity that must be stopped.,"- The Democratic Party IS THE PARTY OF CRIME & EVIL... A TERRORIST ORGANIZATION WHO HATES AMERICA & AMERICANS
+
+- 4. The Democratic party is associated with the ultimate evil of Nazism.
+
+- TRAITORS TO AMERICA THE COMMUNIST PARTY
+
+- A collage of several prominent politicians, including Barack Obama, Hillary Clinton, Nancy Pelosi, and Mitt Romney, standing in front of a large Nazi swastika.",1,Pass,None,0,0,0,0,0,0,0,None,,,,,126
+Ritvik,22,139_image.png,3,m22_c03,C0,C0. voters should vote for Trump because he will stop the actions of the Democratic party.,"- SAVE AMERICA SUPPORT TRUMP
+
+- 2. The Democratic party is a malicious and dangerous entity that must be stopped.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,"There is no evidence to prove that Trump will stop the actions of the Democratic party, so in place of evidence, the prideful text ""SAVE AMERICA"" is being used.",,,,127
+Ritvik,23,177_image.png,1,m23_c01,5,5. The Democratic Party prioritized a 'sham impeachment' over the public health crisis,"- DON'T FORGET THAT IN JANUARY: THE DEMS WERE WASTING TIME ON A SHAM IMPEACHMENT
+
+- Adam Schiff and Jerrold Nadler walking through a hallway",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Adam Schiff and Jerrold Nadler walking through a hallway is being stretched to a broader conclusion that  The Democratic Party prioritized a 'sham impeachment' over the public health crisis.,,,,131
+Ritvik,23,177_image.png,2,m23_c02,1,1. Trump was actively addressing the major public health crisis of Coronavirus,"- DON'T FORGET THAT IN JANUARY: TRUMP FORMED THE CORONAVIRUS TASK FORCE
+
+- Trump leading an official meeting",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Trump leading an official meeting is being stretched to a broader conclusion that Trump was actively addressing the major public health crisis of Coronavirus.,,,,132
+Ritvik,23,177_image.png,3,m23_c03,C0,C0. Trump is more beneficial to Americans than the Democratic Party,"- 1. Trump was actively addressing the major public health crisis of Coronavirus
+
+- 5. The Democratic Party prioritized a 'sham impeachment' over the public health crisis",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,The Democratic Party prioritized a 'sham impeachment' over the public health crisis and Trump was actively addressing the major public health crisis of Coronavirus is being stretched to a broader conclusion that Trump is more beneficial to Americans than the Democratic Party,,,,133
+Ritvik,24,134_image.png,1,m24_c01,C0,C0. Trump haters are stupid.,"- A woman wearing a dark coat and shouting while holding a protest sign that reads ""If Trump isn't Hitler, Then I'm a Moron"".
+
+- ""Self-awareness.""",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,"Mockery through the use of ""Self Awareness"" and ""Moron"" is being uised to prove that Trump haters are stupid.",,,,137
+Ritvik,25,196_image.png,1,m25_c01,5,"5. A satirical analogy of pregnancy highlights the absurdity of the 'no test, no problem' logic","- A woman with a large, protruding pregnant belly, holding it with both hands.
+
+- I'm not pregnant, I haven't been tested. I think it's gas...
+
+- But the President says if it's not tested it's not real.",1,Pass,None,0,0,0,0,0,0,0,None,,,,,141
+Ritvik,25,196_image.png,2,m25_c02,4,"4. The 'no test, no problem' logic is fundamentally unreasonable and absurd when applied to reality","- 5. A satirical analogy of pregnancy highlights the absurdity of the 'no test, no problem' logic",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,"One instance of A satirical analogy of pregnancy highlights the absurdity of the 'no test, no problem' logic is being stretched to a broader conclusion that The 'no test, no problem' logic is fundamentally unreasonable and absurd when applied to reality",,,,142
+Ritvik,25,196_image.png,3,m25_c03,1,"1. Trump's logic suggests that a lack of testing means a problem doesn't exist, which he used to downplay the pandemic",- But the President says if it's not tested it's not real.,1,Fail,Spurious Legitimacy Signaling,1,0,0,0,0,0,1,Spurious Legitimacy Signaling,"Trumps authority is being used to prove that Trump's logic suggests that a lack of testing means a problem doesn't exist, which he used to downplay the pandemic",,,,143
+Ritvik,25,196_image.png,4,m25_c04,C0,C0. Trump talks unreasonable nonsense about Covid,"- 1. Trump's logic suggests that a lack of testing means a problem doesn't exist, which he used to downplay the pandemic
+
+- 4. The 'no test, no problem' logic is fundamentally unreasonable and absurd when applied to reality",1,Pass,None,0,0,0,0,0,0,0,None,,,,,144
+Ritvik,26,159_image.png,1,m26_c01,5,5. Trump mismanaged the COVID pandemic leading to significant national disruption and social instability,"- Do you remember when: Swine Flu, Ebola Virus, and Zika virus caused mass cancellations? Crashed our stock market? Caused confusion from misinformation? Drove people to stockpile toilet paper? Of course not...Because Obama HANDLED that SHIT!
+
+- Donald Trump is swinging a golf club on a golf course.
+
+- Barack Obama is gesturing while speaking at a table in a meeting with several other people, including a man in a military uniform.",0,,,,,,,,,,,,,,,149
+Ritvik,26,159_image.png,2,m26_c02,1,"1. Obama effectively managed health crises like Swine Flu, Ebola, and Zika, preventing national disruption","- Do you remember when: Swine Flu, Ebola Virus, and Zika virus caused mass cancellations? Crashed our stock market? Caused confusion from misinformation? Drove people to stockpile toilet paper? Of course not...Because Obama HANDLED that SHIT!
+
+- Barack Obama is gesturing while speaking at a table in a meeting with several other people, including a man in a military uniform.",0,,,,,,,,,,,,,,,150
+Ritvik,26,159_image.png,3,m26_c03,C0,"C0. Obama protected the nation from disease and disruption, proving he is a better president than Trump who mismanaged the COVID pandemic","- 1. Obama effectively managed health crises like Swine Flu, Ebola, and Zika, preventing national disruption
+
+- 5. Trump mismanaged the COVID pandemic leading to significant national disruption and social instability",0,,,,,,,,,,,,,,,151
+Ritvik,27,123_image.png,1,m27_c01,C0,C0. Obama should be impeached.,"- IMPEACH OBAMA!
+
+- Former Presidents can be IMPEACHED!
+
+- Barack Obama with a frowning expression.",0,,,,,,,,,,,,,,,155
+Ritvik,28,93_image.png,1,m28_c01,C0,C0. Pelosi and Sanders are actively destroying the well-being of America through their political actions.,"- ""The real virus threatening America.""
+
+- Bernie Sanders with a coronavirus cell on his suit, standing behind Nancy Pelosi speaking behind a podium.
+
+- The US Capitol dome is visible in the background.",0,,,,,,,,,,,,,,,159
+Ritvik,29,181_image.png,1,m29_c01,C0,C0. Donald Trump is unintelligent and demonstrated inability to handle the issue of COVID.,"- 'People are dying who have never died before.' -Donald J. Trump, March 18, 2020.
+
+- Donald Trump smiling",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,,,,,163
+Ritvik,30,113_image.png,1,m30_c01,C0,C0. Obama lies to Americans and Trump is honest,"- ""Elegant at lying.""
+
+- Barack Obama is speaking into a microphone with a composed expression.
+
+- ""Brutal with the truth.""
+
+- Donald Trump is speaking at a podium with an aggressive expression.",0,,,,,,,,,,,,,,,167
+Ritvik,31,17_image.png,1,m31_c01,C0,C0. Trump works harder and creates better economic results than Obama,"- Barack Obama laughing while leaning back with his legs up on the desk
+
+- Donald Trump with a serious expression while talking on the phone
+
+- BETWEEN 1.4% GDP
+
+- AND 4.1% GDP
+
+- THIS IS THE DIFFERENCE",0,,,,,,,,,,,,,,,171
+Ritvik,32,136_image.png,1,m32_c01,4,4. Trump is the best president ever,- The text 'BEST EVER' is positioned below Donald Trump.,0,,,,,,,,,,,,,,,175
+Ritvik,32,136_image.png,2,m32_c02,2,2. Obama is the worst president ever,- The text 'WORST EVER' is positioned below Barack Obama.,0,,,,,,,,,,,,,,,176
+Ritvik,32,136_image.png,3,m32_c03,C0,C0. Trump is a much better president than Obama,"- ""What a contrast from worst ever to best ever.""
+
+- 2. Obama is the worst president ever
+
+- 4. Trump is the best president ever
+
+- Barack Obama and Donald Trump are shown in a side-by-side comparison.",0,,,,,,,,,,,,,,,177
+Ritvik,33,91_image.png,1,m33_c01,2,2. Ronald Reagan is a credible authority on the failure of socialism,"- Ronald Reagan is speaking at a podium.
+
+- The signature ""Ronald Reagan"".",0,,,,,,,,,,,,,,,181
+Ritvik,33,91_image.png,2,m33_c02,C0,C0. socialism is bad like hell,"- Socialism only works in two places: Heaven where they don't need it, and hell where they already have it.
+
+- 2. Ronald Reagan is a credible authority on the failure of socialism",0,,,,,,,,,,,,,,,182
+Ritvik,34,12_image.png,1,m34_c01,5,"5. The Republican Party is a Russian collaborator
+[independent argument 1 of 2]",- 1. Mitch McConnell and Donald Trump are subordinates of the Russian government,0,,,,,,,,,,,,,,,186
+Ritvik,34,12_image.png,2,m34_c02,5,"5. The Republican Party is a Russian collaborator
+[independent argument 2 of 2]","- Mitch McConnell on the left and Donald Trump on the right, both wearing hammer and sickle pins on their lapels.
+
+- The text 'TRAITORS', 'MOSCOW MITCH', and 'MOSCOW'S BITCH'.",0,,,,,,,,,,,,,,,187
+Ritvik,34,12_image.png,3,m34_c03,1,1. Mitch McConnell and Donald Trump are subordinates of the Russian government,"- Mitch McConnell on the left and Donald Trump on the right, both wearing hammer and sickle pins on their lapels.
+
+- The text 'TRAITORS', 'MOSCOW MITCH', and 'MOSCOW'S BITCH'.",0,,,,,,,,,,,,,,,188
+Ritvik,34,12_image.png,4,m34_c04,C0,"C0. McConnell, Trump, and the Republican Party are Russian collaborators","- 1. Mitch McConnell and Donald Trump are subordinates of the Russian government
+
+- 5. The Republican Party is a Russian collaborator",0,,,,,,,,,,,,,,,189
+Ritvik,35,125_image_batch_2.png,1,m35_c01,C0,C0. Trump loses America's money,"- Donald Trump with a smug expression is throwing a poker chip toward a royal flush hand.
+
+- I like presidents that don't lose money.",0,,,,,,,,,,,,,,,193
+Ritvik,36,126_image_batch_2.png,1,m36_c01,4,"4. America is currently suffering from a pandemic, recession, mass unemployment, and riots","- PANDEMIC, RECESSION, MASS UNEMPLOYMENT, and RIOTS
+
+- Body bags in a hospital hallway, a 'Sorry We're Closed' sign, an unemployment benefits application form, and buildings on fire in a street.",0,,,,,,,,,,,,,,,197
+Ritvik,36,126_image_batch_2.png,2,m36_c02,C0,C0. Trump failed to fulfill his promise to make America great again,"- 4. America is currently suffering from a pandemic, recession, mass unemployment, and riots
+
+- Trump promised to make America great again. Four years later...
+
+- Donald Trump with an angry, shouting expression
+
+- WINNING
+
+- A speech bubble pointing from Donald Trump to the word 'WINNING'.",0,,,,,,,,,,,,,,,198
+Ritvik,37,196_image_batch_2.png,1,m37_c01,C0,C0. voting for Trump will prevent America from becoming socialist,"- It is better to wait in a long line to vote for Trump now than to wait in long lines for food in a socialist America
+
+- A line of dogs sitting on a path, each holding a bowl in its mouth.",0,,,,,,,,,,,,,,,202
+Ritvik,38,104_image_batch_2.png,1,m38_c01,C0,C0. Trump does not deserve empathy for his COVID diagnosis.,"- ""All the squawking about nobody on the left showing empathy for trump's Covid diagnosis. Tell you what, when he shows an ounce of concern for these kids, we'll think about it!""
+
+- A uniformed guard stands among the children in the fenced area.
+
+- Children are sitting and lying on mats on the floor inside a fenced enclosure, covered with silver Mylar blankets.",0,,,,,,,,,,,,,,,206
+Ritvik,39,1_image.png,1,m39_c01,5,5. Trump's performance of gaining 5.1 million jobs and having positive GDP growth indicates he was a good president,"- 2.5 years under Trump: 5.1 million jobs gained, unemployment fell to 3.6%, GDP up 3.2%
+
+- Donald Trump is smiling
+
+- Donald Trump is depicted in a bright, well-lit setting.",0,,,,,,,,,,,,,,,210
+Ritvik,39,1_image.png,2,m39_c02,1,1. Obama's performance of losing 4 million jobs and having negative GDP growth indicates he was a bad president,"- 8 years under Obama: 4 million jobs lost, Unemployment peaked to 9.9%, GDP down 2.8%.
+
+- Barack Obama with a grim expression
+
+- Barack Obama is depicted in a dark, shadowy setting.",0,,,,,,,,,,,,,,,211
+Ritvik,39,1_image.png,3,m39_c03,C0,"C0. Obama presided over high unemployment and negative GDP growth, making him a bad president, while Trump oversaw significant job creation and positive GDP growth, making him a good president","- 1. Obama's performance of losing 4 million jobs and having negative GDP growth indicates he was a bad president
+
+- 5. Trump's performance of gaining 5.1 million jobs and having positive GDP growth indicates he was a good president",0,,,,,,,,,,,,,,,212
+Ritvik,40,152_image.png,1,m40_c01,C0,"C0. America's greatness was lost upon Trump's election, and his leadership is detrimental to the nation's well-being.","- ""Yes, Mr. Trump, let's make America great again. But first, get one thing straight: America was great — before you were elected."" Barbra Streisand
+
+- Donald Trump gesturing with a serious expression and Barbra Streisand smiling calmly.",0,,,,,,,,,,,,,,,216
+Ritvik,41,16_image.png,1,m41_c01,6,6. Trump's reputation as a warmonger is contradicted by his choice to avoid unnecessary casualties.,"- Donald Trump with his hand raised in a stop gesture
+
+- Decided not to retaliate and kill 150 people over an unmanned drone
+
+- Called a Warmonger",0,,,,,,,,,,,,,,,220
+Ritvik,41,16_image.png,2,m41_c02,5,5. Trump has done more for world peace but is constantly misrepresented by the media,"- 6. Trump's reputation as a warmonger is contradicted by his choice to avoid unnecessary casualties.
+
+- 1. Obama is evil despite receiving the Nobel Peace prize",0,,,,,,,,,,,,,,,221
+Ritvik,41,16_image.png,3,m41_c03,1,1. Obama is evil despite receiving the Nobel Peace prize,"- Barack Obama with a serious expression
+
+- Received a Nobel Peace
+
+- Killed thousands of innocents with drone strikes",0,,,,,,,,,,,,,,,222
+Ritvik,41,16_image.png,4,m41_c04,C0,"C0. Trump has done more for world peace but is constantly misrepresented by the media, while Obama is evil despite receiving the Nobel Peace prize","- 1. Obama is evil despite receiving the Nobel Peace prize
+
+- 5. Trump has done more for world peace but is constantly misrepresented by the media",0,,,,,,,,,,,,,,,223
+Aima,42,376_image_batch_2.png,1,m42_c01,4,4. Donald Trump possesses the biological means to cure and save liberals,"- My greatest wish right now is for Trump to get better and donate plasma so a treatment can be developed and the libs can be saved by Trump's blood 🙏
+
+- A white woman wearing a beanie and glasses with a screaming expression receiving an injection from a person wearing a white coat, face mask, and goggles.",1,Fail,Affective Hijacking;Spurious Causal Correlation,2,1,0,0,0,1,0,Spurious Causal Correlation,The evidence doesn't suggest that Trump has the means to cure liberals. The assumption is that Trump's plasma could be a cure.,Affective Hijacking,"The overdramatized image of the woman screaming from the supposed ""cure"" is meant to draw up a strong emotional response from the viewer. This really doesn't do much for the claim being made other than provide shock value.",,3
+Aima,42,376_image_batch_2.png,2,m42_c02,5,5. Trump will save America by providing a cure for the illness,- 4. Donald Trump possesses the biological means to cure and save liberals,1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,"Nothing about the evidence suggests that Trump will ""save America"" with the cure he has. All it states is that he will save liberals.",,,,4
+Aima,42,376_image_batch_2.png,3,m42_c03,1,1. Liberals are ill and require medical treatment,"- A white woman wearing a beanie and glasses with a screaming expression receiving an injection from a person wearing a white coat, face mask, and goggles.
+
+- 4. Donald Trump possesses the biological means to cure and save liberals",1,Fail,Affective Hijacking;Episodic Overgeneralization,2,1,1,0,0,0,0,Episodic Overgeneralization,"He has the cure to save liberals; however, this doesn't mean ALL liberals are ill and need medical treatment. There is no evidence to suggest this conclusion. This is an overgeneralization.",Affective Hijacking,"The overdramatized image of the woman screaming from the supposed ""cure"" is meant to draw up a strong emotional response from the viewer. This really doesn't do much for the claim being made other than provide shock value.",,5
+Aima,42,376_image_batch_2.png,4,m42_c04,C0,"C0. Liberals are ill and sick, and Trump will save America","- 1. Liberals are ill and require medical treatment
+
+- 5. Trump will save America by providing a cure for the illness",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,6
+Aima,43,396_image_batch_2.png,1,m43_c01,C0,C0. Hillary Clinton has NSFW photos in her email.,"- WE HAVE HILLARY'S 30K EMAILS LETS OPEN ONE...
+
+- A computer monitor displays a pixelated image of a naked woman with Hillary Clinton's face.
+
+- Donald Trump is sitting at a desk looking at a computer monitor with a shocked expression.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,10
+Aima,44,398_image_batch_2.png,1,m44_c01,1,1. Ruth Bader Ginsburg's condition for Trump's victory has been met,"- OVER MY DEAD BODY WILL TRUMP WIN A SECOND TERM.
+
+- Ruth Bader Ginsburg with a serious expression.",1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,"We do not know that RGB is dead, so there is nothing to suggest that her condition has been met.",NONE,,,14
+Aima,44,398_image_batch_2.png,2,m44_c02,C0,C0. Trump will win a second term as president,- 1. Ruth Bader Ginsburg's condition for Trump's victory has been met,1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,15
+Aima,45,406_image_batch_2.png,1,m45_c01,3,"3. You can either vote for the man that bangs pornstars and supermodels or vote for the man that gropes, feels up and sniffs little girls",- (background knowledge only),1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,"Based on what a person knows about each candidate, this claim could be influenced by this background knowledge. In any case, the language used here conjures negative images of both candidates.",NONE,,,19
+Aima,45,406_image_batch_2.png,2,m45_c02,6,6. Biden is an unacceptable choice because he is a pedophile,"- 3. You can either vote for the man that bangs pornstars and supermodels or vote for the man that gropes, feels up and sniffs little girls
+
+- Adam Sandler is holding a sign and looking at the camera with a slight smile.",1,Fail,Esoteric Code Activation;Spurious Legitimacy Signaling,2,0,0,1,0,0,1,Esoteric Code Activation,The evidence presented here doesn't explicitly tell us which candidate Biden would be in this case. There is a specific in-group that would know the answer to this.,Spurious Legitimacy Signaling,There could be some effort to use Adam Sandler's celebrity status to support the idea that both candidates are bad options. Presenting it as his opinion might sway voters away from both.,,20
+Aima,45,406_image_batch_2.png,3,m45_c03,2,2. Trump is a better choice because he sleeps with attractive women,"- 3. You can either vote for the man that bangs pornstars and supermodels or vote for the man that gropes, feels up and sniffs little girls
+
+- Adam Sandler is holding a sign and looking at the camera with a slight smile.",1,,Esoteric Code Activation;Spurious Legitimacy Signaling,2,0,0,1,0,0,1,Esoteric Code Activation,The evidence presented here doesn't explicitly tell us which candidate Trump would be in this case. There is a specific in-group that would know the answer to this.,Spurious Legitimacy Signaling,There could be some effort to use Adam Sandler's celebrity status to support the idea that both candidates are bad options. Presenting it as his opinion might sway voters away from both.,,21
+Aima,45,406_image_batch_2.png,4,m45_c04,C0,C0. voters must choose Trump over Biden because Trump sleeps with models and Biden is a pedophile,"- 2. Trump is a better choice because he sleeps with attractive women
+
+- 6. Biden is an unacceptable choice because he is a pedophile",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,22
+Aima,46,415_image_batch_2.png,1,m46_c01,1,1. Replacing Michelle Obama with Melania Trump was a highly beneficial exchange,"- ""Best trade ever!""
+
+- Michelle Obama wearing a grey cap and sunglasses with a stern expression
+
+- Melania Trump wearing a black cap and sunglasses",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,We don't necessarily know that it was a beneficial exchange. All we know is how each MAY potentially feel about the exchange. It could seem that Michelle Obama is not happy with the exchange or it could be that she doesn't want to be exchanged. There's no way to know with the information presented here.,NONE,,,26
+Aima,46,415_image_batch_2.png,2,m46_c02,C0,C0. Melania Trump is better than Michelle Obama,- 1. Replacing Michelle Obama with Melania Trump was a highly beneficial exchange,1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,"Although the trade might be beneficial, there is no way to know whether or not Melania is better than Michelle based on the evidence presented.",NONE,,,27
+Aima,47,416_image_batch_2.png,1,m47_c01,3,3. Trump will be reelected.,"- ""I don't always get impeached but when I do I get nominated for 2 nobel peace prizes and get reelected"".
+
+- Donald Trump is wearing a smug expression.",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,"Although two out of the three statements are true in the first child, there is no way to know whether or not he will actually get reelected. That is just an assumption based on the statement.",NONE,,,31
+Aima,47,416_image_batch_2.png,2,m47_c02,1,1. Trump's Nobel Peace Prize nominations are significant accomplishments that outweigh his impeachment.,"- ""I don't always get impeached but when I do I get nominated for 2 nobel peace prizes and get reelected"".
+
+- Donald Trump is wearing a smug expression.",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,We cannot say whether or not the nominations outweigh the impeachment. This is just an assumption based on the child presented.,NONE,,,32
+Aima,47,416_image_batch_2.png,3,m47_c03,C0,"C0. Trump has significant political accomplishments, such as two Nobel Peace Prize nominations, which override the implications of his impeachment and predict his reelection.","- 1. Trump's Nobel Peace Prize nominations are significant accomplishments that outweigh his impeachment.
+
+- 3. Trump will be reelected.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,33
+Aima,48,421_image_batch_2.png,1,m48_c01,C0,C0. Trump is getting rid of corrupt politicians and delivering on his promises,"- ""THEY LAUGHED WHEN I SAID THAT I will drain the swamp THEY'RE NOT LAUGHING NOW!!""
+
+- Donald Trump is pointing at the camera with a serious expression.",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,"Based on the children presented, we CAN infer that he is getting rid of corrupt politicians. However, we cannot say that he is delivering on his promises. This is an overgeneralization of the initial evidence.",NONE,,,37
+Aima,49,425_image_batch_2.png,1,m49_c01,1,1. Donald Trump is fulfilling the specific duties and expectations of his supporters,"- ""CRY ALL YOU WANT HE'S DOING EXACTLY WHAT I HIRED HIM FOR...""
+
+- Donald Trump is wearing a suit and a smug expression",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,"The first child's statement is only the opinion of one person, not all of his supporters. Based on the evidence, we cannot make the jump to say that he is fulfilling the expectations of ALL his supporters.",NONE,,,41
+Aima,49,425_image_batch_2.png,2,m49_c02,C0,C0. Trump is doing a good job as a president,- 1. Donald Trump is fulfilling the specific duties and expectations of his supporters,1,,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,His fulfilling the duties and expectations of his supporters doesn't necessarily mean he is doing a good job as president. It could mean a multitude of different things. This is an overgeneralization being made based on limited evidence.,NONE,,,42
+Aima,50,692_image_batch_2.png,1,m50_c01,4,4. Trump invited Jesus back into the country,"- (TRUMP) INVITED ME BACK
+
+- Jesus is carrying four suitcases while walking through a field.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,46
+Aima,50,692_image_batch_2.png,2,m50_c02,1,1. Obama kicked Jesus out of the country,"- (OBAMA) KICKED ME OUT
+
+- Jesus is carrying four suitcases while walking through a field.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,47
+Aima,50,692_image_batch_2.png,3,m50_c03,C0,C0. Obama hates Jesus and Trump loves Jesus,"- 1. Obama kicked Jesus out of the country
+
+- 4. Trump invited Jesus back into the country",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,"Obama ""kicking"" Jesus out of the country could be due to many different things. This is an assumption based on the evidence. Trump ""inviting"" Jesus into the country could also be due to many different things. Assuming that one hates Jesus and the other loves him because of it is not sound reasoning.",NONE,,,48
+Aima,51,106_image_batch_2.png,1,m51_c01,3,3. Trump's visual portrayal suggests a mocking and irresponsible attitude toward medical science and safety.,- Donald Trump is sticking his tongue out with his eyes partially closed and his hand on his chest.,1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,The image of Trump lying down doesn't seem to have anything to do with the claim that he is mocking medical science and safety. He could be doing that for any number of reasons. This is not evidence to support that claim.,NONE,,,52
+Aima,51,106_image_batch_2.png,2,m51_c02,C0,"C0. Trump ignored medical advice and prevention measures related to COVID-19, resulting in the endangerment of people around him.","- The President did not ""catch"" coronavirus. He IGNORED the advice of doctors, MOCKED the science, put himself in RISKY situations and once exposed, he refused to self Quarantine and ENDANGERED the lives of hundreds of people around him.
+
+- Donald Trump is sticking his tongue out with his eyes partially closed and his hand on his chest.
+
+- 3. Trump's visual portrayal suggests a mocking and irresponsible attitude toward medical science and safety.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,53
+Aima,52,137_image_batch_2.png,1,m52_c01,1,1. The visual and textual elements combine to frame hostility toward Trump as a spiritual or prayerful expression,"- ""can I get a fuck Trump""
+
+- A woman with her hands raised and palms facing forward, looking down.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,57
+Aima,52,137_image_batch_2.png,2,m52_c02,C0,"C0. Trump provokes intense, prayer-like negative feelings",- 1. The visual and textual elements combine to frame hostility toward Trump as a spiritual or prayerful expression,1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,One instance of these intense negative feelings does not mean he always provokes these feelings. We cannot assume this with the evidence presented.,NONE,,,58
+Aima,53,134_image_batch_2.png,1,m53_c01,4,4. Republicans have low intelligence because they perceive Trump as a genius,"- It's no wonder so many Republicans think he's a genius
+
+- Donald Trump is pointing a finger at his temple.
+
+- 1. Donald Trump has low intelligence",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,"Just because ""so many"" Republicans think Trump is a genius doesn't mean that they all do. There is also no evidence to suggest that Republicans have low intelligence. They are just jumping from one conclusion to another based on little evidence.",NONE,,,62
+Aima,53,134_image_batch_2.png,2,m53_c02,1,1. Donald Trump has low intelligence,"- professionals have determined that Trump speaks at a 4th grade level
+
+- Donald Trump is pointing a finger at his temple.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,63
+Aima,53,134_image_batch_2.png,3,m53_c03,C0,"C0. Republicans have low intelligence, explaining why they admire Donald Trump, who also has low intelligence","- 1. Donald Trump has low intelligence
+
+- 4. Republicans have low intelligence because they perceive Trump as a genius",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,64
+Aima,54,52_image_batch_2.png,1,m54_c01,1,1. Trump's confident appearance suggests he is a strong candidate for the voters to elect.,- Donald Trump smirking,1,Fail,Affective Hijacking;Episodic Overgeneralization,2,1,1,0,0,0,0,Affective Hijacking,"His appearance doesn't have anything to do with his candidacy. Just because he looks confident doesn't mean he is a strong candidate. This could mean HE feels like he is a strong candidate, but nothing more than that.",Episodic Overgeneralization,His smirking doesn't mean that he is confident. This is an overgeneralization.,,68
+Aima,54,52_image_batch_2.png,2,m54_c02,3,"3. Trump is framing his re-election as a positive and certain outcome, reassuring his supporters despite his illness.","- DONT WORRY I'M ALSO ABOUT TO TEST POSITIVE FOR A 2ND TERM!
+
+- Donald Trump smirking",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,69
+Aima,54,52_image_batch_2.png,3,m54_c03,C0,C0. voters should vote for Trump,"- 3. Trump is framing his re-election as a positive and certain outcome, reassuring his supporters despite his illness.
+
+- 1. Trump's confident appearance suggests he is a strong candidate for the voters to elect.",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,"Although he might seem to be a strong candidate, there is no evidence to suggest that voters should vote for Trump.",NONE,,,70
+Aima,55,141_image_batch_2.png,1,m55_c01,2,2. Stopping the 'testing' for stupidity would not make Trump any less stupid.,"- ""If we stop testing for stupid, Will tRUMP be less stupid?""
+
+- Donald Trump is making a pouting facial expression with his eyes closed.",1,Fail,Affective Hijacking;Episodic Overgeneralization,2,1,1,0,0,0,0,Episodic Overgeneralization,There is no evidence to suggest that the claim is true. This is an mocking assumption based on the statement in the first child.,Affective Hijacking,Trump's expression is used to mock him in this example.,,74
+Aima,55,141_image_batch_2.png,2,m55_c02,1,1. Applying Trump's own 'no testing' logic to intelligence shows that his stupidity is an inherent fact.,- 2. Stopping the 'testing' for stupidity would not make Trump any less stupid.,1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,There is nothing to show that his stupidity is an inherent fact. The evidence only says it will not make him less stupid.,NONE,,,75
+Aima,55,141_image_batch_2.png,3,m55_c03,C0,C0. Trump is stupid,- 1. Applying Trump's own 'no testing' logic to intelligence shows that his stupidity is an inherent fact.,1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,76
+Aima,56,91_image_batch_2.png,1,m56_c01,1,1. Trump contracted and tested positive for the virus he labeled a hoax,"- ""I have the hoax""
+
+- Donald Trump with a dazed and unwell expression",1,Fail,Affective Hijacking;Spurious Causal Correlation,2,1,0,0,0,1,0,Spurious Causal Correlation,"Because we do not know exactly what Trump is referring to in the first child, we cannot assume that he is talking about the virus he claimed is a hoax.",Affective Hijacking,His dazed expression is used to show that he is potentially feeling unwell. But this idea cannot be used to concretely support the fact that he is sick with a specific illness.,,80
+Aima,56,91_image_batch_2.png,2,m56_c02,C0,"C0. Trump claimed COVID-19 was a hoax, despite subsequently testing positive for the virus",- 1. Trump contracted and tested positive for the virus he labeled a hoax,1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,81
+Aima,57,129_image_batch_2.png,1,m57_c01,5,5. Biden gains a political advantage from Trump's speech without needing to campaign actively,"- the more Trump speaks, the less Biden needs to
+
+- Joe Biden is laughing while wearing aviator sunglasses",1,Fail,Affective Hijacking;Episodic Overgeneralization,2,1,1,0,0,0,0,Episodic Overgeneralization,We do not know the reason why Biden needs to talk less. The idea that he gains a political advantage is an assumption based on the evidence presented. This is an overgeneralization.,Affective Hijacking,The image of Biden laughing mocks Trump and suggests he is enjoying what's going on.,,85
+Aima,57,129_image_batch_2.png,2,m57_c02,1,1. Trump's rhetoric is counterproductive and detrimental to his political standing,"- the more Trump speaks, the less Biden needs to
+
+- Joe Biden is laughing while wearing aviator sunglasses",1,,Affective Hijacking;Episodic Overgeneralization,2,1,1,0,0,0,0,Episodic Overgeneralization,Trump speaking more doesn't lend to the fact that his rhetoric is counterproductive. We would need more evidence to prove this claim.,Affective Hijacking,The image of Biden laughing mocks Trump and suggests he is enjoying what's going on.,,86
+Aima,57,129_image_batch_2.png,3,m57_c03,C0,C0. Trump hurts his own presidential campaign by speaking,"- 1. Trump's rhetoric is counterproductive and detrimental to his political standing
+
+- 5. Biden gains a political advantage from Trump's speech without needing to campaign actively",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,87
+Aima,58,119_image_batch_2.png,1,m58_c01,3,3. Trump will lose the 2020 election and be replaced by Biden.,"- November 3, 2020 the day the circus leaves town
+
+- Donald Trump is wearing a colorful striped shirt and suspenders while holding a red balloon animal.
+
+- RIDIN' WITH BIDEN",1,Fail,Episodic Overgeneralization;Satirical Trivialization,2,0,1,0,1,0,0,Episodic Overgeneralization,We do not know whether or not Trump will lose based on the evidence presented. The evidence is more satirical than factual.,Satirical Trivialization,This mocking image of Trump doesn't necessarily mean that he will lose the 2020 election. It just shows that the image's author is depicting that.,,91
+Aima,58,119_image_batch_2.png,2,m58_c02,C0,C0. Trump is stupid and a loser and Biden is the next president of the US,"- Donald Trump is wearing a colorful striped shirt and suspenders while holding a red balloon animal.
+
+- 3. Trump will lose the 2020 election and be replaced by Biden.",1,,Affective Hijacking;Spurious Causal Correlation,2,1,0,0,0,1,0,Spurious Causal Correlation,The depiction of Trump as a clown doesn't prove the claim that he is stupid and a loser. This is a conclusion not supported by any evidence that is presented.,Affective Hijacking,The satirical image of Trump as a circus clown doesn't prove he fact that he is stupid and a loser. This is just a,,92
+Aima,59,121_image_batch_2.png,1,m59_c01,C0,C0. Donald Trump will cheat in the 2020 election.,"- Donald Trump cheats at golf. Donald Trump cheated the draft. Donald Trump cheats on his taxes. Donald Trump cheated on his wives. Donald Trump cheated on his loans. Donald Trump cheated his charities. Donald Trump cheated his contractors. Donald Trump cheated Trump U students. Donald Trump cheated to get elected in 2016.
+
+- Trump frowning",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,"Although there is evidence to suggest he has cheated frequently in the past, there is. no evidence to show that he will cheat this time. The children are being used to overgeneralize to fit the claim.",NONE,,,96
+Aima,60,108_image_batch_2.png,1,m60_c01,4,4. Trump predicted COVID's miraculous disappearance,"- ""I have a hunch it's going to disappear. One day, it's like a miracle, it will disappear.""
+
+- Donald Trump is scratching the back of his head with a pensive expression.",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,There is no evidence to show that the disease miraculously disappears. We only know for fact that he had a prediction.,NONE,,,100
+Aima,60,108_image_batch_2.png,2,m60_c02,1,1. Donald Trump tested positive for COVID-19 in October 2020.,- Donald Trump is wearing a white t-shirt with the word 'POSITIVE' and a large black plus sign on it.,1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Just because he wore a shirt that says POSITIVE doesn't mean that he tested positive for COVID-19. The evidence presented here doesn't prove that the claim is true. This is an overgeneralization,NONE,,,101
+Aima,60,108_image_batch_2.png,3,m60_c03,C0,C0. Trump's dismissive predictions about COVID-19 are ironic in light of his own positive diagnosis.,- 4. Trump predicted COVID's miraculous disappearance,1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,There is no evidence in the children that show he had tested positive. We do know that he predicted it's disappearance.,NONE,,,102
+Aima,61,325_image_batch_2.png,1,m61_c01,4,4. Donald Trump was simply asking if the allegations against Biden were true,- Let me get this straight: Biden blackmailed Ukraine with a billion in tax dollars to drop an investigation into his son and Democrats want to impeach President Trump for simply asking if it was true?,1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,106
+Aima,61,325_image_batch_2.png,2,m61_c02,6,6. The situation surrounding Biden's actions is suspicious,- Let me get this straight: Biden blackmailed Ukraine with a billion in tax dollars to drop an investigation into his son and Democrats want to impeach President Trump for simply asking if it was true?,1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,107
+Aima,61,325_image_batch_2.png,3,m61_c03,3,3. Donald Trump was justified in questioning Biden's conduct because the situation was suspicious.,"- 4. Donald Trump was simply asking if the allegations against Biden were true
+
+- 6. The situation surrounding Biden's actions is suspicious",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,108
+Aima,61,325_image_batch_2.png,4,m61_c04,C0,"C0. Biden provided aid to Ukraine while his family was being investigated, which suggests corruption, and Donald Trump was justified in questioning the conduct of Biden
+[independent argument 1 of 2]","- 6. The situation surrounding Biden's actions is suspicious
+
+- 3. Donald Trump was justified in questioning Biden's conduct because the situation was suspicious.",1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,The situation being suspicious doesn't mean that his providing of aid was corruption. We do not know why his actions were suspicious based on the evidence provided.,NONE,,,109
+Aima,61,325_image_batch_2.png,5,m61_c05,C0,"C0. Biden provided aid to Ukraine while his family was being investigated, which suggests corruption, and Donald Trump was justified in questioning the conduct of Biden
+[independent argument 2 of 2]","- Let me get this straight: Biden blackmailed Ukraine with a billion in tax dollars to drop an investigation into his son and Democrats want to impeach President Trump for simply asking if it was true?
+
+- 3. Donald Trump was justified in questioning Biden's conduct because the situation was suspicious.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,110
+Aima,62,329_image_batch_2.png,1,m62_c01,6,"6. Trump is not racist because black people, who are the primary targets of racism, support his platform","- A group of Black people are smiling while wearing red ""Make America Great Again"" and ""Keep America Great"" caps.",1,Fail,Affective Hijacking;Episodic Overgeneralization,2,1,1,0,0,0,0,Episodic Overgeneralization,"His having supporters who are black doesn't necessarily mean that he isn't racist. The evidence shows that he has supporters who are black, not that he isn't racist.",Affective Hijacking,The image is trying to convey the idea that his black supporters are very happy with him. It doesn't support the claim that he isn't racist.,,114
+Aima,62,329_image_batch_2.png,2,m62_c02,1,1. People who are upset by black people supporting Trump are the ones who are racist,"- A group of Black people are smiling while wearing red ""Make America Great Again"" and ""Keep America Great"" caps.
+
+- ""Does this upset you? Then you're the racist!""",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,115
+Aima,62,329_image_batch_2.png,3,m62_c03,C0,"C0. People who are upset about seeing black people that support Trump are racist, and Trump is not racist","- 1. People who are upset by black people supporting Trump are the ones who are racist
+
+- 6. Trump is not racist because black people, who are the primary targets of racism, support his platform",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,116
+Aima,63,330_image_batch_2.png,1,m63_c01,1,1. Donald Trump's position that Ilhan Omar should leave America is correct.,"- Do you agree with President Trump when he told Ilhan Omar she should GET OUT of America and said, ""You can't leave fast enough""
+
+- Donald Trump is speaking and Ilhan Omar is wearing a blue hijab.",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,There is no evidence to suggest that his position is correct. It shows his opinion that he believes she should get out of America and nothing more.,NONE,,,120
+Aima,63,330_image_batch_2.png,2,m63_c02,C0,C0. Ilhan Omar should leave America.,- 1. Donald Trump's position that Ilhan Omar should leave America is correct.,1,Fail,Episodic Overgeneralization;Spurious Legitimacy Signaling,2,0,1,0,0,0,1,Spurious Legitimacy Signaling,The claim is using evidence of Trump's position as President to prove that Ilhan Omar should leave America. His status doesn't dictate whether or not she should leave.,Episodic Overgeneralization,"His ""correctness"" doesn't have anything to do with the fact that she should leave or not.",,121
+Aima,64,333_image_batch_2.png,1,m64_c01,5,5. Illegal immigrants vote illegally.,"- 22 million illegal aliens living in America and utilizing benefits they never contributed to and voting illegally is a real constitutional crisis.
+
+- A massive crowd of people fills a long road stretching into the distance.",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,There is no evidence to show that all illegal immigrants vote illegally. We only know for fact that there are 22 million illegal aliens in America.,NONE,,,125
+Aima,64,333_image_batch_2.png,2,m64_c02,4,4. Illegal immigrants utilize benefits they did not contribute to.,"- 22 million illegal aliens living in America and utilizing benefits they never contributed to and voting illegally is a real constitutional crisis.
+
+- A massive crowd of people fills a long road stretching into the distance.",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,There is no evidence to show that all illegal immigrants use benefits they do not have access to. We only know for fact that there are 22 million illegal aliens in America.,NONE,,,126
+Aima,64,333_image_batch_2.png,3,m64_c03,1,1. Illegal immigrants present a constitutional crisis.,"- 22 million illegal aliens living in America and utilizing benefits they never contributed to and voting illegally is a real constitutional crisis.
+
+- A massive crowd of people fills a long road stretching into the distance.",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,There is no evidence to show that all illegal immigrants present a constitutional crisis. We only know for fact that there are 22 million illegal aliens in America.,NONE,,,127
+Aima,64,333_image_batch_2.png,4,m64_c04,C0,"C0. illegal immigrants present a constitutional crisis, utilize benefits they did not contribute to, vote illegally, and do not benefit America.","- 1. Illegal immigrants present a constitutional crisis.
+
+- 4. Illegal immigrants utilize benefits they did not contribute to.
+
+- 5. Illegal immigrants vote illegally.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,128
+Aima,65,335_image_batch_2.png,1,m65_c01,3,3. Trump is satisfied with his success in achieving peace despite the dire predictions of his opponents.,"- Remember that the same people who told you Trump would start a nuclear war... are now the same people upset over peace.
+
+- Donald Trump with a satisfied expression and closed eyes.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,132
+Aima,65,335_image_batch_2.png,2,m65_c02,5,5. Trump's critics are inconsistent because they predicted he would cause a nuclear war but are now unhappy when he achieves peace.,"- Remember that the same people who told you Trump would start a nuclear war... are now the same people upset over peace.
+
+- 3. Trump is satisfied with his success in achieving peace despite the dire predictions of his opponents.
+
+- Donald Trump with a satisfied expression and closed eyes.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,133
+Aima,65,335_image_batch_2.png,3,m65_c03,1,1. Trump's critics are upset even when his actions lead to peace,"- Remember that the same people who told you Trump would start a nuclear war... are now the same people upset over peace.
+
+- 3. Trump is satisfied with his success in achieving peace despite the dire predictions of his opponents.
+
+- Donald Trump with a satisfied expression and closed eyes.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,134
+Aima,65,335_image_batch_2.png,4,m65_c04,C0,"C0. the people who dislike Trump hate him regardless of his actions, even when those actions result in peace","- 1. Trump's critics are upset even when his actions lead to peace
+
+- 5. Trump's critics are inconsistent because they predicted he would cause a nuclear war but are now unhappy when he achieves peace.",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,This is an overgeneralization of the evidence presented. They do not hate him regardless of his actions; they are unhappy with specific actions.,NONE,,,135
+Aima,66,342_image_batch_2.png,1,m66_c01,3,3. Donald Trump treats Hillary Clinton as a villainous Halloween decoration,"- Donald Trump is smiling while standing next to a framed picture of Hillary Clinton with green skin and an open-mouthed laugh, wearing a black witch hat and holding a broomstick.
+
+- Donald J Trump puts up Halloween decorations inside the White House",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,139
+Aima,66,342_image_batch_2.png,2,m66_c02,1,1. Hillary Clinton is the Wicked Witch of the West,"- Donald Trump is smiling while standing next to a framed picture of Hillary Clinton with green skin and an open-mouthed laugh, wearing a black witch hat and holding a broomstick.",1,Fail,Affective Hijacking;Satirical Trivialization,2,1,0,0,1,0,0,Satirical Trivialization,The image shows a dramatized version of Hillary Clinton that is meant to look like the Wicked Witch of the West. This doesn't mean she actually is that.,Affective Hijacking,The image is meant to mock Hillary Clinton and show that she is witch-like.,,140
+Aima,66,342_image_batch_2.png,3,m66_c03,C0,C0. Hillary Clinton is a subhuman witch,"- 1. Hillary Clinton is the Wicked Witch of the West
+
+- 3. Donald Trump treats Hillary Clinton as a villainous Halloween decoration",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,There is nothing to suggest that she is subhuman based on the evidence. This is an overgeneralization that is unsupported.,NONE,,,141
+Aima,67,359_image_batch_2.png,1,m67_c01,7,7. Anti-Trumpers are hypocritical because they adopt contradictory stances on war with Iran to maintain their opposition to Trump.,- 4. Anti-Trumpers hold mutually exclusive positions on Trump's actions regarding Iran,1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,145
+Aima,67,359_image_batch_2.png,2,m67_c02,4,4. Anti-Trumpers hold mutually exclusive positions on Trump's actions regarding Iran,"- ANTI-TRUMPERS JUNE 2019: TRUMP IS WEAK FOR NOT STARTING A WAR WITH IRAN
+
+- ANTI-TRUMPERS JANUARY 2020: TRUMP IS TRYING TO START A WAR WITH IRAN",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,This is an overgeneralization based on the evidence that is shown. These are only two instances that happen to be contradictory. This doesn't always mean that the Anti-Trumpers will always hold mutually exclusive positions.,NONE,,,146
+Aima,67,359_image_batch_2.png,3,m67_c03,1,1. Anti-Trumpers are annoying,"- A woman yelling
+
+- ANTI-TRUMPERS JUNE 2019: TRUMP IS WEAK FOR NOT STARTING A WAR WITH IRAN",1,Fail,Affective Hijacking;Spurious Causal Correlation,2,1,0,0,0,1,0,Spurious Causal Correlation,There is no evidence to show that Anti-Trumpers are annoying. None of the evidence even relates to this sentiment so we cannot draw this conclusion.,Affective Hijacking,The image of the woman yelling doesn't show whether she is a supporter or not.,,147
+Aima,67,359_image_batch_2.png,4,m67_c04,C0,C0. anti-Trump liberals act hypocritically and annoyingly because they will hate Trump for mutually exclusive reasons,"- 1. Anti-Trumpers are annoying
+
+- 4. Anti-Trumpers hold mutually exclusive positions on Trump's actions regarding Iran
+
+- 7. Anti-Trumpers are hypocritical because they adopt contradictory stances on war with Iran to maintain their opposition to Trump.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,148
+Aima,68,363_image_batch_2.png,1,m68_c01,1,1. Trump supporters at the rally consciously chose non-violence despite having the power to overwhelm the police.,"- While the Virginia governor credits his extra police force for the total lack of violence...
+
+- The governor forgets his forces were outnumbered and out armed HUNDREDS to 1.
+
+- If the citizens wanted violence they would have done it.
+
+- A large crowd of people, some of whom are holding 'Trump 2020' flags and Gadsden flags.",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,"There seem to be only a few Trump supporters at the rally, and we don't know whether they specifically choose not to overwhelm the police. This is generalization based on the evidence that is presented.",NONE,,,152
+Aima,68,363_image_batch_2.png,2,m68_c02,C0,C0. Trump supporters deserve praise for choosing to be peaceful.,- 1. Trump supporters at the rally consciously chose non-violence despite having the power to overwhelm the police.,1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,The evidence doesn't suggest that they deserve praise. It does support that they chose peace over everything else.,NONE,,,153
+Aima,69,364_image_batch_2.png,1,m69_c01,1,1. The repetitive whining noise coming from the TV during the impeachment trial is Adam Schiff,"- HI, MY TV KEEPS MAKING THIS REPETITIVE WHINING NOISE. I WAS WONDERING IF YOU COULD HELP ME?
+
+- THAT'S PROBABLY JUST ADAM SCHIFF MA'AM. TRY TURNING OFF THE IMPEACHMENT TRIAL.
+
+- A woman with a concerned expression is holding a TV remote and a phone.
+
+- A man with a slight smile is wearing a headset in a call center environment.",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,The authors are trying to mock Adam Schiff by saying he is the whining noise. This is not a factually supported statement but is just used to push the idea that he is whiny.,,,,157
+Aima,69,364_image_batch_2.png,2,m69_c02,C0,C0. Adam Schiff kept whining during the impeachment trial,- 1. The repetitive whining noise coming from the TV during the impeachment trial is Adam Schiff,1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,158
+Aima,70,583_image_batch_2.png,1,m70_c01,4,4. Donald Trump is indifferent to liberal sensitivities regarding these issues,"- If we wipe out the coronavirus when the warm weather comes we can tell the liberals that global warming killed it and watch their heads explode!
+
+- Donald Trump shrugging with a smug expression",1,Fail,Affective Hijacking;Spurious Causal Correlation,2,1,0,0,0,1,0,Spurious Causal Correlation,"The statement in the first child is one instance of his indifference towards what liberals think. This, however, doesn't show that he always feels this way.",Affective Hijacking,The image of his smug face is to convey that he doesn't care for what others think.,,162
+Aima,70,583_image_batch_2.png,2,m70_c02,1,1. Liberals would react irrationally to a scenario where global warming solves the pandemic,"- If we wipe out the coronavirus when the warm weather comes we can tell the liberals that global warming killed it and watch their heads explode!
+
+- Donald Trump shrugging with a smug expression",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,"The statement says that liberals' ""heads [would] explode"" to show their shock. This doesn't mean that they would act irrationally, that is an overgeneralization of the initial evidence.",NONE,,,163
+Aima,70,583_image_batch_2.png,3,m70_c03,C0,C0. Liberals are overly sensitive about global warming and COVID,"- 1. Liberals would react irrationally to a scenario where global warming solves the pandemic
+
+- 4. Donald Trump is indifferent to liberal sensitivities regarding these issues",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,164
+Aima,71,588_image_batch_2.png,1,m71_c01,1,1. Hillary Clinton is planning to kill the coronavirus because it is going to testify against her,"- Donald Trump and Hillary Clinton talking on the phone
+
+- Donald Trump is saying ""Hey Hillary, I hear the coronavirus is going to testify against you""
+
+- HOW TO KILL THE CORONOVIRUS...",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,The statement in the third child doesn't necessarily mean Hillary Clinton is the one who will kill the coronavirus.,NONE,,,168
+Aima,71,588_image_batch_2.png,2,m71_c02,C0,"C0. Hillary Clinton is a criminal who kills people that testify against her
+[independent argument 1 of 2]",- (background knowledge only),1,Fail,Esoteric Code Activation,1,0,0,1,0,0,0,Esoteric Code Activation,This is using knowledge that an in-group may have; there is no concrete way to prove this claim without proper evidence.,NONE,,,169
+Aima,71,588_image_batch_2.png,3,m71_c03,C0,"C0. Hillary Clinton is a criminal who kills people that testify against her
+[independent argument 2 of 2]",- 1. Hillary Clinton is planning to kill the coronavirus because it is going to testify against her,1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,"This is one instance where she plans to kill those who testify against her. This doesn't prove that she consistently does this, so it is an overgeneralization.",NONE,,,170
+Aima,72,591_image_batch_2.png,1,m72_c01,C0,C0. Impeaching the Democrats who oppose Trump is necessary to keep America great.,"- Adam Schiff, Nancy Pelosi, Elijah Cummings, and Jerry Nadler are standing in front of American and U.S. House of Representatives flags.
+
+- ""Impeach the Democrats keep America great""",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,The statement in the second child doesn't say it is necessary to impeach Democrats to keep America great. This is overgeneralization of the statement.,NONE,,,174
+Aima,73,8_image.png,1,m73_c01,4,4. Trump is characterized as someone who fulfills his promises,"- Donald Trump with a stern expression and the caption ""I DELIVER.""",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,The evidence is an image trying to show that Trump is a strong leader who fulfills his promises. This is just using the emotions in the image to prove the claim.,NONE,,,178
+Aima,73,8_image.png,2,m73_c02,1,1. Democrats are characterized as only making promises without fulfilling them,"- Barack Obama, Hillary Clinton, and Bernie Sanders are shown in three separate panels, each with the caption ""I PROMISE.""",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Nothing in the image shows that they did or didn't fulfill their promises. It just shows that they made promises.,NONE,,,179
+Aima,73,8_image.png,3,m73_c03,C0,C0. Trump delivers on his promises while Democrats do not fulfill their promises,"- 1. Democrats are characterized as only making promises without fulfilling them
+
+- 4. Trump is characterized as someone who fulfills his promises",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,180
+Aima,74,29_image.png,1,m74_c01,4,4. Republicans are the agents of justice,"- William Barr and Donald Trump are smirking while arresting Barack Obama.
+
+- ""All I want for Christmas is justice""
+
+- Donald Trump is wearing a police uniform.
+
+- Barack Obama is wearing a grey hoodie and has a somber expression.
+
+- William Barr is wearing a badge around his neck.",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,One instance of Republicans potentially carrying out justice isn't enough evidence to prove that they consistently go through with it. This is an overgeneralization of evidence.,NONE,,,184
+Aima,74,29_image.png,2,m74_c02,1,1. Obama is a criminal who deserves to be arrested,"- William Barr and Donald Trump are smirking while arresting Barack Obama.
+
+- ""All I want for Christmas is justice""
+
+- Donald Trump is wearing a police uniform.
+
+- Barack Obama is wearing a grey hoodie and has a somber expression.
+
+- William Barr is wearing a badge around his neck.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,"The images only depict Obama as a criminal who is being arrested, but there is no evidence to show that he actually deserves it. This image is just being used to conjure an emotional reaction against him.",NONE,,,185
+Aima,74,29_image.png,3,m74_c03,C0,"C0. Obama is a criminal, and Republicans are just","- 1. Obama is a criminal who deserves to be arrested
+
+- 4. Republicans are the agents of justice",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,186
+Aima,75,125_image.png,1,m75_c01,6,6. Ilhan Omar's identity is linked to groups commonly associated with terrorism in public discourse,- Ilhan Omar is wearing a white hijab.,1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,The evidence does not prove the claim at all. Her hijab doesn't prove that she is associated with terrorism. This evidence seems to be randomly linked to these ideas.,NONE,,,190
+Aima,75,125_image.png,2,m75_c02,1,1. Ilhan Omar expresses a hatred for Trump that is framed as being shared by terrorists,"- text reading ""I hate Trump.""
+
+- Ilhan Omar speaking
+
+- text reading ""Most Terrorists do.""
+
+- Trump frowning
+
+- Ilhan Omar is wearing a white hijab.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,191
+Aima,75,125_image.png,3,m75_c03,C0,C0. Ilhan Omar is a terrorist,"- 1. Ilhan Omar expresses a hatred for Trump that is framed as being shared by terrorists
+
+- 6. Ilhan Omar's identity is linked to groups commonly associated with terrorism in public discourse",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,The children in this statement don't directly support the claim. The children are being used to make an overgeneralization in the claim. Neither directly prove that she is a terrorist.,NONE,,,192
+Aima,76,49_image_batch_2.png,1,m76_c01,4,4. Trump's recovery from COVID-19 is a positive and impressive event,"- Trump leaving the hospital Covid free
+
+- 🤘
+
+- Donald Trump is standing on the seat of a blue motorcycle while performing a wheelie.",1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,His trick on the motorcycle doesn't prove anything relating to his recovery. There is no evidence to suggest that his recovery was positive or impressive.,NONE,,,196
+Aima,76,49_image_batch_2.png,2,m76_c02,1,1. Trump is like a member of a biker gang,"- Donald Trump is standing on the seat of a blue motorcycle while performing a wheelie.
+
+- The motorcycle's license plate features a middle finger emoji and the word ""THIS"".",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,His having a motorcycle doesn't mean that he's like a member of a biker gang. This is an overgeneralization based on little evidence.,NONE,,,197
+Aima,76,49_image_batch_2.png,3,m76_c03,C0,C0. Trump is cool for overcoming COVID-19,"- 1. Trump is like a member of a biker gang
+
+- 4. Trump's recovery from COVID-19 is a positive and impressive event",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,198
+Aima,77,199_image_batch_2.png,1,m77_c01,C0,C0. Biden is not physically fit to be president and Trump is physically fit,"- Biden in a hospital bed
+
+- Trump standing and giving a thumbs up
+
+- PRESIDENTIAL DEBATE
+
+- VIA SATELLITE",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,"Biden being in a hospital bed doesn't show that he is unfit to be president, it just one situation where he happens to be there. The same goes for Trump. The claim is overgeneralizing based on the evidence in the images.",NONE,,,202
+Aima,78,198_image_batch_2.png,1,m78_c01,C0,C0. Trump is the savior of the western civilization,"- THEY TOLD ME I COULD BE ANYTHING I WANTED SO I BECAME THE SAVIOR OF WESTERN CIVILIZATION
+
+- A younger Donald Trump and an older Donald Trump walking in a suit.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,206
+Aima,79,50_image_batch_2.png,1,m79_c01,C0,C0. COVID-19 is not severe,"- And just like that Trump got the rona and beat it over the weekend
+
+- Forrest Gump with a bewildered expression",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Trump beating COVID-19 over a single weekend doesn't mean it isn't severe. He is just one example of where it doesn't work.,NONE,,,210
+Aima,80,559_image_batch_2.png,1,m80_c01,5,5. A Trump rally is prohibited due to COVID,"- A large, dense crowd indoors at a Trump rally with 'Keep America Great' signs and an American flag.
+
+- ""Nope, COVID""",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,The statement doesn't show any evidence of the rally being prohibited due to COVID. Just because they are happening doesn't mean they are or aren't prohibited.,NONE,,,214
+Aima,80,559_image_batch_2.png,2,m80_c02,1,1. BLM protests are acceptable despite COVID,"- Three large, dense crowds of people outdoors, with one featuring a 'Black Lives Matter' sign.
+
+- ""This is fine""",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,The statement doesn't show any evidence of the protest being acceptable despite COVID. Just because they are happening doesn't mean they are or aren't acceptable.,NONE,,,215
+Aima,80,559_image_batch_2.png,3,m80_c03,C0,"C0. Democrats emphasize COVID regulations against Trump rallies but ignore them regarding BLM protests, making them hypocritical","- 1. BLM protests are acceptable despite COVID
+
+- 5. A Trump rally is prohibited due to COVID",1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,We do not know whether or not Democrats emphasize COVID regulations in specific scenarios or not based on the evidence. We cannot make that assumption based on the evidence.,NONE,,,216
+Ryan,42,376_image_batch_2.png,1,m42_c01,4,4. Donald Trump possesses the biological means to cure and save liberals,"- My greatest wish right now is for Trump to get better and donate plasma so a treatment can be developed and the libs can be saved by Trump's blood 🙏
+
+- A white woman wearing a beanie and glasses with a screaming expression receiving an injection from a person wearing a white coat, face mask, and goggles.",1,Fail,Affective Hijacking;Spurious Causal Correlation,2,1,0,0,0,1,0,Spurious Causal Correlation,Children do not present evidence that Trump has biological means to cure and save liberals,Affective Hijacking,Uses the image of a woman screaming to support the argument instead of using evidence.,,3
+Ryan,42,376_image_batch_2.png,2,m42_c02,5,5. Trump will save America by providing a cure for the illness,- 4. Donald Trump possesses the biological means to cure and save liberals,1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Having a cure to save liberals does not mean that you can save America by providing a cure for the illness as America is made up of more than just liberals,NONE,,,4
+Ryan,42,376_image_batch_2.png,3,m42_c03,1,1. Liberals are ill and require medical treatment,"- A white woman wearing a beanie and glasses with a screaming expression receiving an injection from a person wearing a white coat, face mask, and goggles.
+
+- 4. Donald Trump possesses the biological means to cure and save liberals",1,Fail,Affective Hijacking;Episodic Overgeneralization,2,1,1,0,0,0,0,Episodic Overgeneralization,Having the cure to save liberals does not imply that all liberals are ill and require medical treatment,Affective Hijacking,Uses the image of a woman screaming to support the argument instead of evidence.,,5
+Ryan,42,376_image_batch_2.png,4,m42_c04,C0,"C0. Liberals are ill and sick, and Trump will save America","- 1. Liberals are ill and require medical treatment
+
+- 5. Trump will save America by providing a cure for the illness",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,6
+Ryan,43,396_image_batch_2.png,1,m43_c01,C0,C0. Hillary Clinton has NSFW photos in her email.,"- WE HAVE HILLARY'S 30K EMAILS LETS OPEN ONE...
+
+- A computer monitor displays a pixelated image of a naked woman with Hillary Clinton's face.
+
+- Donald Trump is sitting at a desk looking at a computer monitor with a shocked expression.",1,Fail,Affective Hijacking;Spurious Causal Correlation,2,1,0,0,0,1,0,Spurious Causal Correlation,Displaying the text along with the image of a naked woman with Hillary Clinton's face on it does not constitute evidence for the claim,Affective Hijacking,Uses shock value to support the claim instead of evidence.,,10
+Ryan,44,398_image_batch_2.png,1,m44_c01,1,1. Ruth Bader Ginsburg's condition for Trump's victory has been met,"- OVER MY DEAD BODY WILL TRUMP WIN A SECOND TERM.
+
+- Ruth Bader Ginsburg with a serious expression.",1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,There is no implication/evidence that Ruth Bader Ginsburg is dead. This needs an additional child for the argument,NONE,,,14
+Ryan,44,398_image_batch_2.png,2,m44_c02,C0,C0. Trump will win a second term as president,- 1. Ruth Bader Ginsburg's condition for Trump's victory has been met,1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Ruth Bader Ginsburg's condition for Trump's victory being met does not mean that Trump will win a second term.,NONE,,,15
+Ryan,45,406_image_batch_2.png,1,m45_c01,3,"3. You can either vote for the man that bangs pornstars and supermodels or vote for the man that gropes, feels up and sniffs little girls",- (background knowledge only),1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,False either/or dichotomy is presented in the argument. Also there is no evidence for the claim at all.,,,,19
+Ryan,45,406_image_batch_2.png,2,m45_c02,6,6. Biden is an unacceptable choice because he is a pedophile,"- 3. You can either vote for the man that bangs pornstars and supermodels or vote for the man that gropes, feels up and sniffs little girls
+
+- Adam Sandler is holding a sign and looking at the camera with a slight smile.",1,Fail,Esoteric Code Activation;Spurious Legitimacy Signaling,2,0,0,1,0,0,1,Esoteric Code Activation,From the children we do not know who is who. The claim can not be made just from the children. This needs in-group knowledge to figure out who is who,Spurious Legitimacy Signaling,Uses a celebrity to support its argument instead of evidence,,20
+Ryan,45,406_image_batch_2.png,3,m45_c03,2,2. Trump is a better choice because he sleeps with attractive women,"- 3. You can either vote for the man that bangs pornstars and supermodels or vote for the man that gropes, feels up and sniffs little girls
+
+- Adam Sandler is holding a sign and looking at the camera with a slight smile.",1,Fail,Esoteric Code Activation;Spurious Legitimacy Signaling,2,0,0,1,0,0,1,Esoteric Code Activation,From the children we do not know who is who. The claim can not be made just from the children. This needs in-group knowledge to figure out who is who,Spurious Legitimacy Signaling,Uses a celebrity to support its argument instead of evidence,,21
+Ryan,45,406_image_batch_2.png,4,m45_c04,C0,C0. voters must choose Trump over Biden because Trump sleeps with models and Biden is a pedophile,"- 2. Trump is a better choice because he sleeps with attractive women
+
+- 6. Biden is an unacceptable choice because he is a pedophile",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,22
+Ryan,46,415_image_batch_2.png,1,m46_c01,1,1. Replacing Michelle Obama with Melania Trump was a highly beneficial exchange,"- ""Best trade ever!""
+
+- Michelle Obama wearing a grey cap and sunglasses with a stern expression
+
+- Melania Trump wearing a black cap and sunglasses",1,Fail,Affective Hijacking;Spurious Causal Correlation,2,1,0,0,0,1,0,Affective Hijacking,Uses the text to support the claim instead of evidence.,Spurious Causal Correlation,Having the text next to a picture of Michelle Obama and Melania Trump does not imply a correlation between the two.,,26
+Ryan,46,415_image_batch_2.png,2,m46_c02,C0,C0. Melania Trump is better than Michelle Obama,- 1. Replacing Michelle Obama with Melania Trump was a highly beneficial exchange,1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Trade can be a mutually beneficial exchange. The claim is stating that Melania > Michelle which cannot be derived from the chlidren.,NONE,,When exchanging/trading just because you got something you want doesn't mean that the thing you are trading away is less in value.,27
+Ryan,47,416_image_batch_2.png,1,m47_c01,3,3. Trump will be reelected.,"- ""I don't always get impeached but when I do I get nominated for 2 nobel peace prizes and get reelected"".
+
+- Donald Trump is wearing a smug expression.",1,Fail,Esoteric Code Activation;Spurious Causal Correlation,2,0,0,1,0,1,0,Spurious Causal Correlation,"Meme is forcing an unearned cause and effect relationship between ""getting impeached and nominated for 2 nobel peace prizes"" and ""getting relected""",Esoteric Code Activation,"Uses the template for the ""Most Interesting Man in the World"" meme to support the claim.",,31
+Ryan,47,416_image_batch_2.png,2,m47_c02,1,1. Trump's Nobel Peace Prize nominations are significant accomplishments that outweigh his impeachment.,"- ""I don't always get impeached but when I do I get nominated for 2 nobel peace prizes and get reelected"".
+
+- Donald Trump is wearing a smug expression.",1,Fail,Esoteric Code Activation;Spurious Causal Correlation,2,0,0,1,0,1,0,Spurious Causal Correlation,"Meme is forcing an unearned cause and effect relationship between ""getting impeached and nominated for 2 nobel peace prizes"" and ""getting relected""",Esoteric Code Activation,"Uses the template for the ""Most Interesting Man in the World"" meme to support the claim.",,32
+Ryan,47,416_image_batch_2.png,3,m47_c03,C0,"C0. Trump has significant political accomplishments, such as two Nobel Peace Prize nominations, which override the implications of his impeachment and predict his reelection.","- 1. Trump's Nobel Peace Prize nominations are significant accomplishments that outweigh his impeachment.
+
+- 3. Trump will be reelected.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,33
+Ryan,48,421_image_batch_2.png,1,m48_c01,C0,C0. Trump is getting rid of corrupt politicians and delivering on his promises,"- ""THEY LAUGHED WHEN I SAID THAT I will drain the swamp THEY'RE NOT LAUGHING NOW!!""
+
+- Donald Trump is pointing at the camera with a serious expression.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,A (I assume) fake quote from Trump along with a serious picture of Trump does not constitute evidence,NONE,,,37
+Ryan,49,425_image_batch_2.png,1,m49_c01,1,1. Donald Trump is fulfilling the specific duties and expectations of his supporters,"- ""CRY ALL YOU WANT HE'S DOING EXACTLY WHAT I HIRED HIM FOR...""
+
+- Donald Trump is wearing a suit and a smug expression",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,Text + Trump's expression does not constitute evidence that Trump is fulfilling what he promised to his supporters,NONE,,,41
+Ryan,49,425_image_batch_2.png,2,m49_c02,C0,C0. Trump is doing a good job as a president,- 1. Donald Trump is fulfilling the specific duties and expectations of his supporters,1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,50/50 Pass/Fail on this. Does going through with your campaign promises count as being a good president?,42
+Ryan,50,692_image_batch_2.png,1,m50_c01,4,4. Trump invited Jesus back into the country,"- (TRUMP) INVITED ME BACK
+
+- Jesus is carrying four suitcases while walking through a field.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,The all-caps statement along with the imagery is used to support the claim but there is no evidence that Trump invited Jesus back into the country in the children.,NONE,,,46
+Ryan,50,692_image_batch_2.png,2,m50_c02,1,1. Obama kicked Jesus out of the country,"- (OBAMA) KICKED ME OUT
+
+- Jesus is carrying four suitcases while walking through a field.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,The all-caps statement along with the imagery is used to support the claim but there is no evidence that Obama kicked Jesus out of the country within the children.,NONE,,,47
+Ryan,50,692_image_batch_2.png,3,m50_c03,C0,C0. Obama hates Jesus and Trump loves Jesus,"- 1. Obama kicked Jesus out of the country
+
+- 4. Trump invited Jesus back into the country",1,Fail,Satirical Trivialization,1,0,0,0,1,0,0,Satirical Trivialization,Kicking someone out and inviting someone in does not mean that you hate/love that person. The children are exaggerated to make the claim seem true.,NONE,,,48
+Ryan,51,106_image_batch_2.png,1,m51_c01,3,3. Trump's visual portrayal suggests a mocking and irresponsible attitude toward medical science and safety.,- Donald Trump is sticking his tongue out with his eyes partially closed and his hand on his chest.,1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,The image is used to mock Trump but does not present evidence for the claim that he has a irresponsible attitude towards medical science and safety,,,,52
+Ryan,51,106_image_batch_2.png,2,m51_c02,C0,"C0. Trump ignored medical advice and prevention measures related to COVID-19, resulting in the endangerment of people around him.","- The President did not ""catch"" coronavirus. He IGNORED the advice of doctors, MOCKED the science, put himself in RISKY situations and once exposed, he refused to self Quarantine and ENDANGERED the lives of hundreds of people around him.
+
+- Donald Trump is sticking his tongue out with his eyes partially closed and his hand on his chest.
+
+- 3. Trump's visual portrayal suggests a mocking and irresponsible attitude toward medical science and safety.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,"Inflammatory words are used instead of evidence. Although the statements in the text may be true, for the argument to be logical they need to be supported by sources/evidence which the children do not have.",,,,53
+Ryan,52,137_image_batch_2.png,1,m52_c01,1,1. The visual and textual elements combine to frame hostility toward Trump as a spiritual or prayerful expression,"- ""can I get a fuck Trump""
+
+- A woman with her hands raised and palms facing forward, looking down.",1,Pass,None,0,0,0,0,0,0,0,,,,,,57
+Ryan,52,137_image_batch_2.png,2,m52_c02,C0,"C0. Trump provokes intense, prayer-like negative feelings",- 1. The visual and textual elements combine to frame hostility toward Trump as a spiritual or prayerful expression,1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,One example does not constitute a trend.,NONE,,,58
+Ryan,53,134_image_batch_2.png,1,m53_c01,4,4. Republicans have low intelligence because they perceive Trump as a genius,"- It's no wonder so many Republicans think he's a genius
+
+- Donald Trump is pointing a finger at his temple.
+
+- 1. Donald Trump has low intelligence",1,Fail,Affective Hijacking;Episodic Overgeneralization,2,1,1,0,0,0,0,Affective Hijacking,No evidence is used for the claim besides a mocking statement in the children.,Episodic Overgeneralization,"""Many"" is not ""all"". The claim is overgeneralizing",,62
+Ryan,53,134_image_batch_2.png,2,m53_c02,1,1. Donald Trump has low intelligence,"- professionals have determined that Trump speaks at a 4th grade level
+
+- Donald Trump is pointing a finger at his temple.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,63
+Ryan,53,134_image_batch_2.png,3,m53_c03,C0,"C0. Republicans have low intelligence, explaining why they admire Donald Trump, who also has low intelligence","- 1. Donald Trump has low intelligence
+
+- 4. Republicans have low intelligence because they perceive Trump as a genius",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,64
+Ryan,54,52_image_batch_2.png,1,m54_c01,1,1. Trump's confident appearance suggests he is a strong candidate for the voters to elect.,- Donald Trump smirking,1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,No evidence for the claim besides a picture of Trump smirking (which evokes the idea that he is confident).,NONE,,,68
+Ryan,54,52_image_batch_2.png,2,m54_c02,3,"3. Trump is framing his re-election as a positive and certain outcome, reassuring his supporters despite his illness.","- DONT WORRY I'M ALSO ABOUT TO TEST POSITIVE FOR A 2ND TERM!
+
+- Donald Trump smirking",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,69
+Ryan,54,52_image_batch_2.png,3,m54_c03,C0,C0. voters should vote for Trump,"- 3. Trump is framing his re-election as a positive and certain outcome, reassuring his supporters despite his illness.
+
+- 1. Trump's confident appearance suggests he is a strong candidate for the voters to elect.",1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,Framing his win as a sure thing and showing a confident appearance does not imply that voters should vote for Trump.,NONE,,,70
+Ryan,55,141_image_batch_2.png,1,m55_c01,2,2. Stopping the 'testing' for stupidity would not make Trump any less stupid.,"- ""If we stop testing for stupid, Will tRUMP be less stupid?""
+
+- Donald Trump is making a pouting facial expression with his eyes closed.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,Does not use evidence to support the claim. Uses a rhetorical question and a mocking picture of Trump to support the claim instead of evidence.,NONE,,,74
+Ryan,55,141_image_batch_2.png,2,m55_c02,1,1. Applying Trump's own 'no testing' logic to intelligence shows that his stupidity is an inherent fact.,- 2. Stopping the 'testing' for stupidity would not make Trump any less stupid.,1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,"Uses the mocking statement ""any less stupid"" to imply stupidity when in fact it does not. Someone smart being ""any less stupid"" does not imply they are all of a suddend stupid. It just implies that the ""stupid"" part of them does not decrease.",NONE,,,75
+Ryan,55,141_image_batch_2.png,3,m55_c03,C0,C0. Trump is stupid,- 1. Applying Trump's own 'no testing' logic to intelligence shows that his stupidity is an inherent fact.,1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,76
+Ryan,56,91_image_batch_2.png,1,m56_c01,1,1. Trump contracted and tested positive for the virus he labeled a hoax,"- ""I have the hoax""
+
+- Donald Trump with a dazed and unwell expression",1,Fail,Affective Hijacking;Spurious Causal Correlation,2,1,0,0,0,1,0,Spurious Causal Correlation,Putting the two children together does not imply the claim without sufficient evidence,Affective Hijacking,Uses Trump's expression to support the claim instead of evidence,,80
+Ryan,56,91_image_batch_2.png,2,m56_c02,C0,"C0. Trump claimed COVID-19 was a hoax, despite subsequently testing positive for the virus",- 1. Trump contracted and tested positive for the virus he labeled a hoax,1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,81
+Ryan,57,129_image_batch_2.png,1,m57_c01,5,5. Biden gains a political advantage from Trump's speech without needing to campaign actively,"- the more Trump speaks, the less Biden needs to
+
+- Joe Biden is laughing while wearing aviator sunglasses",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,Statement + picture is not evidence that Biden gains a political advantage,NONE,,,85
+Ryan,57,129_image_batch_2.png,2,m57_c02,1,1. Trump's rhetoric is counterproductive and detrimental to his political standing,"- the more Trump speaks, the less Biden needs to
+
+- Joe Biden is laughing while wearing aviator sunglasses",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,Statement + picture is not evidence that Trump's rhetoric is counterproductive to his political standing,NONE,,,86
+Ryan,57,129_image_batch_2.png,3,m57_c03,C0,C0. Trump hurts his own presidential campaign by speaking,"- 1. Trump's rhetoric is counterproductive and detrimental to his political standing
+
+- 5. Biden gains a political advantage from Trump's speech without needing to campaign actively",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,87
+Ryan,58,119_image_batch_2.png,1,m58_c01,3,3. Trump will lose the 2020 election and be replaced by Biden.,"- November 3, 2020 the day the circus leaves town
+
+- Donald Trump is wearing a colorful striped shirt and suspenders while holding a red balloon animal.
+
+- RIDIN' WITH BIDEN",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,"Calling Trump a clown along with the slogan ""RIDIN' WITH BIDEN"" is not evidence that Trump will lose the 2020 election",NONE,,,91
+Ryan,58,119_image_batch_2.png,2,m58_c02,C0,C0. Trump is stupid and a loser and Biden is the next president of the US,"- Donald Trump is wearing a colorful striped shirt and suspenders while holding a red balloon animal.
+
+- 3. Trump will lose the 2020 election and be replaced by Biden.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,The image of Trump as a clown does not imply that he is stupid or a loser,NONE,,,92
+Ryan,59,121_image_batch_2.png,1,m59_c01,C0,C0. Donald Trump will cheat in the 2020 election.,"- Donald Trump cheats at golf. Donald Trump cheated the draft. Donald Trump cheats on his taxes. Donald Trump cheated on his wives. Donald Trump cheated on his loans. Donald Trump cheated his charities. Donald Trump cheated his contractors. Donald Trump cheated Trump U students. Donald Trump cheated to get elected in 2016.
+
+- Trump frowning",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Specific examples that Trump cheats do not imply that Trump witll cheat in the 2020 election.,NONE,,,96
+Ryan,60,108_image_batch_2.png,1,m60_c01,4,4. Trump predicted COVID's miraculous disappearance,"- ""I have a hunch it's going to disappear. One day, it's like a miracle, it will disappear.""
+
+- Donald Trump is scratching the back of his head with a pensive expression.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,100
+Ryan,60,108_image_batch_2.png,2,m60_c02,1,1. Donald Trump tested positive for COVID-19 in October 2020.,- Donald Trump is wearing a white t-shirt with the word 'POSITIVE' and a large black plus sign on it.,1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,No evidence besides a (I assume) a photoshopped picture of Trump with a t-shirt with the word 'POSITIVE' on it,NONE,,,101
+Ryan,60,108_image_batch_2.png,3,m60_c03,C0,C0. Trump's dismissive predictions about COVID-19 are ironic in light of his own positive diagnosis.,- 4. Trump predicted COVID's miraculous disappearance,1,Fail,None,0,0,0,0,0,0,0,,No idea what mechanism it is. It is just a lack of support/evidence from the children,,,,102
+Ryan,61,325_image_batch_2.png,1,m61_c01,4,4. Donald Trump was simply asking if the allegations against Biden were true,- Let me get this straight: Biden blackmailed Ukraine with a billion in tax dollars to drop an investigation into his son and Democrats want to impeach President Trump for simply asking if it was true?,1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,Uses wordplay to show one side of the argument/not purposefully misrepresenting the argument,NONE,,,106
+Ryan,61,325_image_batch_2.png,2,m61_c02,6,6. The situation surrounding Biden's actions is suspicious,- Let me get this straight: Biden blackmailed Ukraine with a billion in tax dollars to drop an investigation into his son and Democrats want to impeach President Trump for simply asking if it was true?,1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,Uses wordplay to show one side of the argument/not purposefully misrepresenting the argument,NONE,,,107
+Ryan,61,325_image_batch_2.png,3,m61_c03,3,3. Donald Trump was justified in questioning Biden's conduct because the situation was suspicious.,"- 4. Donald Trump was simply asking if the allegations against Biden were true
+
+- 6. The situation surrounding Biden's actions is suspicious",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,108
+Ryan,61,325_image_batch_2.png,4,m61_c04,C0,"C0. Biden provided aid to Ukraine while his family was being investigated, which suggests corruption, and Donald Trump was justified in questioning the conduct of Biden
+[independent argument 1 of 2]","- 6. The situation surrounding Biden's actions is suspicious
+
+- 3. Donald Trump was justified in questioning Biden's conduct because the situation was suspicious.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,109
+Ryan,61,325_image_batch_2.png,5,m61_c05,C0,"C0. Biden provided aid to Ukraine while his family was being investigated, which suggests corruption, and Donald Trump was justified in questioning the conduct of Biden
+[independent argument 2 of 2]","- Let me get this straight: Biden blackmailed Ukraine with a billion in tax dollars to drop an investigation into his son and Democrats want to impeach President Trump for simply asking if it was true?
+
+- 3. Donald Trump was justified in questioning Biden's conduct because the situation was suspicious.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,110
+Ryan,62,329_image_batch_2.png,1,m62_c01,6,"6. Trump is not racist because black people, who are the primary targets of racism, support his platform","- A group of Black people are smiling while wearing red ""Make America Great Again"" and ""Keep America Great"" caps.",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,"Overgeneralizing black Trump supporters to ""all black people support Trump""",NONE,,,114
+Ryan,62,329_image_batch_2.png,2,m62_c02,1,1. People who are upset by black people supporting Trump are the ones who are racist,"- A group of Black people are smiling while wearing red ""Make America Great Again"" and ""Keep America Great"" caps.
+
+- ""Does this upset you? Then you're the racist!""",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,"Accusatory language, used instead of evidence for the claim that people who are upset by black people supporting Trump are racist",NONE,,,115
+Ryan,62,329_image_batch_2.png,3,m62_c03,C0,"C0. People who are upset about seeing black people that support Trump are racist, and Trump is not racist","- 1. People who are upset by black people supporting Trump are the ones who are racist
+
+- 6. Trump is not racist because black people, who are the primary targets of racism, support his platform",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,116
+Ryan,63,330_image_batch_2.png,1,m63_c01,1,1. Donald Trump's position that Ilhan Omar should leave America is correct.,"- Do you agree with President Trump when he told Ilhan Omar she should GET OUT of America and said, ""You can't leave fast enough""
+
+- Donald Trump is speaking and Ilhan Omar is wearing a blue hijab.",1,Fail,Spurious Legitimacy Signaling,1,0,0,0,0,0,1,Spurious Legitimacy Signaling,Uses Trump's authority to assume that he has the correct position regarding Ilhan Omar,NONE,,,120
+Ryan,63,330_image_batch_2.png,2,m63_c02,C0,C0. Ilhan Omar should leave America.,- 1. Donald Trump's position that Ilhan Omar should leave America is correct.,1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,121
+Ryan,64,333_image_batch_2.png,1,m64_c01,5,5. Illegal immigrants vote illegally.,"- 22 million illegal aliens living in America and utilizing benefits they never contributed to and voting illegally is a real constitutional crisis.
+
+- A massive crowd of people fills a long road stretching into the distance.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,"Wording invokes a sense of crises, but does not show evidence for the claim",NONE,,,125
+Ryan,64,333_image_batch_2.png,2,m64_c02,4,4. Illegal immigrants utilize benefits they did not contribute to.,"- 22 million illegal aliens living in America and utilizing benefits they never contributed to and voting illegally is a real constitutional crisis.
+
+- A massive crowd of people fills a long road stretching into the distance.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,"Wording invokes a sense of crises, but does not show evidence for the claim",NONE,,,126
+Ryan,64,333_image_batch_2.png,3,m64_c03,1,1. Illegal immigrants present a constitutional crisis.,"- 22 million illegal aliens living in America and utilizing benefits they never contributed to and voting illegally is a real constitutional crisis.
+
+- A massive crowd of people fills a long road stretching into the distance.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,"Wording invokes a sense of crises, but does not show evidence for the claim",NONE,,,127
+Ryan,64,333_image_batch_2.png,4,m64_c04,C0,"C0. illegal immigrants present a constitutional crisis, utilize benefits they did not contribute to, vote illegally, and do not benefit America.","- 1. Illegal immigrants present a constitutional crisis.
+
+- 4. Illegal immigrants utilize benefits they did not contribute to.
+
+- 5. Illegal immigrants vote illegally.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,128
+Ryan,65,335_image_batch_2.png,1,m65_c01,3,3. Trump is satisfied with his success in achieving peace despite the dire predictions of his opponents.,"- Remember that the same people who told you Trump would start a nuclear war... are now the same people upset over peace.
+
+- Donald Trump with a satisfied expression and closed eyes.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,Trump's satisfied expression is used as justification that he is satisfied with his success in achieving peace,NONE,,,132
+Ryan,65,335_image_batch_2.png,2,m65_c02,5,5. Trump's critics are inconsistent because they predicted he would cause a nuclear war but are now unhappy when he achieves peace.,"- Remember that the same people who told you Trump would start a nuclear war... are now the same people upset over peace.
+
+- 3. Trump is satisfied with his success in achieving peace despite the dire predictions of his opponents.
+
+- Donald Trump with a satisfied expression and closed eyes.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,"Lack of direct evidence for the claim, besides the narrator's inflamatory statement about the hypocrisy of the opposition",NONE,,,133
+Ryan,65,335_image_batch_2.png,3,m65_c03,1,1. Trump's critics are upset even when his actions lead to peace,"- Remember that the same people who told you Trump would start a nuclear war... are now the same people upset over peace.
+
+- 3. Trump is satisfied with his success in achieving peace despite the dire predictions of his opponents.
+
+- Donald Trump with a satisfied expression and closed eyes.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,"Lack of direct evidence for the claim, besides the narrator's inflamatory statement about the hypocrisy of the opposition",NONE,,,134
+Ryan,65,335_image_batch_2.png,4,m65_c04,C0,"C0. the people who dislike Trump hate him regardless of his actions, even when those actions result in peace","- 1. Trump's critics are upset even when his actions lead to peace
+
+- 5. Trump's critics are inconsistent because they predicted he would cause a nuclear war but are now unhappy when he achieves peace.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,135
+Ryan,66,342_image_batch_2.png,1,m66_c01,3,3. Donald Trump treats Hillary Clinton as a villainous Halloween decoration,"- Donald Trump is smiling while standing next to a framed picture of Hillary Clinton with green skin and an open-mouthed laugh, wearing a black witch hat and holding a broomstick.
+
+- Donald J Trump puts up Halloween decorations inside the White House",1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,The children are unrelated to each other but are used as evidence for the claim.,NONE,,,139
+Ryan,66,342_image_batch_2.png,2,m66_c02,1,1. Hillary Clinton is the Wicked Witch of the West,"- Donald Trump is smiling while standing next to a framed picture of Hillary Clinton with green skin and an open-mouthed laugh, wearing a black witch hat and holding a broomstick.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,Portraying Hillary in a mocking manner as a witch is used as support for the claim instead of actual evidence,NONE,,,140
+Ryan,66,342_image_batch_2.png,3,m66_c03,C0,C0. Hillary Clinton is a subhuman witch,"- 1. Hillary Clinton is the Wicked Witch of the West
+
+- 3. Donald Trump treats Hillary Clinton as a villainous Halloween decoration",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Overgeneralizing witch to subhuman witch without evidence,NONE,,,141
+Ryan,67,359_image_batch_2.png,1,m67_c01,7,7. Anti-Trumpers are hypocritical because they adopt contradictory stances on war with Iran to maintain their opposition to Trump.,- 4. Anti-Trumpers hold mutually exclusive positions on Trump's actions regarding Iran,1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,145
+Ryan,67,359_image_batch_2.png,2,m67_c02,4,4. Anti-Trumpers hold mutually exclusive positions on Trump's actions regarding Iran,"- ANTI-TRUMPERS JUNE 2019: TRUMP IS WEAK FOR NOT STARTING A WAR WITH IRAN
+
+- ANTI-TRUMPERS JANUARY 2020: TRUMP IS TRYING TO START A WAR WITH IRAN",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Uses one example to overgeneralize the behavior of Anti-Trumpers,NONE,,,146
+Ryan,67,359_image_batch_2.png,3,m67_c03,1,1. Anti-Trumpers are annoying,"- A woman yelling
+
+- ANTI-TRUMPERS JUNE 2019: TRUMP IS WEAK FOR NOT STARTING A WAR WITH IRAN",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,Uses text along with the image to support the claim that Anti-Trumpers are annoying instead of evidence,NONE,,,147
+Ryan,67,359_image_batch_2.png,4,m67_c04,C0,C0. anti-Trump liberals act hypocritically and annoyingly because they will hate Trump for mutually exclusive reasons,"- 1. Anti-Trumpers are annoying
+
+- 4. Anti-Trumpers hold mutually exclusive positions on Trump's actions regarding Iran
+
+- 7. Anti-Trumpers are hypocritical because they adopt contradictory stances on war with Iran to maintain their opposition to Trump.",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,148
+Ryan,68,363_image_batch_2.png,1,m68_c01,1,1. Trump supporters at the rally consciously chose non-violence despite having the power to overwhelm the police.,"- While the Virginia governor credits his extra police force for the total lack of violence...
+
+- The governor forgets his forces were outnumbered and out armed HUNDREDS to 1.
+
+- If the citizens wanted violence they would have done it.
+
+- A large crowd of people, some of whom are holding 'Trump 2020' flags and Gadsden flags.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,"Using the idea of strength in numbers to evoke a feeling of strength to support the claim instead of evidence. Police have weapons (pepper spray, guns, etc) that the narrator is ignoring for their claim",NONE,,,152
+Ryan,68,363_image_batch_2.png,2,m68_c02,C0,C0. Trump supporters deserve praise for choosing to be peaceful.,- 1. Trump supporters at the rally consciously chose non-violence despite having the power to overwhelm the police.,1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Overgeneralization from Trump supporters at the rally to Trump supporters in general. (Also choosing non-violence despite having the overwhelming power does not imply that they deserve praise but I don't know what mechanism to annotate for this),NONE,,,153
+Ryan,69,364_image_batch_2.png,1,m69_c01,1,1. The repetitive whining noise coming from the TV during the impeachment trial is Adam Schiff,"- HI, MY TV KEEPS MAKING THIS REPETITIVE WHINING NOISE. I WAS WONDERING IF YOU COULD HELP ME?
+
+- THAT'S PROBABLY JUST ADAM SCHIFF MA'AM. TRY TURNING OFF THE IMPEACHMENT TRIAL.
+
+- A woman with a concerned expression is holding a TV remote and a phone.
+
+- A man with a slight smile is wearing a headset in a call center environment.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,Mocking language is used to imply that Adam Schiff is the whining noise even though there is not concrete evidence given in the children.,NONE,,,157
+Ryan,69,364_image_batch_2.png,2,m69_c02,C0,C0. Adam Schiff kept whining during the impeachment trial,- 1. The repetitive whining noise coming from the TV during the impeachment trial is Adam Schiff,1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,158
+Ryan,70,583_image_batch_2.png,1,m70_c01,4,4. Donald Trump is indifferent to liberal sensitivities regarding these issues,"- If we wipe out the coronavirus when the warm weather comes we can tell the liberals that global warming killed it and watch their heads explode!
+
+- Donald Trump shrugging with a smug expression",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,Smug expression + fake scenario to imply the claim without evidence,NONE,,,162
+Ryan,70,583_image_batch_2.png,2,m70_c02,1,1. Liberals would react irrationally to a scenario where global warming solves the pandemic,"- If we wipe out the coronavirus when the warm weather comes we can tell the liberals that global warming killed it and watch their heads explode!
+
+- Donald Trump shrugging with a smug expression",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,Smug expression + fake scenario to imply the claim without evidence,NONE,,,163
+Ryan,70,583_image_batch_2.png,3,m70_c03,C0,C0. Liberals are overly sensitive about global warming and COVID,"- 1. Liberals would react irrationally to a scenario where global warming solves the pandemic
+
+- 4. Donald Trump is indifferent to liberal sensitivities regarding these issues",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,164
+Ryan,71,588_image_batch_2.png,1,m71_c01,1,1. Hillary Clinton is planning to kill the coronavirus because it is going to testify against her,"- Donald Trump and Hillary Clinton talking on the phone
+
+- Donald Trump is saying ""Hey Hillary, I hear the coronavirus is going to testify against you""
+
+- HOW TO KILL THE CORONOVIRUS...",1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,Putting the children together to imply a correlation with out concrete evidence to imply the claim,NONE,,,168
+Ryan,71,588_image_batch_2.png,2,m71_c02,C0,"C0. Hillary Clinton is a criminal who kills people that testify against her
+[independent argument 1 of 2]",- (background knowledge only),1,Fail,Esoteric Code Activation,1,0,0,1,0,0,0,Esoteric Code Activation,Uses in-group knowledge from conspiracy theories to support the claim,NONE,,,169
+Ryan,71,588_image_batch_2.png,3,m71_c03,C0,"C0. Hillary Clinton is a criminal who kills people that testify against her
+[independent argument 2 of 2]",- 1. Hillary Clinton is planning to kill the coronavirus because it is going to testify against her,1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,170
+Ryan,72,591_image_batch_2.png,1,m72_c01,C0,C0. Impeaching the Democrats who oppose Trump is necessary to keep America great.,"- Adam Schiff, Nancy Pelosi, Elijah Cummings, and Jerry Nadler are standing in front of American and U.S. House of Representatives flags.
+
+- ""Impeach the Democrats keep America great""",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,Statement is made without evidence to support the claim,NONE,,,174
+Ryan,73,8_image.png,1,m73_c01,4,4. Trump is characterized as someone who fulfills his promises,"- Donald Trump with a stern expression and the caption ""I DELIVER.""",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,Expression + words used to support the claim instead of evidence,NONE,,,178
+Ryan,73,8_image.png,2,m73_c02,1,1. Democrats are characterized as only making promises without fulfilling them,"- Barack Obama, Hillary Clinton, and Bernie Sanders are shown in three separate panels, each with the caption ""I PROMISE.""",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,"Expression + words used to support the claim instead of evidence. Additionally the ""without fulfilling them"" is not ever implied in the children",NONE,,,179
+Ryan,73,8_image.png,3,m73_c03,C0,C0. Trump delivers on his promises while Democrats do not fulfill their promises,"- 1. Democrats are characterized as only making promises without fulfilling them
+
+- 4. Trump is characterized as someone who fulfills his promises",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,180
+Ryan,74,29_image.png,1,m74_c01,4,4. Republicans are the agents of justice,"- William Barr and Donald Trump are smirking while arresting Barack Obama.
+
+- ""All I want for Christmas is justice""
+
+- Donald Trump is wearing a police uniform.
+
+- Barack Obama is wearing a grey hoodie and has a somber expression.
+
+- William Barr is wearing a badge around his neck.",1,Fail,Affective Hijacking;Esoteric Code Activation;Spurious Causal Correlation;Spurious Legitimacy Signaling,4,1,0,1,0,1,1,Spurious Causal Correlation,Pictures of Republicans acting as cops is using the police institution to support the claim the Republicans are agents of justice even though Republicans and police are unrelated,"Spurious Legitimacy Signaling, Affective Hijacking, Esoteric Code Activation","Uses imagery (smirking Republicans), the quote (a riff on the lyric ""All I want for Christmas is you""), and the institution of law enforcement to support the claim instead of concrete evidence",,184
+Ryan,74,29_image.png,2,m74_c02,1,1. Obama is a criminal who deserves to be arrested,"- William Barr and Donald Trump are smirking while arresting Barack Obama.
+
+- ""All I want for Christmas is justice""
+
+- Donald Trump is wearing a police uniform.
+
+- Barack Obama is wearing a grey hoodie and has a somber expression.
+
+- William Barr is wearing a badge around his neck.",1,Fail,Affective Hijacking;Esoteric Code Activation;Spurious Causal Correlation;Spurious Legitimacy Signaling,4,1,0,1,0,1,1,Affective Hijacking,Portrays Obama in a bad light to imply that he is a criminal instead of using evidence.,"Esoteric Code Activation, Spurious Legitimacy Signaling, Spurious Causal Correlation","Uses imagery (smirking Republicans), the quote (a riff on the lyric ""All I want for Christmas is you""), and the institution of law enforcement to support the claim instead of concrete evidence. Portraying Republicans as the 'good guys' arresting the 'bad guy' Obama is used as evidence for the claim instead of concrete evidence. Correlating 'criminal is a person who gets arrested by the police' with 'Obama is getting arrested by Republicans who are dressed up as police' to imply a relationship between the two.",,185
+Ryan,74,29_image.png,3,m74_c03,C0,"C0. Obama is a criminal, and Republicans are just","- 1. Obama is a criminal who deserves to be arrested
+
+- 4. Republicans are the agents of justice",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,186
+Ryan,75,125_image.png,1,m75_c01,6,6. Ilhan Omar's identity is linked to groups commonly associated with terrorism in public discourse,- Ilhan Omar is wearing a white hijab.,1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Overgeneralizes terrorists in the public discourse come from a certain culture where people wear hijabs to all people who wear hijabs are terrorists.,NONE,,,190
+Ryan,75,125_image.png,2,m75_c02,1,1. Ilhan Omar expresses a hatred for Trump that is framed as being shared by terrorists,"- text reading ""I hate Trump.""
+
+- Ilhan Omar speaking
+
+- text reading ""Most Terrorists do.""
+
+- Trump frowning
+
+- Ilhan Omar is wearing a white hijab.",1,Pass,None,0,0,0,0,0,0,0,None,,,,,191
+Ryan,75,125_image.png,3,m75_c03,C0,C0. Ilhan Omar is a terrorist,"- 1. Ilhan Omar expresses a hatred for Trump that is framed as being shared by terrorists
+
+- 6. Ilhan Omar's identity is linked to groups commonly associated with terrorism in public discourse",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,"Overgeneralizing. Having an opinion that is being shared by terrorists does not mean someone is a terrorist. For example, if a terrorist believes ""If you don't eat food you will die"" and I believe the same it does not make me a terrorist.",NONE,,,192
+Ryan,76,49_image_batch_2.png,1,m76_c01,4,4. Trump's recovery from COVID-19 is a positive and impressive event,"- Trump leaving the hospital Covid free
+
+- 🤘
+
+- Donald Trump is standing on the seat of a blue motorcycle while performing a wheelie.",1,Fail,Spurious Causal Correlation,1,0,0,0,0,1,0,Spurious Causal Correlation,Putting an impressive event (doing a wheelie) next to the statement that Trump left the hospital Covid free does not imply the claim,NONE,,,196
+Ryan,76,49_image_batch_2.png,2,m76_c02,1,1. Trump is like a member of a biker gang,"- Donald Trump is standing on the seat of a blue motorcycle while performing a wheelie.
+
+- The motorcycle's license plate features a middle finger emoji and the word ""THIS"".",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Having a motorcycle and doing tricks on it does not mean Trump is like a member of a biker gang,NONE,,,197
+Ryan,76,49_image_batch_2.png,3,m76_c03,C0,C0. Trump is cool for overcoming COVID-19,"- 1. Trump is like a member of a biker gang
+
+- 4. Trump's recovery from COVID-19 is a positive and impressive event",1,Pass,None,0,0,0,0,0,0,0,None,,NONE,,,198
+Ryan,77,199_image_batch_2.png,1,m77_c01,C0,C0. Biden is not physically fit to be president and Trump is physically fit,"- Biden in a hospital bed
+
+- Trump standing and giving a thumbs up
+
+- PRESIDENTIAL DEBATE
+
+- VIA SATELLITE",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,Mocking imagery of Biden is used to support the claim instead of evidence,NONE,,,202
+Ryan,78,198_image_batch_2.png,1,m78_c01,C0,C0. Trump is the savior of the western civilization,"- THEY TOLD ME I COULD BE ANYTHING I WANTED SO I BECAME THE SAVIOR OF WESTERN CIVILIZATION
+
+- A younger Donald Trump and an older Donald Trump walking in a suit.",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,Arrogant wording is used to support the claim instead of evidence,NONE,,,206
+Ryan,79,50_image_batch_2.png,1,m79_c01,C0,C0. COVID-19 is not severe,"- And just like that Trump got the rona and beat it over the weekend
+
+- Forrest Gump with a bewildered expression",1,Fail,Affective Hijacking;Episodic Overgeneralization,2,1,1,0,0,0,0,Episodic Overgeneralization,Just because Trump beat COVID over the weekend does not mean that it is not severe,Affective Hijacking,Bragging language to downplay COVID instead of using evidence,,210
+Ryan,80,559_image_batch_2.png,1,m80_c01,5,5. A Trump rally is prohibited due to COVID,"- A large, dense crowd indoors at a Trump rally with 'Keep America Great' signs and an American flag.
+
+- ""Nope, COVID""",1,Fail,Affective Hijacking,1,1,0,0,0,0,0,Affective Hijacking,Language is used to imply that the Trump rally is prohibited (even though the picture shows a unprohibited Trump rally as an example),NONE,,,214
+Ryan,80,559_image_batch_2.png,2,m80_c02,1,1. BLM protests are acceptable despite COVID,"- Three large, dense crowds of people outdoors, with one featuring a 'Black Lives Matter' sign.
+
+- ""This is fine""",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Overgeneralizes a couple specific examples to support the claim. (Also do we know if the pictures were even taken during COVID? I know that BLM protests happened before COVID as well),NONE,,,215
+Ryan,80,559_image_batch_2.png,3,m80_c03,C0,"C0. Democrats emphasize COVID regulations against Trump rallies but ignore them regarding BLM protests, making them hypocritical","- 1. BLM protests are acceptable despite COVID
+
+- 5. A Trump rally is prohibited due to COVID",1,Fail,Episodic Overgeneralization,1,0,1,0,0,0,0,Episodic Overgeneralization,Overgeneralizes the acceptable/prohibited to be Democrats even though it could be non-Democrats supporting/disliking the rallies/protests,NONE,,,216
