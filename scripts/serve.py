@@ -328,6 +328,53 @@ def patch_for_drafts(flask_server) -> None:
     user_states.InMemoryUserState.find_prev_unannotated_index = find_prev
 
 
+def patch_for_unticking(flask_server) -> None:
+    """Un-ticking the last box of a multiselect is saved as an un-tick.
+
+    The page saves through /updateinstance with the whole of its state, and
+    Potato clears a multiselect's stored ticks before re-writing it -- but only
+    for a multiselect that appears in the payload. Un-ticking every box removes
+    the scheme from the payload altogether, so nothing is cleared and the old
+    ticks stay stored: the argument reloads with them ticked, the justification
+    boxes they gate count as owed, and the export reads mechanisms on what may
+    be a passing argument. Un-ticking one of two was always fine; it is the last
+    one that never reached the server.
+
+    Here the page's save clears every multiselect it does not mention, because
+    for that payload absent means nothing is ticked. Only /updateinstance:
+    /submit_annotation also passes `complete_set=True` but is not what the page
+    calls, and no one has said what its callers send.
+    """
+    from flask import request
+
+    original_create_app = flask_server.create_app
+
+    def create_app(*args, **kwargs):
+        app = original_create_app(*args, **kwargs)
+        for name in ("routes", "potato.routes"):
+            module = sys.modules.get(name)
+            if module is None or getattr(module, "_vlmd_unticking", False):
+                continue
+            preclear = module._preclear_exclusive_schemas
+
+            def preclear_absent_too(user_state, username, instance_id, schema_names,
+                                    *, complete_set, _preclear=preclear):
+                if (complete_set and instance_id != "__phase_page__"
+                        and request.path == "/updateinstance"):
+                    multiselects = {
+                        s.get("name") for s in flask_server.config.get("annotation_schemes") or []
+                        if isinstance(s, dict) and s.get("annotation_type") == "multiselect"}
+                    schema_names = set(schema_names) | multiselects
+                return _preclear(user_state, username, instance_id, schema_names,
+                                 complete_set=complete_set)
+
+            module._preclear_exclusive_schemas = preclear_absent_too
+            module._vlmd_unticking = True
+        return app
+
+    flask_server.create_app = create_app
+
+
 # --- assignments ---------------------------------------------------------------
 #
 # A stretch of the corpus handed to somebody, read off
@@ -628,6 +675,7 @@ def main() -> int:
 
     flask_server.init_config = init_config
     patch_for_drafts(flask_server)
+    patch_for_unticking(flask_server)
     patch_for_assignments(flask_server)
     patch_for_accounts(flask_server)
 

@@ -9,7 +9,8 @@
  *   1. The guidelines banner starts shut, and remembers whoever opens it.
  *   2. Next becomes two buttons: Save draft and Submit.
  *   3. The navbar arrows say they step, and stop at the two ends.
- *   4. Un-ticking a checkbox re-runs the display_logic gates it feeds.
+ *   4. Un-ticking a checkbox re-runs the display_logic gates it feeds, and a
+ *      gate that shuts un-ticks the checkboxes behind it.
  *   5. The band: the stretch this annotator was given, and what is left of it.
  */
 (function () {
@@ -202,6 +203,31 @@
     if (manager) { manager.evaluateForSchema(schema); }
   }
 
+  // --- 4b. a shut gate un-ticks what is behind it ----------------------------
+  //
+  // display_logic is not transitive. Answering No to the Sensible Test shuts
+  // the Mechanisms gate, but the ticks behind it stay in currentAnnotations,
+  // and each justification's gate reads only `mechanisms` -- so the boxes for
+  // whatever was ticked under Yes stayed open under No, required, with the
+  // list that opened them out of sight. The server's completeness check has
+  // the same blind spot, and the export flags the leftover ticks as
+  // mechanism_on_a_passing_item.
+  //
+  // So a checkbox behind a shut gate is un-ticked, through its own `change`
+  // event: Potato deletes the label and saves, and regate() above closes the
+  // justification boxes it fed -- the same path as un-ticking by hand, which
+  // is what the annotator used to have to do. Justification text is kept, as
+  // it is on a hand un-tick, and comes back with the tick.
+
+  function untickHidden() {
+    var stale = document.querySelectorAll(
+      '.display-logic-hidden input[type="checkbox"]:checked');
+    Array.prototype.forEach.call(stale, function (box) {
+      box.checked = false;
+      box.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+  }
+
   // --- 3. the navbar arrows --------------------------------------------------
   //
   // scripts/serve.py has already changed where they go: they are the previous
@@ -264,6 +290,7 @@
     // same gesture that closed its gate -- hence recheck once more behind it.
     document.addEventListener("change", function (event) {
       regate(event);
+      untickHidden();
       recheck();
     });
   }
