@@ -28,6 +28,10 @@ the next build diffs itself against. An id that disappears between two builds is
 an id whose annotations are now orphaned, and the build says so loudly rather
 than letting it pass.
 
+Arguments listed in data/excluded.json are left out after the order is
+decided, and the rest are numbered 1..N without gaps. The ids and the reason
+are in that file; the manifest records what was left out.
+
 Outputs
     data/instances.json   the Potato data file, in reading order
     data/manifest.json    counts, hashes, the full id list, and the id diff
@@ -291,16 +295,25 @@ def render_argument_html(arg: dict, number: int, total: int) -> str:
     return "".join(parts)
 
 
-def build(source: Path) -> tuple[list[dict], dict]:
+def build(source: Path, excluded_path: Path) -> tuple[list[dict], dict]:
     args = json.loads(source.read_text())
     if not isinstance(args, list):
         raise SystemExit(f"FATAL: {source} is not a JSON array.")
 
     ids, id_report = assign_ids(args)
-    total = len(args)
 
     order = reading_order(args)
     violations = order_violations(args, order)
+
+    # Dropped after the order is decided, so removing an argument never moves
+    # the ones around it -- only the numbers after it close up.
+    excluded = set(json.loads(excluded_path.read_text())["ids"]) if excluded_path.exists() else set()
+    unknown = excluded - set(ids)
+    if unknown:
+        raise SystemExit(f"FATAL: {excluded_path.name} names ids that are not in the "
+                         f"source: {sorted(unknown)[:5]}")
+    order = [i for i in order if ids[i] not in excluded]
+    total = len(order)
 
     instances = []
     for position, index in enumerate(order):
@@ -336,6 +349,8 @@ def build(source: Path) -> tuple[list[dict], dict]:
         "source_file": source.name,
         "source_sha256": sha256_file(source),
         "n_source_arguments": len(args),
+        "n_excluded": len(excluded),
+        "excluded_ids": sorted(excluded),
         "n_instances": len(instances),
         "n_memes": len({i["meme_id"] for i in instances}),
         "order": ("memes in source order; each meme's arguments bottom up "
@@ -375,16 +390,18 @@ def main() -> int:
     ap.add_argument("--source", default=str(ROOT / "args_0911.json"))
     ap.add_argument("--out", default=str(ROOT / "data" / "instances.json"))
     ap.add_argument("--manifest", default=str(ROOT / "data" / "manifest.json"))
+    ap.add_argument("--excluded", default=str(ROOT / "data" / "excluded.json"))
     ap.add_argument("--check", action="store_true",
                     help="Build in memory and report the id diff; write nothing")
     args = ap.parse_args()
 
     source, out, manifest_path = Path(args.source), Path(args.out), Path(args.manifest)
-    instances, manifest = build(source)
+    instances, manifest = build(source, Path(args.excluded))
     manifest["id_diff_vs_previous_build"] = diff_ids(manifest, manifest_path)
 
     print(f"source      {source.name}  sha256={manifest['source_sha256'][:12]}")
     print(f"arguments   {manifest['n_source_arguments']}")
+    print(f"excluded    {manifest['n_excluded']}  (data/excluded.json)")
     print(f"instances   {manifest['n_instances']}  over {manifest['n_memes']} memes")
     print(f"order       memes in {source.name} order; each meme bottom up, "
           f"root claim C0 last")

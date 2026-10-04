@@ -8,7 +8,9 @@ Built 2026-09-19 against Potato 2.9.3, Python 3.9.6, from `args_0911.json`
 ## The unit
 
 One **argument**: a claim plus only its immediate children. 1,621 of them over
-614 memes. Settled in the brief, not revisited.
+614 memes in the source; 1,593 are annotated. The 28 left out (2026-10-04) are
+arguments from 547 on whose children are all background — listed in
+`data/excluded.json`. Settled in the brief, not revisited.
 
 The meme image is **not shown**. The children typed `element` are written
 descriptions of what is in the image, and they are the annotator's only account

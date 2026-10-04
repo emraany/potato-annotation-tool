@@ -38,4 +38,11 @@ python scripts/mirror_loop.py &
 
 python scripts/review_site.py --host 0.0.0.0 --port 8767 &
 
+# Each annotator's order is stored in their user state, not read from
+# data/instances.json, so an argument taken out of the data file stays in it
+# until this runs. It has to run here, before the study is listening, or the
+# study writes the old order back over it. A no-op for a state already in
+# sync; never stops the study from starting.
+python scripts/resync_order.py --port "$PORT" || echo "resync_order.py failed; orders left as they were" >&2
+
 exec python scripts/serve.py --port "$PORT"

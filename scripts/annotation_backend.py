@@ -683,7 +683,7 @@ button.ovl:hover { background:#f2f2fa; }
         <option value="shared">2+ annotators</option>
         <option value="differ">disagreements</option></select></label>
       <label>Argument from<input class="n" id="f-from" type="number" min="1" placeholder="1"></label>
-      <label>to<input class="n" id="f-to" type="number" min="1" placeholder="1621"></label>
+      <label>to<input class="n" id="f-to" type="number" min="1" placeholder="1593"></label>
       <label>Text<input class="q" id="f-q" type="search"
         placeholder="justifications, notes, meme"></label>
       <label>Order<select id="f-sort">

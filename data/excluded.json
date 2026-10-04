@@ -1,0 +1,33 @@
+{
+ "reason": "Arguments whose children are all background (no visual element, no claim). Removed from the study on 2026-10-04. Only arguments from 547 on were reviewed for this; the five background-only arguments before 547 (15, 29, 109, 179, 529) had already been annotated and stay.",
+ "ids": [
+  "623_image_batch_2::2::7",
+  "626_image_batch_2::0::5",
+  "552_image_batch_2::4::3-6",
+  "868_image_batch_2::3",
+  "105_image::3",
+  "194_image::1",
+  "78_image_batch_2::4",
+  "553_image_batch_2::5::8",
+  "78_image::5",
+  "693_image_batch_2::4",
+  "545_image_batch_2::0",
+  "133_image_batch_2::1::4",
+  "810_image_batch_2::0",
+  "633_image_batch_2::0::5",
+  "922_image_batch_2::6",
+  "447_image_batch_2::1",
+  "452_image_batch_2::5::6",
+  "463_image_batch_2::1::6",
+  "465_image_batch_2::1",
+  "473_image_batch_2::10",
+  "523_image_batch_2::1::4",
+  "680_image_batch_2::5",
+  "682_image_batch_2::3",
+  "682_image_batch_2::1",
+  "687_image_batch_2::0::4",
+  "688_image_batch_2::5",
+  "791_image_batch_2::1",
+  "821_image_batch_2::4"
+ ]
+}
