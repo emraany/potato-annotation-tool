@@ -28,6 +28,13 @@ own admin dashboard does not do, or does not do readably.
   Flags       every argument somebody ticked `flag_for_discussion`, with the
               argument itself, so they can be read and
               adjudicated in one pass rather than grepped out of a CSV.
+  Review      the other half of the review site (scripts/review_site.py).
+              Every pair and how far they have got; handing a pair a stretch
+              of argument numbers, and which colours in it, to resolve; what
+              they settled on, task by task; and the gold dataset, every
+              argument agreed or resolved, one row each. The review site is
+              the only thing that writes a decision; this writes only the
+              tasks, to annotation_output/review/assignments.json.
   Assign      who has which stretch of the corpus, as ranges of argument
               number, with the coverage of the whole corpus drawn end to end.
               The annotator sees their stretch, their progress through it and
@@ -77,6 +84,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import agreement as iaa            # noqa: E402  (needs the path above)
 import assignments as assign      # noqa: E402
 import export_annotations as export  # noqa: E402
+import review                      # noqa: E402
 
 INSTANCES = ROOT / "data" / "instances.json"
 OUTPUT = ROOT / "annotation_output"
@@ -489,20 +497,18 @@ details.arg .arg { margin-top:8px; }
 .matrix td.same { background:#eef5f0; color:#23503a; font-weight:650; }
 .matrix td.differ { background:#fdf0e0; color:#7a4508; font-weight:650; }
 .matrix td.zero { color:#c4c4d4; }
+.matrix td .cp { display:block; font-size:0.7rem; font-weight:500; opacity:0.75; }
+.g-sub { font-size:0.9rem; margin:18px 0 6px; color:#33334d; }
 .axis { color:#6a6a80; font-size:0.8rem; margin:10px 0 0; }
 .empty { text-align:center; padding:26px 18px; color:#5a5a72; }
 .empty .big { font-size:1.05rem; font-weight:600; color:#33334d; margin-bottom:6px; }
 
-/* The findings. A bold lead sentence somebody can repeat in a meeting, and one
- * sentence of numbers under it that shows where it came from. */
-.finding { border-left:3px solid #c3c3dc; padding:2px 0 2px 12px; margin:0 0 13px; }
-.finding:last-child { margin-bottom:0; }
-.finding .lead { font-weight:650; margin:0 0 2px; }
-.finding .why { color:#4a4a68; font-size:0.89rem; margin:0; }
-
 /* The map: one block per argument, in argument order, grouped by meme. The
  * colour IS the category, so a stretch that goes wrong is visible as a stretch
  * rather than as a row in a table. */
+details.g-mapbox > summary { cursor:pointer; }
+details.g-mapbox > summary h2 { display:inline; }
+details.g-mapbox[open] > summary { margin-bottom:8px; }
 .g-legend { display:flex; gap:7px; flex-wrap:wrap; margin:0 0 12px; }
 .g-legend button { font:inherit; font-size:0.8rem; padding:4px 9px; border-radius:20px;
   border:1px solid #dcdce8; background:#fff; color:#4a4a68; cursor:pointer;
@@ -525,6 +531,16 @@ details.arg .arg { margin-top:8px; }
 .cat-both_extra { background:#f6e6a8; }
 .cat-one_none { background:#dcd9f4; }
 .cat-no_shared { background:#f5c9c9; }
+button.link { border:none; background:none; cursor:pointer; color:#9a9ab0; font-size:1rem; border-radius:3px; }
+button.link:hover { background:#f0e2e2; color:#6d2020; }
+i.sw { display:inline-block; width:12px; height:12px; border-radius:3px; margin-right:4px; vertical-align:-1px; }
+.w-row { border:1px solid #ebebf3; border-radius:6px; padding:10px 12px; margin-top:10px; background:#fcfcfe; }
+.w-row .w-head { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+.w-row .chip { display:inline-block; width:14px; height:14px; border-radius:3px; }
+.w-cols { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-top:8px; font-size:0.88rem; }
+.w-cols .who { font-weight:600; }
+.w-final { border-left:3px solid #33336b; padding-left:10px; }
+.w-final .who { color:#33336b; }
 
 /* One argument, opened: both annotators side by side, what they share picked
  * out. The same block is used under the map and in the list below it, so a
@@ -547,11 +563,6 @@ details.arg .arg { margin-top:8px; }
   overflow:hidden; }
 .g-bar i { display:block; height:100%; background:#8a8ac0; }
 .g-bar i.low { background:#d98f8f; }
-td.weak { color:#6d2020; font-weight:650; }
-.g-swap { font-variant-numeric:tabular-nums; }
-.g-swap td.n { font-weight:650; }
-details.g-list summary { cursor:pointer; color:#4a4a7a; font-size:0.9rem; font-weight:600; }
-details.g-list .g-detail { margin-top:9px; }
 
 /* --- the Progress pane -----------------------------------------------------
  * Label, number, and a note where a number needs one. The label column is
@@ -562,7 +573,9 @@ table.stat td.n { width: 5rem; padding-right: 18px; }
 
 /* --- the Assign pane ------------------------------------------------------- */
 .assign-form input.n { width:6rem; } .assign-form input.who { width:11rem; }
-.assign-form input.lab { width:13rem; }
+button.ovl { border:none; background:none; padding:0 2px; cursor:pointer; font:inherit;
+  color:#33336b; font-weight:600; text-decoration:underline dotted; }
+button.ovl:hover { background:#f2f2fa; }
 .rng { display:inline-flex; align-items:center; gap:6px; margin:0 7px 5px 0;
   padding:3px 4px 3px 9px; border:1px solid #d9d9e8; border-radius:4px; background:#fafaff; }
 .rng .num { color:#33336b; font-weight:600; }
@@ -583,6 +596,7 @@ table.stat td.n { width: 5rem; padding-right: 18px; }
   <button data-pane="annotations">Annotations</button>
   <button data-pane="agreement">Agreement</button>
   <button data-pane="flags">Flags</button>
+  <button data-pane="review">Review</button>
 </nav>
 
 <section id="download" class="on">
@@ -700,6 +714,62 @@ table.stat td.n { width: 5rem; padding-right: 18px; }
   <div id="g-body"></div>
 </section>
 
+<section id="review">
+  <div class="card">
+    <h2>Pairs</h2>
+    <p class="hint">Every two annotators who share arguments, and how much of what they disagree on
+    has been resolved on the review site. <b>Gold</b> is one row per argument: <code>agreed</code> where
+    everybody gave the same verdict and mechanisms within the guidelines, <code>resolved</code> where a pair
+    settled it. A resolved argument an annotator has since changed stays in gold, marked
+    <code>changed_since_resolved</code>, and goes back on the pair's map.
+    Arguments only one person annotated are not in it.</p>
+    <table><thead><tr><th>Pair</th><th class="n">Shared</th><th class="n">Disagree</th>
+      <th class="n">Assigned</th><th class="n">Resolved</th><th class="n">Left</th></tr></thead>
+      <tbody id="rv-rows"></tbody></table>
+    <p class="hint" style="margin-top:10px">
+      <a class="btn" href="/download/gold.csv">gold.csv</a>
+      <a class="btn" href="/download/gold.jsonl">gold.jsonl</a>
+      <a class="btn" href="/download/review_decisions.json">review_decisions.json</a>
+      <span class="muted" id="rv-line"></span></p>
+  </div>
+
+  <div class="card">
+    <h2>Assign</h2>
+    <p class="hint">Give a pair a stretch of argument numbers to resolve, and which colours in it. They see
+    exactly that on the review site and nothing else. Leave From and To blank for everything the pair
+    share. <b># shared</b> ends the task at that many shared arguments counted from From
+    (1&ndash;100 stopping after 30 ends at the 30th shared argument, or at 100 if there are fewer).</p>
+    <div class="filters assign-form">
+      <label>Pair<select id="t-pair"></select></label>
+      <label>From <input id="t-from" class="n" type="number" min="1"></label>
+      <label>To <input id="t-to" class="n" type="number" min="1"></label>
+      <label># shared <input id="t-cap" class="n" type="number" min="1" placeholder="all"></label>
+      <button id="t-add">Assign</button>
+    </div>
+    <p class="hint" id="t-overlap"></p>
+    <div class="filters" id="t-colours" style="margin-top:8px">
+      <span class="muted" style="font-size:0.85rem">Colours:</span>
+      <label class="check"><input type="checkbox" value="one_extra" checked> <i class="sw cat-one_extra"></i>orange</label>
+      <label class="check"><input type="checkbox" value="both_extra" checked> <i class="sw cat-both_extra"></i>yellow</label>
+      <label class="check"><input type="checkbox" value="one_none" checked> <i class="sw cat-one_none"></i>purple</label>
+      <label class="check"><input type="checkbox" value="no_shared" checked> <i class="sw cat-no_shared"></i>red</label>
+      <label class="check"><input type="checkbox" value="identical"> <i class="sw cat-identical"></i>green</label>
+    </div>
+    <p class="hint" id="t-msg"></p>
+    <table><thead><tr><th>Pair</th><th>Task</th><th>Colours</th><th class="n">Arguments</th>
+      <th class="n">Resolved</th><th></th></tr></thead><tbody id="t-rows"></tbody></table>
+  </div>
+
+  <div class="card">
+    <h2>Work</h2>
+    <p class="hint">Pick a task to see what the pair did with each argument in it: what each of them
+    had said, and what they settled on.</p>
+    <div class="filters"><label>Task<select id="w-task"></select></label>
+      <label class="check"><input id="w-resolved" type="checkbox"> resolved only</label></div>
+    <div id="w-body"></div>
+  </div>
+</section>
+
 <section id="flags">
   <div class="card">
     <h2>Flagged arguments</h2>
@@ -733,6 +803,7 @@ document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
   if (b.dataset.pane === 'progress') loadProgress();
   if (b.dataset.pane === 'annotations') loadAnnotations(1);
   if (b.dataset.pane === 'agreement') loadAgreement();
+  if (b.dataset.pane === 'review') loadReview();
 });
 
 function tile(n, k, cls) {
@@ -1021,7 +1092,8 @@ document.getElementById('f-clear').onclick = () => {
 // computed here: the page renders what scripts/agreement.py worked out, so the
 // figure on screen and the figure in agreement.json cannot differ.
 
-let iaa = null, catFilter = null, picked = null;
+// mapOpen survives a redraw (a legend click redraws), and starts closed.
+let iaa = null, catFilter = null, picked = null, mapOpen = false;
 
 const CATS = [
   ['identical',  'Identical sets'],
@@ -1087,51 +1159,25 @@ function drawReport() {
       <p>${esc(iaa.empty)}</p></div>`;
     return;
   }
-  const [a, b] = iaa.pair, r = iaa.range;
-  box.innerHTML = `
-    <div class="card">
-      <div class="g-head"><h2>Agreement: ${esc(a)} vs ${esc(b)}, arguments ${
-        r.from}&ndash;${r.to}</h2></div>
-      ${iaa.thin ? `<p class="g-thin">Only ${iaa.n_mechanism_arguments} shared argument${
-        iaa.n_mechanism_arguments === 1 ? '' : 's'} in this range. Treat these numbers
-        as rough.</p>` : ''}
-      <div class="tiles" style="margin:12px 0 0">
-        ${gtile(coef(iaa.passfail.kappa), 'Pass/Fail Cohen &kappa;',
-                pct(iaa.passfail.observed) + ' raw match', 'raw')}
-        ${gtile(pct(iaa.identical_share), 'identical sets',
-                iaa.categories.identical + ' of ' + iaa.n_mechanism_arguments)}
-        ${gtile(pct(iaa.share_one_share), 'share a mechanism',
-                'of ' + iaa.n_mechanism_arguments + ' arguments')}
-      </div>
-      <p class="hint" style="margin-top:9px">Mechanism sets compared over ${
-        iaa.n_mechanism_arguments} arguments both annotated; Pass/Fail over the ${
-        iaa.n_passfail_arguments} where both answered it.</p>
-    </div>
-    ${findingsCard()}
-    ${sensibleCard()}
-    ${mapCard()}
-    ${mechanismCard()}
-    ${swapCard()}
-    ${listCard()}`;
+  box.innerHTML = `${mapCard()}${sensibleCard()}${mechanismSection()}`;
   wireMap();
 }
 
-function findingsCard() {
-  if (!iaa.findings.length) return '';
-  return `<div class="card">${iaa.findings.map(f =>
-    `<div class="finding"><p class="lead">${esc(f.lead)}</p>
-       <p class="why">${esc(f.numbers)}</p></div>`).join('')}</div>`;
-}
-
+// Section 1: the Sensible Test, over every shared argument both answered.
 function sensibleCard() {
   const [a, b] = iaa.pair, p = iaa.passfail;
-  if (!p.n) return `<div class="card"><h2>Sensible Test</h2>
+  if (!p.n) return `<div class="card"><h2>1. Sensible Test agreement</h2>
     <p class="hint">Neither annotator has answered the Sensible Test on a shared
     argument in this range.</p></div>`;
   const cell = (n, same) =>
-    `<td class="${n === 0 ? 'zero' : (same ? 'same' : 'differ')}">${n}</td>`;
+    `<td class="${n === 0 ? 'zero' : (same ? 'same' : 'differ')}">${n}<span class="cp">${
+      pct(n / p.n)}</span></td>`;
   return `<div class="card">
-    <h2>Sensible Test</h2>
+    <h2>1. Sensible Test agreement</h2>
+    <div class="tiles" style="margin:12px 0 0">
+      ${gtile(pct(p.observed), 'percent agreement', `${p.matches} match of ${p.n}`)}
+      ${gtile(coef(p.kappa), 'Cohen &kappa;', `chance agreement ${pct(p.chance)}`, 'raw')}
+    </div>
     <table class="matrix">
       <tr><th></th><th>${esc(b)} Pass</th><th>${esc(b)} Fail</th></tr>
       <tr><th class="side">${esc(a)} Pass</th>${cell(p.matrix[0][0], true)}${
@@ -1139,9 +1185,42 @@ function sensibleCard() {
       <tr><th class="side">${esc(a)} Fail</th>${cell(p.matrix[1][0], false)}${
         cell(p.matrix[1][1], true)}</tr>
     </table>
-    <p class="axis">${p.matches} of ${p.n} matched &middot; ${esc(a)} fails ${
-      pct(p.fail_rate[0])} &middot; ${esc(b)} fails ${pct(p.fail_rate[1])}
-      &middot; chance ${pct(p.chance)} &middot; &kappa; ${coef(p.kappa)}</p>
+    <p class="axis">Percentages are of all ${p.n} arguments both answered.</p>
+  </div>`;
+}
+
+// Section 2: the mechanism sets, over the arguments where at least one of
+// them flagged a mechanism -- the Sensible Test fails, not every argument.
+function mechanismSection() {
+  const [a, b] = iaa.pair, m = iaa.mechanism_agreement;
+  if (!m.n) return `<div class="card"><h2>2. Mechanism agreement</h2>
+    <p class="hint">Neither annotator flagged a mechanism on a shared argument in this
+    range.</p></div>`;
+  const most = Math.max(...m.jaccard_distribution.map(d => d.n));
+  const dist = m.jaccard_distribution.map(d => `<tr>
+      <td class="n">${d.value.toFixed(2)}</td>
+      <td class="n">${d.n}</td><td class="n muted">${pct(d.n / m.n)}</td>
+      <td class="bar-cell"><span class="g-bar"><i style="width:${
+        Math.round(d.n / most * 100)}%"></i></span></td></tr>`).join('');
+  const rows = m.per_mechanism.map(r => `<tr>
+      <td>${esc(r.mechanism)}</td>
+      <td class="n">${r.a}</td><td class="n">${r.b}</td><td class="n">${r.both}</td>
+      <td class="n">${coef(r.kappa)}</td></tr>`).join('');
+  return `<div class="card">
+    <h2>2. Mechanism agreement</h2>
+    <p class="hint">Over the ${m.n} arguments where at least one of them failed the
+    Sensible Test and flagged a mechanism. Arguments both passed are left out.</p>
+    <div class="tiles" style="margin:12px 0 0">
+      ${gtile(pct(m.exact_share), 'exact match', `${m.exact} identical sets of ${m.n}`)}
+      ${gtile(coef(m.mean_jaccard), 'mean Jaccard', 'shared &divide; either, per argument', 'raw')}
+    </div>
+    <h3 class="g-sub">Jaccard distribution</h3>
+    <table class="g-mech"><thead><tr><th class="n">Jaccard</th><th class="n">Arguments</th>
+      <th class="n">Share</th><th></th></tr></thead><tbody>${dist}</tbody></table>
+    <h3 class="g-sub">Cohen &kappa; per mechanism</h3>
+    <table class="g-mech"><thead><tr><th>Mechanism</th><th class="n">${esc(a)}</th>
+      <th class="n">${esc(b)}</th><th class="n">Both</th><th class="n">&kappa;</th>
+      </tr></thead><tbody>${rows}</tbody></table>
   </div>`;
 }
 
@@ -1161,8 +1240,8 @@ function mapCard() {
     else memes.push({meme: arg.meme_id, args: [arg]});
   });
 
-  return `<div class="card">
-    <h2>Mechanism map</h2>
+  return `<div class="card"><details class="g-mapbox" id="g-mapbox"${mapOpen ? ' open' : ''}>
+    <summary><h2>Mechanism map</h2></summary>
     <p class="hint">One block per argument, in argument order, grouped by meme.
     Click a block for both answers; click the legend to filter.</p>
     <div class="g-legend">${legend}</div>
@@ -1173,7 +1252,7 @@ function mapCard() {
              title="Argument ${arg.number ?? '—'}">${arg.number ?? ''}</button>`).join('')}</div>
       </div>`).join('')}</div>
     <div id="g-picked"></div>
-  </div>`;
+  </details></div>`;
 }
 
 function detail(arg) {
@@ -1193,6 +1272,7 @@ function detail(arg) {
 }
 
 function wireMap() {
+  document.getElementById('g-mapbox').ontoggle = ev => { mapOpen = ev.target.open; };
   document.querySelectorAll('.g-legend button').forEach(button => {
     button.classList.toggle('off', catFilter !== null && catFilter !== button.dataset.cat);
     button.onclick = () => {
@@ -1213,59 +1293,6 @@ function wireMap() {
   });
   const open = picked && iaa.arguments.find(x => x.instance_id === picked);
   document.getElementById('g-picked').innerHTML = open ? detail(open) : '';
-}
-
-function mechanismCard() {
-  const [a, b] = iaa.pair;
-  const rows = iaa.mechanisms.map(m => {
-    const weak = m.agreement !== null && m.agreement < 0.65;
-    const width = m.agreement === null ? 0 : Math.round(m.agreement * 100);
-    return `<tr>
-      <td>${esc(m.mechanism)}</td>
-      <td class="n">${m.a}</td><td class="n">${m.b}</td><td class="n">${m.both}</td>
-      <td class="n ${weak ? 'weak' : ''}">${
-        m.agreement === null ? '&mdash;' : m.agreement.toFixed(2)}</td>
-      <td class="bar-cell"><span class="g-bar"><i class="${weak ? 'low' : ''}"
-        style="width:${width}%"></i></span></td></tr>`;
-  }).join('');
-  return `<div class="card">
-    <h2>Agreement by mechanism</h2>
-    <p class="hint">Positive specific agreement &mdash; 2 &times; both &divide; (${esc(a)} +
-    ${esc(b)}). Weakest first; under 0.65 is marked. The arguments where neither used a
-    mechanism say nothing about it and are not counted.</p>
-    <table class="g-mech"><thead><tr><th>Mechanism</th><th class="n">${esc(a)}</th>
-      <th class="n">${esc(b)}</th><th class="n">Both</th><th class="n">Agreement</th>
-      <th></th></tr></thead><tbody>${rows}</tbody></table>
-  </div>`;
-}
-
-function swapCard() {
-  const [a, b] = iaa.pair;
-  const top = iaa.swaps.slice(0, 5);
-  if (!top.length) return `<div class="card"><h2>Most common swaps</h2>
-    <p class="hint">No argument in this range has the two of them flagging mechanisms
-    with nothing in common.</p></div>`;
-  return `<div class="card">
-    <h2>Most common swaps</h2>
-    <p class="hint">Over the arguments with no mechanism in common: what ${esc(a)} chose
-    where ${esc(b)} chose something else. Every cross pair counts, so one annotator's two
-    labels against the other's one is two pairs.</p>
-    <table class="g-swap"><thead><tr><th>${esc(a)} chose</th><th>${esc(b)} chose</th>
-      <th class="n">Times</th></tr></thead><tbody>${top.map(s =>
-      `<tr><td>${esc(s.a)}</td><td>${esc(s.b)}</td><td class="n">${s.n}</td></tr>`).join('')}
-    </tbody></table>
-  </div>`;
-}
-
-function listCard() {
-  const rows = iaa.arguments.filter(arg => arg.category !== 'identical');
-  if (!rows.length) return `<div class="card"><h2>Non-identical arguments</h2>
-    <p class="hint">Every shared argument in this range has the same set on both sides.</p>
-  </div>`;
-  return `<div class="card"><details class="g-list">
-    <summary>Non-identical arguments (${rows.length})</summary>
-    ${rows.map(detail).join('')}
-  </details></div>`;
 }
 
 // The two controls. The range is read back off the response rather than off the
@@ -1298,6 +1325,127 @@ async function loadFlags() {
     <details class="arg"><summary>the argument</summary>${r.argument_html}</details>
   </div>`).join('');
 }
+
+// --- Review -------------------------------------------------------------------
+//
+// The review site's other half. Pairs resolve on their own site; here is who
+// has been given what, how far they have got, and what they decided. The only
+// write is handing out and taking back tasks (annotation_output/review/
+// assignments.json); decisions are only ever written by the review site.
+
+const COLOUR = {identical:'green', one_extra:'orange', both_extra:'yellow', one_none:'purple', no_shared:'red'};
+let review = null;
+
+async function loadReview(d) {
+  review = d || await get('/api/review');
+  document.getElementById('rv-rows').innerHTML = review.pairs.length
+    ? review.pairs.map(r => `<tr><td>${esc(r.pair.join(' + '))}</td><td class="n">${r.shared}</td>
+        <td class="n">${r.to_resolve}</td><td class="n">${r.assigned}</td><td class="n">${r.resolved}</td>
+        <td class="n">${r.to_resolve - r.resolved}</td></tr>`).join('')
+    : '<tr><td colspan="6" class="muted">No two annotators share an argument yet.</td></tr>';
+  document.getElementById('rv-line').textContent =
+    `${review.gold.agreed} agreed + ${review.gold.resolved} resolved = ${review.gold.agreed + review.gold.resolved} gold rows` +
+    (review.gold.changed ? ` · ${review.gold.changed} resolved, then changed by an annotator` : '');
+
+  const pairSel = document.getElementById('t-pair'), keep = pairSel.value;
+  pairSel.innerHTML = review.pairs.map(r =>
+    `<option value="${esc(r.pair.join('|'))}">${esc(r.pair.join(' + '))} — ${r.to_resolve} to resolve</option>`).join('');
+  if (keep) pairSel.value = keep;
+  showOverlap();
+
+  document.getElementById('t-rows').innerHTML = review.tasks.length
+    ? review.tasks.map(t => `<tr><td>${esc(t.pair.join(' + '))}</td>
+        <td><span class="num">${t.from}–${t.to}</span>${t.cap ? ` <span class="muted">first ${t.cap} shared</span>` : ''}${
+          t.label ? ` <span class="muted">${esc(t.label)}</span>` : ''}</td>
+        <td>${t.colours.map(c => `<i class="sw cat-${c}" title="${COLOUR[c]}"></i>`).join('')}</td>
+        <td class="n">${t.n}</td><td class="n">${t.resolved}${t.changed ? ` <span class="warn" title="resolved, then an annotator changed their answer">+${t.changed} changed</span>` : ''}</td>
+        <td><button class="link" data-take="${esc(t.id)}" title="Take this task back">&times;</button></td></tr>`).join('')
+    : '<tr><td colspan="6" class="muted">Nothing assigned yet.</td></tr>';
+  document.querySelectorAll('#t-rows [data-take]').forEach(b => b.onclick = async () => {
+    const r = await reviewPost({action: 'remove', id: b.dataset.take});
+    if (r) { document.getElementById('t-msg').textContent =
+      'Task taken back. Anything they already resolved in it stays resolved.'; loadReview(r); }
+  });
+
+  const taskSel = document.getElementById('w-task'), was = taskSel.value;
+  taskSel.innerHTML = review.tasks.length
+    ? review.tasks.map(t => `<option value="${esc(t.id)}">${esc(t.pair.join(' + '))} · ${t.from}–${t.to}${
+        t.label ? ' · ' + esc(t.label) : ''} (${t.resolved}/${t.n})</option>`).join('')
+    : '<option value="">no tasks yet</option>';
+  if (was && review.tasks.some(t => t.id === was)) taskSel.value = was;
+  loadWork();
+}
+
+// Where the chosen pair overlap, as runs of argument numbers. Clicking one
+// puts it in From and To.
+function showOverlap() {
+  const box = document.getElementById('t-overlap');
+  const p = review && review.pairs.find(r => r.pair.join('|') === document.getElementById('t-pair').value);
+  const from = document.getElementById('t-from'), to = document.getElementById('t-to');
+  if (!p || !p.ranges.length) { box.innerHTML = ''; from.placeholder = to.placeholder = ''; return; }
+  from.placeholder = p.ranges[0][0]; to.placeholder = p.ranges[p.ranges.length - 1][1];
+  box.innerHTML = `Overlap (${p.shared} shared, ${p.to_resolve} to resolve): ` + p.ranges.map(([lo, hi, n]) =>
+    `<button class="ovl" type="button" data-lo="${lo}" data-hi="${hi}" title="${n} shared">${lo === hi ? lo : lo + '–' + hi}</button>`
+  ).join(', ');
+  box.querySelectorAll('[data-lo]').forEach(b => b.onclick = () => {
+    from.value = b.dataset.lo; to.value = b.dataset.hi; });
+}
+document.getElementById('t-pair').onchange = showOverlap;
+
+async function reviewPost(body) {
+  const r = await fetch(url('/api/review/tasks'), {
+    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)});
+  const d = await r.json();
+  if (!r.ok) { document.getElementById('t-msg').innerHTML =
+    '<span class="warn">' + esc(d.error || 'that did not go through') + '</span>'; return null; }
+  return d;
+}
+
+document.getElementById('t-add').onclick = async () => {
+  const pair = document.getElementById('t-pair').value.split('|');
+  const from = document.getElementById('t-from').value, to = document.getElementById('t-to').value;
+  const cap = document.getElementById('t-cap').value;
+  const colours = [...document.querySelectorAll('#t-colours input:checked')].map(c => c.value);
+  if (pair.length !== 2) { document.getElementById('t-msg').innerHTML =
+    '<span class="warn">Pick a pair.</span>'; return; }
+  const d = await reviewPost({action: 'add', pair, from, to, cap, colours});
+  if (!d) return;
+  const t = d.tasks[d.tasks.length - 1];
+  document.getElementById('t-msg').textContent =
+    `${t.pair.join(' + ')}: ${t.from}–${t.to}${t.cap ? ` (stopped after ${t.cap} shared)` : ''}, ${t.n} argument${t.n === 1 ? '' : 's'} to resolve.`;
+  ['t-from', 't-to', 't-cap'].forEach(k => document.getElementById(k).value = '');
+  document.getElementById('w-task').value = t.id;
+  loadReview(d);
+};
+
+const answer = a => `${verdictPill(a.sensible_test)} ${(a.mechanisms || []).length
+  ? esc(a.mechanisms.join(', ')) : '<span class="muted">no mechanism</span>'}`;
+
+async function loadWork() {
+  const id = document.getElementById('w-task').value, box = document.getElementById('w-body');
+  if (!id) { box.innerHTML = ''; return; }
+  const d = await get('/api/review/task/' + encodeURIComponent(id));
+  let rows = d.arguments;
+  if (document.getElementById('w-resolved').checked) rows = rows.filter(r => r.decision);
+  const done = d.arguments.filter(r => r.decision).length;
+  box.innerHTML = `<p class="hint">${done} of ${d.arguments.length} resolved.</p>` + (rows.length ? rows.map(r => {
+    const dec = r.decision;
+    return `<div class="w-row"><div class="w-head"><i class="chip cat-${r.category}" title="${COLOUR[r.category]}"></i>
+        <span class="num">Argument ${r.number}</span><span class="muted">${esc(r.claim)}</span>
+        ${!dec ? '<span class="pill pill-draft">not yet</span>' : dec.changed.length
+          ? `<span class="pill pill-draft" title="${esc(dec.changed.join(', '))} changed their answer after this was resolved">changed since resolved</span>`
+          : '<span class="pill pill-agree">resolved</span>'}</div>
+      <div class="w-cols">${r.annotations.map(a => `<div><div class="who">${esc(a.annotator)}</div>${answer(a)}</div>`).join('')}
+        ${dec ? `<div class="w-final"><div class="who">Settled on</div>${answer(dec)}
+          <div class="muted" style="font-size:0.8rem">${esc(dec.resolved_by.join(' + '))} · ${esc(dec.resolved_at)}</div></div>` : ''}</div>
+      ${dec ? `<details class="arg"><summary>justifications and note</summary>
+        ${dec.mechanisms.map(m => `<p class="mech"><b>${esc(m)}</b> &mdash; <span class="why">${esc(dec.justifications[m])}</span></p>`).join('')}
+        ${dec.note ? `<p class="mech note-text"><b>Note:</b> ${esc(dec.note)}</p>` : ''}</details>` : ''}
+    </div>`;
+  }).join('') : '<p class="muted">Nothing to show.</p>');
+}
+document.getElementById('w-task').onchange = loadWork;
+document.getElementById('w-resolved').onchange = loadWork;
 
 loadSummary();
 </script></body></html>
@@ -1559,6 +1707,117 @@ def create_app() -> Flask:
         if not path.exists():
             return Response("", mimetype="text/css")
         return Response(path.read_text(), mimetype="text/css")
+
+    # --- review and gold ------------------------------------------------------
+    #
+    # Read-only. Decisions are written by scripts/review_site.py and nothing
+    # else; this page only reports on them and builds gold from them.
+
+    def gold_rows():
+        items = review.load_items()
+        records = review.load_records(items)
+        return records, review.gold(items, records, review.load_decisions())
+
+    def review_view() -> dict:
+        items = review.load_items()
+        records = review.load_records(items)
+        decisions = review.load_decisions()
+        by_argument = iaa.by_argument(records)
+        rows = review.gold(items, records, decisions)
+        tasks = [review.task_summary(t, items, by_argument, decisions) for t in review.load_tasks()]
+        pairs = review.progress(records, decisions)
+        for pair in pairs:
+            covered = set()
+            for task in review.load_tasks():
+                if task["pair"] == pair["pair"]:
+                    covered |= {r["instance_id"] for r in
+                                review.task_arguments(task, items, by_argument)}
+            pair["assigned"] = len(covered)
+        return {
+            "pairs": pairs,
+            "tasks": tasks,
+            "gold": {"agreed": sum(1 for r in rows if r["source"] == "agreed"),
+                     "resolved": sum(1 for r in rows if r["source"] == "resolved"),
+                     "changed": sum(1 for r in rows if r["changed_since_resolved"])},
+        }
+
+    @app.route("/api/review")
+    def api_review():
+        return jsonify(review_view())
+
+    @app.route("/api/review/tasks", methods=["POST"])
+    def api_review_tasks():
+        body = request.get_json(silent=True) or {}
+        action = body.get("action")
+        try:
+            if action == "add":
+                items = review.load_items()
+                by_argument = iaa.by_argument(review.load_records(items))
+                pair = [str(p).strip().lower() for p in body.get("pair") or []]
+                review.add_task(pair, body.get("from"), body.get("to"),
+                                body.get("colours"), body.get("label", ""), len(items),
+                                shared=review.shared_numbers(by_argument, items, pair)
+                                if len(pair) == 2 else (),
+                                cap=body.get("cap"))
+            elif action == "remove":
+                if not review.remove_task(str(body.get("id", ""))):
+                    return jsonify({"error": "no such task"}), 400
+            else:
+                return jsonify({"error": f"unknown action {action!r}"}), 400
+        except (TypeError, ValueError) as error:
+            return jsonify({"error": str(error) or "from and to have to be numbers"}), 400
+        return jsonify(review_view())
+
+    @app.route("/api/review/task/<task_id>")
+    def api_review_task(task_id):
+        """One task, argument by argument: what each annotator said and what
+        the pair settled on."""
+        task = next((t for t in review.load_tasks() if t.get("id") == task_id), None)
+        if task is None:
+            return jsonify({"error": "no such task"}), 404
+        items = review.load_items()
+        records = review.load_records(items)
+        by_argument = iaa.by_argument(records)
+        decisions = review.load_decisions()
+        out = []
+        for row in review.task_arguments(task, items, by_argument):
+            # The pair only, as on the review site.
+            per = review.of_pair(by_argument[row["instance_id"]], task["pair"])
+            decision = decisions.get(row["instance_id"])
+            out.append({
+                **row,
+                "claim": items[row["instance_id"]].get("claim_content"),
+                "annotations": [{"annotator": who, "sensible_test": r["sensible_test"],
+                                 "mechanisms": r["mechanisms"]}
+                                for who, r in per.items()],
+                "decision": {k: v for k, v in decision.items() if k != "history"}
+                            | {"changed": review.changed_since(decision, per)}
+                            if decision else None,
+            })
+        return jsonify({"task": task, "arguments": out})
+
+    @app.route("/download/gold.csv")
+    def download_gold_csv():
+        _, rows = gold_rows()
+        buffer = io.StringIO()
+        writer = csv.DictWriter(buffer, fieldnames=review.GOLD_COLUMNS, extrasaction="ignore")
+        writer.writeheader()
+        for row in rows:
+            writer.writerow(review.gold_csv_row(row))
+        return attachment(buffer.getvalue(), "gold.csv", "text/csv")
+
+    @app.route("/download/gold.jsonl")
+    def download_gold_jsonl():
+        _, rows = gold_rows()
+        body = "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows)
+        return attachment(body, "gold.jsonl", "application/x-ndjson")
+
+    @app.route("/download/review_decisions.json")
+    def download_review_decisions():
+        """The decisions file as it is on disk, history included."""
+        path = review.DECISIONS
+        body = path.read_text() if path.exists() else '{"version": 1, "decisions": {}}'
+        return attachment(body, "review_decisions.json", "application/json")
 
     @app.route("/download/annotation_output.zip")
     def download_archive():

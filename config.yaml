@@ -395,3 +395,20 @@ admin_api_key: ${POTATO_ADMIN_API_KEY}
 # Not in effect: scripts/accounts.py signs annotators in with a cookie that
 # ends when the browser closes, so they type their NetID each time.
 session_lifetime_days: 14
+
+# ---------------------------------------------------------------------------
+# Adjudication (Potato's built-in)
+# ---------------------------------------------------------------------------
+# efy220000 can open /adjudicate on the study site and resolve disagreements
+# there. They keep annotating as before: Potato only sends an adjudicator to
+# /adjudicate on its own when they have nothing left to annotate. The page is
+# not linked from anywhere -- give them the URL.
+#
+# threshold 1.0: anything short of every annotator giving the same answer is
+# queued. Free text (justifications, notes) is not compared. Decisions go to
+# annotation_output/adjudication/decisions.json; nobody's answers change.
+adjudication:
+  enabled: true
+  adjudicator_users: [efy220000]
+  min_annotations: 2
+  agreement_threshold: 1.0

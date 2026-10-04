@@ -17,6 +17,7 @@ source .venv/bin/activate
 python scripts/build_instances.py                     # args_0911.json -> data/
 nohup python scripts/serve.py > server.log 2>&1 &     # http://localhost:8765
 python scripts/annotation_backend.py                  # http://127.0.0.1:8766
+python scripts/review_site.py                         # http://127.0.0.1:8767
 ```
 
 Boot takes 10–20 seconds. Use `scripts/serve.py`, not `potato start
@@ -53,6 +54,8 @@ scripts/                 See below
 | `import_annotations.py` | Loads annotations done outside the study into `annotation_output/`. `--dry-run`, `--overwrite`, `--no-infer` |
 | `agreement.py` | The agreement report: pure functions, one pair and one argument range |
 | `annotation_backend.py` | Admin console. `--port`, `--host` |
+| `review.py` | Resolving disagreements: colours, headers, the decisions file, gold |
+| `review_site.py` | The review site: a pair signs in with both NetIDs and resolves their disagreements. `--port` defaults to 8767 |
 | `mirror_to_postgres.py` | One mirroring pass. `--verify`, `--dry-run` |
 | `mirror_loop.py` | Runs the mirror every 15 minutes |
 | `start.sh` | Container entry point; starts all three processes |
@@ -61,6 +64,35 @@ scripts/                 See below
 | `capture_ui.py` | Screenshots of each interface state |
 | `verify_deploy.py` | Volume and session check against a deployment |
 | `resync_order.py` | Re-aligns annotators after a corpus rebuild |
+
+## Resolving disagreements
+
+The console's **Review** tab hands a pair of annotators a task: a stretch of
+argument numbers and which colours from the Agreement map to resolve in it.
+The pair sign in to the **review site** together, with both NetIDs, and see
+their tasks and nothing else. Each argument opens with a sentence saying how
+they differ, the argument (collapsible), the two of them side by side with
+their mechanisms and justifications, and under that the answer they settle on
+-- the mechanisms they both ticked already ticked, every extra outlined and
+labelled with who added it.
+
+Decisions go to `annotation_output/review/decisions.json` and tasks to
+`annotation_output/review/assignments.json`; nobody's annotations are changed.
+One decision per argument, whichever pair gets there first; reopening keeps the
+earlier version in its history.
+
+The Review tab also shows each pair's progress, what they settled on task by
+task, and downloads **gold**: one row per argument, `agreed` or `resolved`.
+An argument only counts as agreed if every answer also keeps the guidelines'
+rules; agreeing on, say, a Fail with no mechanism goes to review instead. If an
+annotator changes their answer after a pair resolved it, the decision stays in
+gold marked `changed_since_resolved` and goes back on the pair's map.
+Test accounts (`demo1`–`demo3`, or `REVIEW_EXCLUDE`) are left out throughout.
+
+On Railway the review site runs in the same container as the study (`start.sh`,
+port 8767, its own domain). The Postgres mirror copies review data into
+`review_decision`, `review_decision_history` and `review_task`, and rebuilds
+`gold` and `gold_justification` on every pass.
 
 ## Handing out work
 

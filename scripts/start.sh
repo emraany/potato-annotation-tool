@@ -1,8 +1,13 @@
 #!/bin/sh
-# Railway's start command. Three processes:
+# Railway's start command. Four processes:
 #   the study server, in the foreground, as PID 1 so signals reach it;
 #   the Postgres mirror, on its own 15-minute clock;
-#   the backend console on :8766, reached through its own Railway domain.
+#   the backend console on :8766, reached through its own Railway domain;
+#   the review site on :8767, reached through its own Railway domain.
+#
+# The review site runs here and not as a service of its own because a Railway
+# volume attaches to one service only, and it reads and writes
+# annotation_output/. It needs no key: a pair signs in with their two NetIDs.
 #
 # EXPOSING THE CONSOLE IS A DELIBERATE DEVIATION from DEPLOY.md, which says
 # "Do not put the backend console or the admin dashboard on the public domain."
@@ -30,5 +35,7 @@ else
 fi
 
 python scripts/mirror_loop.py &
+
+python scripts/review_site.py --host 0.0.0.0 --port 8767 &
 
 exec python scripts/serve.py --port "$PORT"

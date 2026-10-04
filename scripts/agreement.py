@@ -229,6 +229,53 @@ def positive_agreement(sets: list) -> list:
     return rows
 
 
+def binary_kappa(pairs: list):
+    """Cohen's kappa on two yes/no columns, or None where chance is 1."""
+    n = len(pairs)
+    if not n:
+        return None
+    observed = sum(1 for x, y in pairs if x == y) / n
+    pa = sum(1 for x, _ in pairs if x) / n
+    pb = sum(1 for _, y in pairs if y) / n
+    chance = pa * pb + (1 - pa) * (1 - pb)
+    return None if chance == 1 else (observed - chance) / (1 - chance)
+
+
+def mechanism_agreement(sets: list) -> dict:
+    """Section 2 of the page: the mechanism sets, over the arguments where at
+    least one of the two flagged a mechanism (failed the Sensible Test).
+
+    The arguments where both left the set empty are left out on purpose: two
+    empty sets would count as an exact match and a Jaccard of 1, and on a pair
+    that passes a lot they would bury the disagreement in agreement about
+    nothing.
+    """
+    flagged = [(x, y) for x, y in sets if x or y]
+    n = len(flagged)
+    exact = sum(1 for x, y in flagged if x == y)
+    jaccards = [len(x & y) / len(x | y) for x, y in flagged]
+    distribution = Counter(round(j, 2) for j in jaccards)
+    per_mechanism = []
+    for mechanism in MECHANISMS:
+        column = [(mechanism in x, mechanism in y) for x, y in flagged]
+        per_mechanism.append({
+            "mechanism": mechanism,
+            "a": sum(1 for x, _ in column if x),
+            "b": sum(1 for _, y in column if y),
+            "both": sum(1 for x, y in column if x and y),
+            "kappa": binary_kappa(column),
+        })
+    return {
+        "n": n,
+        "exact": exact,
+        "exact_share": exact / n if n else None,
+        "mean_jaccard": sum(jaccards) / n if n else None,
+        "jaccard_distribution": [{"value": v, "n": distribution[v]}
+                                 for v in sorted(distribution)],
+        "per_mechanism": per_mechanism,
+    }
+
+
 def swaps(sets: list) -> list:
     """Which of A's mechanisms turn up where B used which of theirs.
 
@@ -446,6 +493,7 @@ def report(records: list, pair=None, lo=None, hi=None) -> dict:
                        else [first, 0],
         },
         "mechanisms": positive_agreement(sets),
+        "mechanism_agreement": mechanism_agreement(sets),
         "swaps": swaps(sets),
         "arguments": detail,
     }
