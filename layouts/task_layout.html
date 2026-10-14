@@ -1,4 +1,4 @@
-<!-- CONFIG_HASH: cced4864546ffc0bf95314323684e644_d608857930cc1f2d3683b65fa7101ac1 -->
+<!-- CONFIG_HASH: 968c4643945cde8f00233ffb98887206_12c91d4f3d0aee1100c34ec4d2e47713 -->
 <!-- Generated annotation layout file -->
 <!-- This file was automatically generated based on the annotation schemes in your config -->
 <!-- You can customize this file to modify the layout of your annotation interface -->
@@ -6,20 +6,10 @@
 
 <div class="annotation_schema">
 
-        <form id="section_sensible_test" class="annotation-form pure-display" data-annotation-type="pure_display" data-schema-name="section_sensible_test" action="javascript:void(0)" data-grid-columns="1">
-            <fieldset schema="section_sensible_test">
-                <legend><h4>Step 1 &mdash; Sensible Test</h4> <p class="step-sub">Read all three checks, then answer the one question below. Any single check coming back Yes is a failed test.</p> <div class="check-list"><ol> <li><b>Manipulation Check</b> &mdash; Is the creator using emotional hijacking, mockery, side-by-side tricks, out-of-context cropping, or coded dog-whistles to force this connection in lieu of evidence?</li> <li><b>Deception Check</b> &mdash; Does a reader have to accept an unproven assumption, a warped timeline, or a structural lie for the child(ren) to successfully connect to the claim?</li> <li><b>Rhetorical Wrapper Check</b> &mdash; Is the visual format being used as a psychological trap to lower the reader's critical thinking, rather than as a helpful tool to illustrate data or literal facts?</li> </ol></div></legend>
-                <div class="display-content">
-                    
-                </div>
-            </fieldset>
-        </form>
-    
-
-    <form id="sensible_test_failed" class="annotation-form radio shadcn-radio-container" action="javascript:void(0)" data-annotation-id="1" data-annotation-type="radio" data-schema-name="sensible_test_failed" data-grid-columns="1">
+    <form id="sensible_test_failed" class="annotation-form radio shadcn-radio-container" action="javascript:void(0)" data-annotation-id="0" data-annotation-type="radio" data-schema-name="sensible_test_failed" data-grid-columns="1">
         
         <fieldset schema="sensible_test_failed">
-            <legend class="shadcn-radio-title">Does this argument fail the Sensible Test? Answer Yes if any one of the three checks above is a Yes.</legend>
+            <legend class="shadcn-radio-title">Sensible Test verdict, filled in from the mechanisms.</legend>
             <div class="shadcn-radio-options horizontal">
     
             <div class="shadcn-radio-option">
@@ -33,8 +23,8 @@
                        label_name="Yes"
                        onclick="onlyOne(this);registerAnnotation(this);"
                        validation=""
-                       data-key="q">
-                <label for="sensible_test_failed_Yes_radio" class="shadcn-radio-label" >Yes <span class="keybinding-badge">Q</span></label>
+                       >
+                <label for="sensible_test_failed_Yes_radio" class="shadcn-radio-label" >Yes</label>
             </div>
         
             <div class="shadcn-radio-option">
@@ -48,34 +38,25 @@
                        label_name="No"
                        onclick="onlyOne(this);registerAnnotation(this);"
                        validation=""
-                       data-key="a">
-                <label for="sensible_test_failed_No_radio" class="shadcn-radio-label" >No <span class="keybinding-badge">A</span></label>
+                       >
+                <label for="sensible_test_failed_No_radio" class="shadcn-radio-label" >No</label>
             </div>
         </div></fieldset></form>
-<div class="display-logic-container display-logic-hidden"
-     data-display-logic="{&quot;show_when&quot;: [{&quot;schema&quot;: &quot;sensible_test_failed&quot;, &quot;operator&quot;: &quot;equals&quot;, &quot;value&quot;: &quot;Yes&quot;}]}"
-     data-schema-name="section_mechanism"
-     data-display-logic-target="true">
 
         <form id="section_mechanism" class="annotation-form pure-display" data-annotation-type="pure_display" data-schema-name="section_mechanism" action="javascript:void(0)" data-grid-columns="1">
             <fieldset schema="section_mechanism">
-                <legend><h4>Step 2 &mdash; Mechanisms</h4> <p class="step-sub">The argument failed the Sensible Test, so at least one mechanism is present. Tick every mechanism at work, and say for each one how it works. There is no ranking between them.</p></legend>
+                <legend><h4>Mechanisms</h4> <p class="step-sub">Tick every mechanism at work, and say for each one how it works. There is no ranking between them. If none is at work, tick nothing and Submit.</p></legend>
                 <div class="display-content">
                     
                 </div>
             </fieldset>
         </form>
     
-</div>
-<div class="display-logic-container display-logic-hidden"
-     data-display-logic="{&quot;show_when&quot;: [{&quot;schema&quot;: &quot;sensible_test_failed&quot;, &quot;operator&quot;: &quot;equals&quot;, &quot;value&quot;: &quot;Yes&quot;}]}"
-     data-schema-name="mechanisms"
-     data-display-logic-target="true">
 
-    <form id="mechanisms" class="annotation-form multiselect shadcn-multiselect-container" action="javascript:void(0)" data-annotation-id="3" data-annotation-type="multiselect" data-schema-name="mechanisms" data-grid-columns="1">
+    <form id="mechanisms" class="annotation-form multiselect shadcn-multiselect-container" action="javascript:void(0)" data-annotation-id="2" data-annotation-type="multiselect" data-schema-name="mechanisms" data-grid-columns="1">
         
         <fieldset schema="mechanisms">
-            <legend class="shadcn-multiselect-title">Mechanisms — tick every one at work in getting a reader from these children to this claim. At least one, since the Sensible Test came back failed.</legend>
+            <legend class="shadcn-multiselect-title">Mechanisms — tick every one at work in getting a reader from these children to this claim. None ticked means the argument passes.</legend>
     <div class="shadcn-multiselect-grid" style="grid-template-columns: repeat(1, 1fr);">
             <div class="shadcn-multiselect-item">
                 <input class="mechanisms shadcn-multiselect-checkbox annotation-input"
@@ -167,13 +148,12 @@
                 </label>
             </div>
         </div></fieldset></form>
-</div>
 <div class="display-logic-container display-logic-hidden"
      data-display-logic="{&quot;show_when&quot;: [{&quot;schema&quot;: &quot;mechanisms&quot;, &quot;operator&quot;: &quot;contains&quot;, &quot;value&quot;: &quot;Affective Hijacking&quot;}]}"
      data-schema-name="justification_affective_hijacking"
      data-display-logic-target="true">
 
-    <form id="justification_affective_hijacking" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="4" data-annotation-type="text" data-schema-name="justification_affective_hijacking"  data-min-chars="15" data-grid-columns="1">
+    <form id="justification_affective_hijacking" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="3" data-annotation-type="text" data-schema-name="justification_affective_hijacking"  data-min-chars="15" data-grid-columns="1">
             
         <fieldset schema_name="justification_affective_hijacking">
     
@@ -203,7 +183,7 @@
      data-schema-name="justification_episodic_overgeneralization"
      data-display-logic-target="true">
 
-    <form id="justification_episodic_overgeneralization" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="5" data-annotation-type="text" data-schema-name="justification_episodic_overgeneralization"  data-min-chars="15" data-grid-columns="1">
+    <form id="justification_episodic_overgeneralization" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="4" data-annotation-type="text" data-schema-name="justification_episodic_overgeneralization"  data-min-chars="15" data-grid-columns="1">
             
         <fieldset schema_name="justification_episodic_overgeneralization">
     
@@ -233,7 +213,7 @@
      data-schema-name="justification_spurious_causal_correlation"
      data-display-logic-target="true">
 
-    <form id="justification_spurious_causal_correlation" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="6" data-annotation-type="text" data-schema-name="justification_spurious_causal_correlation"  data-min-chars="15" data-grid-columns="1">
+    <form id="justification_spurious_causal_correlation" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="5" data-annotation-type="text" data-schema-name="justification_spurious_causal_correlation"  data-min-chars="15" data-grid-columns="1">
             
         <fieldset schema_name="justification_spurious_causal_correlation">
     
@@ -263,7 +243,7 @@
      data-schema-name="justification_satirical_trivialization"
      data-display-logic-target="true">
 
-    <form id="justification_satirical_trivialization" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="7" data-annotation-type="text" data-schema-name="justification_satirical_trivialization"  data-min-chars="15" data-grid-columns="1">
+    <form id="justification_satirical_trivialization" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="6" data-annotation-type="text" data-schema-name="justification_satirical_trivialization"  data-min-chars="15" data-grid-columns="1">
             
         <fieldset schema_name="justification_satirical_trivialization">
     
@@ -293,7 +273,7 @@
      data-schema-name="justification_esoteric_code_activation"
      data-display-logic-target="true">
 
-    <form id="justification_esoteric_code_activation" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="8" data-annotation-type="text" data-schema-name="justification_esoteric_code_activation"  data-min-chars="15" data-grid-columns="1">
+    <form id="justification_esoteric_code_activation" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="7" data-annotation-type="text" data-schema-name="justification_esoteric_code_activation"  data-min-chars="15" data-grid-columns="1">
             
         <fieldset schema_name="justification_esoteric_code_activation">
     
@@ -323,7 +303,7 @@
      data-schema-name="justification_spurious_legitimacy_signaling"
      data-display-logic-target="true">
 
-    <form id="justification_spurious_legitimacy_signaling" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="9" data-annotation-type="text" data-schema-name="justification_spurious_legitimacy_signaling"  data-min-chars="15" data-grid-columns="1">
+    <form id="justification_spurious_legitimacy_signaling" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="8" data-annotation-type="text" data-schema-name="justification_spurious_legitimacy_signaling"  data-min-chars="15" data-grid-columns="1">
             
         <fieldset schema_name="justification_spurious_legitimacy_signaling">
     
@@ -349,7 +329,7 @@
             </div></fieldset></form>
 </div>
 
-    <form id="notes" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="10" data-annotation-type="text" data-schema-name="notes"   data-grid-columns="1">
+    <form id="notes" class="annotation-form textbox shadcn-textbox-container " action="javascript:void(0)" data-annotation-id="9" data-annotation-type="text" data-schema-name="notes"   data-grid-columns="1">
             
         <fieldset schema_name="notes">
     
@@ -370,7 +350,7 @@
                           ></textarea>
             </div></fieldset></form>
 
-    <form id="flag_for_discussion" class="annotation-form multiselect shadcn-multiselect-container" action="javascript:void(0)" data-annotation-id="11" data-annotation-type="multiselect" data-schema-name="flag_for_discussion" data-grid-columns="1">
+    <form id="flag_for_discussion" class="annotation-form multiselect shadcn-multiselect-container" action="javascript:void(0)" data-annotation-id="10" data-annotation-type="multiselect" data-schema-name="flag_for_discussion" data-grid-columns="1">
         
         <fieldset schema="flag_for_discussion">
             <legend class="shadcn-multiselect-title">Flag this argument for discussion.</legend>

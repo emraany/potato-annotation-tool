@@ -64,86 +64,60 @@ base_css: static/study.css
 # plus groups -- each conditional question is rendered TWICE. The <form> is
 # hoisted into the grid and the `display-logic-container` beside it is left
 # empty, so the gate toggles an empty div and every gated question is on screen
-# permanently, whatever the Sensible Test says. `validate --strict` passes,
+# permanently, whatever was ticked. `validate --strict` passes,
 # `preview` passes, the boot log says nothing, and the page looks deliberate.
 # Without a `layout` block the form nests inside its container and the gate
 # works.
-# The section headings below are `pure_display` schemes carrying the same gate,
-# which is how the three steps survive losing `layout.groups`.
+# The section headings below are `pure_display` schemes, which is how the
+# steps survive losing `layout.groups`.
 annotation_schemes:
 
-  - annotation_type: pure_display
-    name: section_sensible_test
-    allow_html: true
-    description: >-
-      <h4 class="step-head">Step 1 &mdash; Sensible Test</h4>
-      <p class="step-sub">Read all three checks, then answer the one question
-      below. Any single check coming back Yes is a failed test.</p>
-      <div class="check-list"><ol>
-      <li><b>Manipulation Check</b> &mdash; Is the creator using emotional
-      hijacking, mockery, side-by-side tricks, out-of-context cropping, or coded
-      dog-whistles to force this connection in lieu of evidence?</li>
-      <li><b>Deception Check</b> &mdash; Does a reader have to accept an unproven
-      assumption, a warped timeline, or a structural lie for the child(ren) to
-      successfully connect to the claim?</li>
-      <li><b>Rhetorical Wrapper Check</b> &mdash; Is the visual format being used
-      as a psychological trap to lower the reader's critical thinking, rather
-      than as a helpful tool to illustrate data or literal facts?</li>
-      </ol></div>
-    label_requirement: {required: false}
-
-  # --- 1. The Sensible Test. One yes/no question, asked first, required. ------
-  # The three checks are READ, not answered. They are the three check sentences
-  # from guidelines.md, word for word, in the pure_display above --
-  # scripts/serve.py compares them at boot and prints a warning if they have
-  # drifted apart -- and the annotator collapses them into one verdict here.
+  # --- The Sensible Test is not asked. It is worked out from the mechanisms. --
+  # The annotator ticks the mechanisms at work, and ticking none is a pass.
+  # `sensible_test_failed` is still a scheme, and still stored, so the database,
+  # the export, the console and the review site read exactly what they always
+  # read: static/study.js answers it on the annotator's behalf -- Yes the moment
+  # a mechanism is ticked, No when the last one is un-ticked or when Submit is
+  # pressed with none ticked. static/study.css hides it, and it has no key, so
+  # nothing on the page can answer it by hand.
   #
-  # Nothing is recorded per check. `sensible_test` in the export is this answer
-  # read the other way round: Yes here is a Fail, No is a Pass.
-  # scripts/export_annotations.py does that translation so the two namings
-  # cannot drift.
+  # It stays `required`: an argument nobody has submitted or ticked anything on
+  # has no verdict, and that is what keeps it a draft rather than a pass.
+  #
+  # `sensible_test` in the export is this answer read the other way round: Yes
+  # here is a Fail, No is a Pass. scripts/export_annotations.py does that
+  # translation so the two namings cannot drift.
 
   - annotation_type: radio
     name: sensible_test_failed
-    description: >-
-      Does this argument fail the Sensible Test? Answer Yes if any one of the
-      three checks above is a Yes.
+    description: Sensible Test verdict, filled in from the mechanisms.
     labels:
-      - {name: 'Yes', key_value: 'q'}
-      - {name: 'No', key_value: 'a'}
+      - {name: 'Yes'}
+      - {name: 'No'}
     humanize_labels: false
     label_requirement: {required: true}
     horizontal: true
 
-  # --- 2. Mechanisms. Shown only when the Sensible Test came back failed. ----
-  # One condition, so the default `logic: all` is the whole of it; there is no
-  # `logic: any` here any more, and adding a second condition without one would
-  # silently AND the two.
-  #
+  # --- Mechanisms. Always on screen; none ticked is a pass. ------------------
   # FLAT, not primary-and-secondary. There is one list of mechanisms and every
-  # one at work in the argument is ticked in it; nothing ranks them. A failed
-  # Sensible Test means at least one is present, which is why the multiselect
-  # is `required: true` -- the only scheme of its type in this config that is.
+  # one at work in the argument is ticked in it; nothing ranks them. Not
+  # required: ticking none is an answer, the passing one.
 
   - annotation_type: pure_display
     name: section_mechanism
     allow_html: true
     description: >-
-      <h4 class="step-head">Step 2 &mdash; Mechanisms</h4>
-      <p class="step-sub">The argument failed the Sensible Test, so at least one
-      mechanism is present. Tick every mechanism at work, and say for each one
-      how it works. There is no ranking between them.</p>
+      <h4 class="step-head">Mechanisms</h4>
+      <p class="step-sub">Tick every mechanism at work, and say for each one how
+      it works. There is no ranking between them. If none is at work, tick
+      nothing and Submit.</p>
     label_requirement: {required: false}
-    display_logic:
-      show_when:
-        - {schema: sensible_test_failed, operator: equals, value: 'Yes'}
 
   - annotation_type: multiselect
     name: mechanisms
     description: >-
       Mechanisms — tick every one at work in getting a reader from these
-      children to this claim. At least one, since the Sensible Test came back
-      failed.
+      children to this claim. None ticked means the argument passes.
     labels:
       - {name: 'Affective Hijacking', key_value: '1'}
       - {name: 'Episodic Overgeneralization', key_value: '2'}
@@ -152,10 +126,7 @@ annotation_schemes:
       - {name: 'Esoteric Code Activation', key_value: '5'}
       - {name: 'Spurious Legitimacy Signaling', key_value: '6'}
     humanize_labels: false
-    label_requirement: {required: true}
-    display_logic:
-      show_when:
-        - {schema: sensible_test_failed, operator: equals, value: 'Yes'}
+    label_requirement: {required: false}
 
   # One justification per mechanism, gated on that mechanism being ticked.
   # `contains` tests membership of the multiselect's stored list.

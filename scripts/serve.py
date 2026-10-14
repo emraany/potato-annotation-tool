@@ -51,15 +51,10 @@ are done here rather than in config.yaml. Two reasons they are here:
   Submit too.
 
 Also checked at boot, and only warned about, never fatal -- a study that will
-not start is worse than a study with a stale sentence in it:
-
-  * the six mechanism names in guidelines.md against the six labels in
-    config.yaml, which is the one drift that would have annotators reading one
-    set of definitions and clicking another;
-  * the three Sensible Test check sentences in guidelines.md against the copy
-    of them printed above the Sensible Test question in config.yaml. They are
-    read there, not answered -- the task collects one Yes/No verdict -- so the
-    two copies drifting apart is exactly the failure this catches.
+not start is worse than a study with a stale sentence in it: the six mechanism
+names in guidelines.md against the six labels in config.yaml, which is the one
+drift that would have annotators reading one set of definitions and clicking
+another.
 """
 
 from __future__ import annotations
@@ -123,14 +118,57 @@ def inline(text: str) -> str:
     return html
 
 
+# A cell holding only `^` is merged into the cell above it -- which is how the
+# Rules table gives each mechanism one cell down the side of all its rules.
+MERGE_UP = "^"
+
+# The Rules table's sections, by what is in its Mechanism cell: a light tint
+# for the row, a deeper one for the merged Mechanism cell. Inline, because
+# Potato's sanitizer strips `class` off <tr> and <td> but keeps `style` --
+# `background-color`, not the `background` shorthand, which it drops.
+RULE_COLOURS = {
+    "Affective Hijacking": ("#fdecec", "#f8d5d5"),            # red
+    "Episodic Overgeneralization": ("#f3edfc", "#e4d8f7"),    # purple
+    "Satirical Trivialization": ("#eaf6ee", "#d3ecdb"),       # green
+    "Spurious Legitimacy Signaling": ("#fdf7dd", "#f7ebb5"),  # yellow
+    "All mechanisms": ("#f2f2f5", "#e2e2e8"),                 # grey
+}
+
+
 def render_table(lines: list[str]) -> str:
     header, body = table_cells(lines[0]), [table_cells(line) for line in lines[2:]]
     head = "".join(f"<th>{inline(cell)}</th>" for cell in header)
-    rows = "".join(
-        "<tr>" + "".join(f"<td>{inline(cell)}</td>" for cell in row) + "</tr>"
-        for row in body)
-    return (f'<table class="guidelines-table"><thead><tr>{head}</tr></thead>'
-            f"<tbody>{rows}</tbody></table>")
+
+    # How many rows each cell spans: a `^` below adds one to the cell it joins.
+    spans = [[1] * len(row) for row in body]
+    for r, row in enumerate(body):
+        for c, cell in enumerate(row):
+            if cell == MERGE_UP:
+                top = r - 1
+                while top > 0 and c < len(body[top]) and body[top][c] == MERGE_UP:
+                    top -= 1
+                spans[top][c] += 1
+
+    rules = header[:2] == ["Mechanism", "Rule"]
+    rows, section = [], None
+    for r, row in enumerate(body):
+        if row and row[0] != MERGE_UP:
+            section = row[0]
+        light, deep = RULE_COLOURS.get(section, (None, None)) if rules else (None, None)
+        cells = []
+        for c, cell in enumerate(row):
+            if cell == MERGE_UP:
+                continue
+            attrs = f' rowspan="{spans[r][c]}"' if spans[r][c] > 1 else ""
+            if light:
+                attrs += (f' style="background-color:{deep};font-weight:650;vertical-align:middle"'
+                          if c == 0 else
+                          f' style="background-color:{light}' + (';font-weight:600"' if c == 1 else '"'))
+            cells.append(f"<td{attrs}>{inline(cell)}</td>")
+        rows.append("<tr>" + "".join(cells) + "</tr>")
+    kind = "guidelines-table rules-table" if rules else "guidelines-table"
+    return (f'<table class="{kind}"><thead><tr>{head}</tr></thead>'
+            f"<tbody>{''.join(rows)}</tbody></table>")
 
 
 def guidelines_html(markdown: str) -> str:
@@ -155,18 +193,15 @@ def guidelines_html(markdown: str) -> str:
     return "\n".join(parts)
 
 
-CHECK_LINE = re.compile(
-    r"^(?:-|\d+\.)\s+\*\*The\s+(.+?)\s+Check:?\*\*:?\s*(.+)$", re.M)
-
-
 def guidelines_mechanisms(markdown: str) -> list[str]:
-    """The first column of the table under `## 4. The Mechanisms`."""
-    section = markdown.split("## 4. The Mechanisms", 1)
+    """The first column of the table under `## <n>. The Mechanisms`."""
+    section = re.split(r"^## (?:\d+\. )?The Mechanisms\s*$", markdown, maxsplit=1, flags=re.M)
     if len(section) < 2:
         return []
     rows = [line for line in section[1].split("\n## ", 1)[0].splitlines()
             if TABLE_ROW.match(line) and not TABLE_RULE.match(line)]
-    return [table_cells(row)[0] for row in rows[1:]]
+    # "Affective Hijacking (AH)": the abbreviation is for the reader, not a label.
+    return [re.sub(r"\s*\([A-Z]+\)$", "", table_cells(row)[0]) for row in rows[1:]]
 
 
 def config_mechanism_labels(text: str) -> list[str]:
@@ -188,17 +223,6 @@ def warn_on_drift(markdown: str) -> None:
               "           Rename the LABEL in config.yaml to match the guidelines, and "
               "leave every scheme NAME alone -- renaming a scheme hides the answers "
               "already stored under it.", file=sys.stderr)
-
-    flat = " ".join(config_text.split())
-    checks = CHECK_LINE.findall(markdown)
-    if len(checks) != 3:
-        print(f"  WARNING  guidelines.md has {len(checks)} Sensible Test check(s), not 3.",
-              file=sys.stderr)
-    for name, question in checks:
-        if " ".join(question.split()) not in flat:
-            print(f"  WARNING  the {name} Check is worded differently in config.yaml "
-                  f"than in guidelines.md.\n           guidelines.md: {question}",
-                  file=sys.stderr)
 
 
 # --- drafts -------------------------------------------------------------------
@@ -250,6 +274,15 @@ def unfinished(flask_server, user_state, instance_id: str) -> list:
             longest = max((len(str(v).strip()) for v in values), default=0)
             if longest < min_chars:
                 missing.append(name)
+
+    # A Fail with nothing ticked is not finished. The page cannot store one any
+    # more -- static/study.js sets the verdict from the ticks -- but a draft
+    # left under the old Yes/No question can: Yes answered, the mechanisms not
+    # yet ticked. `mechanisms` is optional now that none ticked is a pass, so
+    # without this those drafts would read as finished Fails with no mechanism.
+    # Opening one and pressing Submit settles it either way.
+    if "Yes" in answers.get("sensible_test_failed", []) and not any(answers.get("mechanisms", [])):
+        missing.append("mechanisms")
     return missing
 
 

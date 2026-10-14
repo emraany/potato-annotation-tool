@@ -14,8 +14,7 @@ without opening anything:
 
     01-login-and-register
     02-guidelines                           the guidelines banner, opened
-    04-annotation-gate-shut                 the Sensible Test alone
-    05-annotation-gate-open                 the test failed, the mechanisms revealed
+    04-annotation                           an argument, nothing ticked
     06-annotation-two-mechanisms-ticked     two ticked, both justification boxes open
     07-submit-refused                       Submit on an unfinished argument
 
@@ -77,10 +76,7 @@ def main() -> int:
         page.click("#login-content button[type=submit]")
         page.wait_for_load_state("networkidle")
 
-        shot("04-annotation-gate-shut")
-        page.click("[data-schema-name='sensible_test_failed'] input[value='Yes']")
-        page.wait_for_timeout(700)
-        shot("05-annotation-gate-open")
+        shot("04-annotation")
 
         # Two mechanisms, because one flat list with two ticked and two
         # justification boxes open under it is the shape of the task now.

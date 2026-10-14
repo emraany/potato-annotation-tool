@@ -12,6 +12,7 @@
  *   4. Un-ticking a checkbox re-runs the display_logic gates it feeds, and a
  *      gate that shuts un-ticks the checkboxes behind it.
  *   5. The band: the stretch this annotator was given, and what is left of it.
+ *   6. The Sensible Test verdict, answered from the mechanisms ticked.
  */
 (function () {
   "use strict";
@@ -80,8 +81,8 @@
        them at once, so each one is cut back to the part that identifies it. A
        colon or a question mark ends the naming part when there is one near the
        front -- "Affective Hijacking: what is being used…" -- and otherwise the
-       em-dash does, which is what separates "Mechanisms" and "Does this
-       argument fail the Sensible Test" from the rest of their sentence. The
+       em-dash does, which is what separates "Mechanisms" from the rest of its
+       sentence. The
        colon is taken first because every justification box is named by its
        mechanism before one, and cutting at the em-dash there would leave six
        boxes all reading the same thing. */
@@ -170,6 +171,7 @@
     var advance = window.navigateToNext;
     window.vlmdAdvance = advance;
     window.navigateToNext = function () {
+      setVerdict(ticked() ? "Yes" : "No");
       var gaps = unanswered();
       if (gaps.length) { mark(gaps); return; }
       clearMarks();
@@ -203,29 +205,43 @@
     if (manager) { manager.evaluateForSchema(schema); }
   }
 
-  // --- 4b. a shut gate un-ticks what is behind it ----------------------------
+  // --- 6. the Sensible Test verdict ----------------------------------------
   //
-  // display_logic is not transitive. Answering No to the Sensible Test shuts
-  // the Mechanisms gate, but the ticks behind it stay in currentAnnotations,
-  // and each justification's gate reads only `mechanisms` -- so the boxes for
-  // whatever was ticked under Yes stayed open under No, required, with the
-  // list that opened them out of sight. The server's completeness check has
-  // the same blind spot, and the export flags the leftover ticks as
-  // mechanism_on_a_passing_item.
+  // The annotator is not asked it. They tick the mechanisms at work, and none
+  // ticked is a pass. But `sensible_test_failed` is still the scheme everything
+  // downstream reads -- the export, the console, the review site, the
+  // agreement figures -- so it is still answered and still stored, by this,
+  // through the hidden radio's own `change` event: Potato records it exactly as
+  // it records a click.
   //
-  // So a checkbox behind a shut gate is un-ticked, through its own `change`
-  // event: Potato deletes the label and saves, and regate() above closes the
-  // justification boxes it fed -- the same path as un-ticking by hand, which
-  // is what the annotator used to have to do. Justification text is kept, as
-  // it is on a hand un-tick, and comes back with the tick.
+  //   a mechanism ticked        Yes (failed), at once
+  //   the last one un-ticked    No (passed), at once
+  //   Submit                    Yes or No from what is ticked, before the save
+  //
+  // An argument nobody has ticked anything on or submitted has no verdict, and
+  // that is what keeps it a draft: Save draft on an untouched argument leaves
+  // it unanswered, as it always did.
 
-  function untickHidden() {
-    var stale = document.querySelectorAll(
-      '.display-logic-hidden input[type="checkbox"]:checked');
-    Array.prototype.forEach.call(stale, function (box) {
-      box.checked = false;
-      box.dispatchEvent(new Event("change", { bubbles: true }));
-    });
+  var VERDICT = "sensible_test_failed";
+
+  function ticked() {
+    return document.querySelectorAll(
+      '.annotation-form[data-schema-name="mechanisms"] input[type="checkbox"]:checked').length;
+  }
+
+  function setVerdict(value) {
+    var input = document.querySelector(
+      'input[type="radio"][name="' + VERDICT + '"][value="' + value + '"]');
+    if (!input || input.checked) { return; }
+    input.checked = true;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  function verdictFromTicks(event) {
+    var input = event.target;
+    if (!input || input.type !== "checkbox"
+        || input.getAttribute("schema") !== "mechanisms") { return; }
+    setVerdict(ticked() ? "Yes" : "No");
   }
 
   // --- 3. the navbar arrows --------------------------------------------------
@@ -290,7 +306,7 @@
     // same gesture that closed its gate -- hence recheck once more behind it.
     document.addEventListener("change", function (event) {
       regate(event);
-      untickHidden();
+      verdictFromTicks(event);
       recheck();
     });
   }

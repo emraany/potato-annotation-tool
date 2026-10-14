@@ -147,6 +147,12 @@
 }
 .guidelines-table th { background: #eef2fb; font-weight: 650; }
 .guidelines-table td:first-child { font-weight: 600; width: 24%; }
+/* The rules: one merged Mechanism cell per section, so below its first row a
+   section's first <td> is the Rule, not the Mechanism -- widths go on the
+   header instead. The section colours and weights are inline, from serve.py. */
+.rules-table td:first-child { width: auto; }
+.rules-table th:nth-child(1) { width: 15%; }
+.rules-table th:nth-child(2) { width: 20%; }
 
 /* --- pure_display schemes --------------------------------------------------
  * A pure_display scheme's prose lands in a <legend>, which the theme sets to
@@ -162,9 +168,11 @@ form.pure-display legend li { margin-bottom: 0.35rem; }
 
 /* --- Section headings ------------------------------------------------------
  * `layout.groups` cannot be used here (it breaks display_logic -- see the note
- * at the top of config.yaml), so the three steps are `pure_display` schemes.
- * Step 2 carries the same gate as the questions under it, so the heading
- * appears and disappears with them. */
+ * at the top of config.yaml), so the steps are `pure_display` schemes.
+ *
+ * `h4` is not on Potato's attribute allowlist for `description`, so
+ * .step-head never reaches the page and the headings render at the browser's
+ * own h4 size. `div` and `p` do allow class, which is why .step-sub works. */
 .step-head {
   font-size: 0.95rem;
   font-weight: 650;
@@ -177,32 +185,18 @@ form.pure-display legend li { margin-bottom: 0.35rem; }
 }
 form.pure-display legend .step-head { margin-top: 0.4rem; }
 
-/* --- The three checks ------------------------------------------------------
- * Read, not answered: the Sensible Test is one Yes/No question and these are
- * the three sentences it is a verdict on. Styled as prose rather than as
- * questions -- no radio beside them, so nothing should look clickable.
- *
- * The class is on a wrapping <div> and not on the <ol> itself because Potato
- * sanitizes `description` against a per-tag attribute allowlist, and `ol`'s
- * is `{start, type}` -- a class written there is dropped silently, and the
- * rule below would simply never match anything. `div` and `p` do allow class,
- * which is why .step-sub above works. `h4` does not -- so .step-head is on a
- * class that never reaches the page, and the step headings render at the
- * browser's own h4 size. Left alone here: changing the selector restyles all
- * three headings, which is a separate decision from this list. */
-.check-list ol {
-  font-size: 0.85rem;
-  color: #3f3f57;
-  margin: 0.5rem 0 0;
-  padding-left: 1.25rem;
+/* --- The Sensible Test verdict ----------------------------------------------
+ * Not asked. It is still a scheme so that what is stored does not change, and
+ * static/study.js answers it from the mechanisms ticked -- so it is on the
+ * page, for Potato to save, and never on screen. */
+.annotation-form[data-schema-name="sensible_test_failed"] {
+  display: none !important;
 }
-.check-list li { margin: 0.3rem 0; }
-.check-list li b { font-weight: 650; }
 
 /* --- Collapsing a shut gate completely ------------------------------------
  * Potato hides a conditional scheme with max-height:0 + visibility:hidden so
  * it can animate. The wrappers keep their margins, so with the mechanism block
- * shut the page carried ~200px of blank space between Step 1 and Step 3 that
+ * shut the page carried ~200px of blank space between two steps that
  * read as a rendering fault. `display: none` is what Potato's own
  * prefers-reduced-motion rule already does, so this only drops the animation. */
 .display-logic-container.display-logic-hidden {

@@ -28,10 +28,11 @@ THE PAGE, top to bottom: the map; the header saying how they differ; the
 argument, collapsible; the two of them side by side, each with their verdict,
 mechanisms and justifications; and under that the answer they settle on.
 
-EACH ANSWER opens on what both of them agreed: the shared mechanisms ticked,
-the verdict filled in if they gave the same one. Every mechanism only one of
-them ticked is outlined and labelled with who, unticked, one click from being
-added. Nothing reaches gold that nobody decided to put there.
+EACH ANSWER opens on what both of them agreed: the shared mechanisms ticked.
+Every mechanism only one of them ticked is outlined and labelled with who,
+unticked, one click from being added. Nothing reaches gold that nobody decided
+to put there. The Sensible Test is not asked: it is saved as Fail when any
+mechanism is ticked and Pass when none is, so the decision keeps its verdict.
 
 WHAT IT WRITES is annotation_output/review/decisions.json and nothing else.
 See scripts/review.py for that file, the one-decision-per-argument rule and
@@ -424,10 +425,6 @@ details.argument .inner { padding:0 18px 16px; }
 /* the answer */
 .answer { max-width:760px; margin:0 auto; border-top:4px solid var(--accent); }
 .answer h3 { margin:0 0 14px; font-size:1.05rem; }
-.verdict { display:flex; gap:10px; }
-.verdict label { flex:1; border:1px solid #dcdce8; border-radius:6px; padding:9px 12px; cursor:pointer; }
-.verdict label:has(input:checked) { border-color:var(--accent); background:var(--accent-bg); }
-.verdict .tags { display:block; font-size:0.78rem; color:var(--muted); margin-top:2px; }
 .mech { border:1px solid #e6e6ef; border-radius:6px; margin-bottom:8px; background:#fff; }
 .mech.extra { border:2px solid #e0a24a; background:#fffaf2; }
 .mech.extra.on { background:#fff; }
@@ -443,7 +440,6 @@ textarea { width:100%; font:inherit; font-size:0.92rem; border:1px solid #d3d3e2
 textarea.flash { animation:flash 0.9s; }
 @keyframes flash { from { background:#fff3d6; } to { background:#fff; } }
 .disabled-note { font-size:0.88rem; color:var(--muted); margin:0 0 8px; }
-.mechs.off .mech { opacity:0.45; pointer-events:none; }
 .problems { background:#fbeaea; color:#6d2020; border-radius:6px; padding:9px 12px; margin:10px 0; font-size:0.9rem; }
 .problems ul { margin:0; padding-left:18px; }
 .savebar { display:flex; gap:10px; align-items:center; justify-content:flex-end; margin-top:14px; }
@@ -559,14 +555,9 @@ function draw() {
   const has = (p, m) => (p.mechanisms || []).includes(m);
   const byWho = m => people.filter(p => has(p, m)).map(p => p.annotator);
 
-  // Where the answer starts: the saved decision if there is one, otherwise what
-  // everybody agreed on -- the shared mechanisms, and the verdict if it was
-  // unanimous. An extra is never pre-ticked.
-  const verdicts = new Set(people.map(p => p.sensible_test));
-  const startVerdict = d ? d.sensible_test
-    : (verdicts.size === 1 && people[0].sensible_test) ? people[0].sensible_test : null;
+  // Where the answer starts: the saved decision if there is one, otherwise the
+  // mechanisms everybody agreed on. An extra is never pre-ticked.
   const startMechs = new Set(d ? d.mechanisms : h.common);
-  if (!d && startVerdict === 'Pass') startMechs.clear();
 
   const changed = d && d.changed.length ? `<div class="resolved changed">⚠ <b>${esc(d.changed.join(' and '))}</b>
     changed ${d.changed.length === 1 ? 'their answer' : 'their answers'} after this was resolved. What they say now is
@@ -592,11 +583,6 @@ function draw() {
       }).join('') : '<p class="nomech">No mechanism.</p>'}
       ${p.notes ? `<p class="note"><b>Note:</b> ${esc(p.notes)}</p>` : ''}
     </div>`;
-  };
-
-  const verdictTags = v => {
-    const who = people.filter(p => p.sensible_test === v).map(p => p.annotator);
-    return who.length ? 'said by ' + who.map(esc).join(', ') : 'nobody';
   };
 
   const mechRow = m => {
@@ -635,13 +621,8 @@ function draw() {
     <div class="halves">${people.map(side).join('')}</div>
     <div class="card answer" id="form">
       <h3>Your answer</h3>
-      <h2>Sensible Test</h2>
-      <div class="verdict">
-        ${['Fail', 'Pass'].map(v => `<label><input type="radio" name="verdict" value="${v}" ${
-          startVerdict === v ? 'checked' : ''}> <b>${v}</b><span class="tags">${verdictTags(v)}</span></label>`).join('')}
-      </div>
-      <h2 style="margin-top:18px">Mechanisms</h2>
-      <p class="disabled-note" id="pass-note" hidden>A Pass has no mechanisms.</p>
+      <h2>Mechanisms</h2>
+      <p class="disabled-note">Tick every mechanism at work. None ticked is a Pass.</p>
       <div class="mechs" id="mechs">${A.mechanisms.map(mechRow).join('')}</div>
       <h2 style="margin-top:18px">Resolution note</h2>
       <textarea id="note" placeholder="Optional: why you settled it this way. Useful when the guidelines need changing.">${esc(d ? d.note : '')}</textarea>
@@ -651,17 +632,6 @@ function draw() {
       </div>
     </div>`;
   wire();
-}
-
-function verdict() {
-  const v = document.querySelector('input[name=verdict]:checked');
-  return v ? v.value : null;
-}
-
-function syncPass() {
-  const pass = verdict() === 'Pass';
-  document.getElementById('mechs').classList.toggle('off', pass);
-  document.getElementById('pass-note').hidden = !pass;
 }
 
 function wire() {
@@ -685,15 +655,14 @@ function wire() {
     box.classList.remove('flash'); void box.offsetWidth; box.classList.add('flash');
     dirty = true;
   });
-  document.querySelectorAll('input[name=verdict]').forEach(r => r.onchange = syncPass);
-  syncPass();
   document.getElementById('save').onclick = save;
 }
 
 async function save() {
-  const v = verdict();
-  const mechanisms = v === 'Pass' ? [] :
+  const mechanisms =
     [...document.querySelectorAll('.mech')].filter(r => r.querySelector('input').checked).map(r => r.dataset.m);
+  // Not asked: any mechanism is a Fail, none is a Pass.
+  const v = mechanisms.length ? 'Fail' : 'Pass';
   const justifications = {};
   mechanisms.forEach(m => {
     justifications[m] = document.querySelector(`textarea[data-just="${CSS.escape(m)}"]`).value;

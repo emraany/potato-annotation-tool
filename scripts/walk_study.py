@@ -53,7 +53,9 @@ MECHANISMS = [
 ]
 
 # What we will type into the three real items, and expect back out of
-# user_state.json unchanged.
+# user_state.json unchanged. `sensible_test_failed` is not typed -- the page
+# does not ask it -- but it is expected back: static/study.js fills it in from
+# the mechanisms ticked, and this is what checks it did.
 PLAN = [
     {
         "tag": "pass",
@@ -130,16 +132,6 @@ class Walk:
 
     def visible(self, scheme: str):
         return self.page.evaluate(VISIBLE_JS, scheme)
-
-    def set_radio(self, scheme: str, value: str) -> bool:
-        sel = f"[data-schema-name='{scheme}'] input[value={json.dumps(value)}]"
-        el = self.page.query_selector(sel)
-        if el is None:
-            self.problems.append(f"no radio {scheme}={value!r} on the page")
-            return False
-        el.click()
-        self.page.wait_for_timeout(180)
-        return True
 
     def set_checkbox(self, scheme: str, value: str) -> bool:
         sel = f"[data-schema-name='{scheme}'] input[value={json.dumps(value)}]"
@@ -256,14 +248,12 @@ class Walk:
 
 
 def answer_item(w: Walk, answers: dict, texts: dict, multi: dict, flag: bool) -> None:
-    """The Sensible Test first, then whatever the gate opened. Order matters here."""
-    if "sensible_test_failed" in answers:
-        w.set_radio("sensible_test_failed", answers["sensible_test_failed"])
-    w.page.wait_for_timeout(400)
+    """The mechanisms first, then the justification boxes they opened.
 
-    if "mechanisms" in (multi or {}) and not w.visible("mechanisms"):
-        w.problems.append("mechanisms stayed hidden after the Sensible Test was "
-                          "answered Yes")
+    `answers` is not answered here: the Sensible Test is not asked, and its
+    verdict is checked against what the page stored for it."""
+    if w.visible("sensible_test_failed"):
+        w.problems.append("the Sensible Test question is on screen; it should be hidden")
 
     for scheme, values in (multi or {}).items():
         for value in values:
@@ -329,7 +319,9 @@ def main() -> int:
             # reads nothing out of an element that is not being rendered.
             headings = [td.text_content().strip() for td in
                         content.query_selector_all("table.guidelines-table td:first-child")]
-            missing = [m for m in MECHANISMS if m not in headings]
+            # "Affective Hijacking (AH)": the cell carries an abbreviation too.
+            missing = [m for m in MECHANISMS
+                       if not any(h == m or h.startswith(m + " (") for h in headings)]
             if missing:
                 w.problems.append(f"the guidelines banner is missing {missing}")
             else:
@@ -369,17 +361,10 @@ def main() -> int:
                         step.get("multiselect", {}), step["flag"])
             w.shot(f"04-item{n}-{step['tag']}")
 
-            # What SHOULD be on screen, given the branch.
-            gated = {"mechanisms", "section_mechanism"}
-            failed = step["answers"].get("sensible_test_failed") == "Yes"
-            for scheme in gated:
-                vis = w.visible(scheme)
-                if failed and vis is False:
-                    w.problems.append(f"item {n}: {scheme} hidden although the "
-                                      "Sensible Test came back failed")
-                if not failed and vis is True:
-                    w.problems.append(f"item {n}: {scheme} shown although the "
-                                      "Sensible Test came back passed")
+            # The mechanisms are on screen whatever is ticked: none is a pass.
+            for scheme in ("mechanisms", "section_mechanism"):
+                if w.visible(scheme) is False:
+                    w.problems.append(f"item {n}: {scheme} is hidden")
 
             expected = dict(step["answers"])
             expected.update(step.get("text", {}))
@@ -416,7 +401,7 @@ def main() -> int:
         log("\nleaving item four as a draft")
         draft_id = w.instance_id()
         draft_index = w.instance_number()
-        w.set_radio("sensible_test_failed", "Yes")     # opens the gate, answers nothing else
+        w.set_checkbox("mechanisms", "Affective Hijacking")   # opens a box, fills nothing
         w.shot("04b-draft-part-answered")
 
         # Submit has to refuse this, and say which questions are missing. A
